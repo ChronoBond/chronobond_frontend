@@ -1,26 +1,221 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+    --primary: 221.2 83.2% 53.3%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 84% 4.9%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+    --radius: 0.75rem;
+  }
+
+  .dark {
+    /* Ultra-dark professional background */
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    
+    /* Card with subtle separation from background */
+    --card: 222.2 47.4% 11.2%;
+    --card-foreground: 210 40% 98%;
+    
+    /* Popover styling */
+    --popover: 222.2 47.4% 11.2%;
+    --popover-foreground: 210 40% 98%;
+    
+    /* Electric blue primary for fintech feel */
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 84% 4.9%;
+    
+    /* Secondary with subtle contrast */
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+    
+    /* Muted elements */
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+    
+    /* Accent colors */
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+    
+    /* Error states */
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+    
+    /* Borders with transparency for layering */
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 217.2 91.2% 59.8%;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  html {
+    font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+    /* Consistent padding to prevent content from touching edges */
+    @apply min-h-screen;
+  }
+  
+  /* Typography improvements */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Inter', ui-sans-serif, system-ui;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  
+  /* Main container padding for consistent spacing */
+  .app-container {
+    @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
+  }
+}
+
+@layer components {
+  /* Grid background pattern */
+  .grid-bg {
+    background-image: 
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  
+  /* Dot background pattern */
+  .dot-bg {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+  
+  /* Enhanced spotlight effect */
+  .spotlight {
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .spotlight::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(
+      800px circle at var(--mouse-x) var(--mouse-y),
+      rgba(59, 130, 246, 0.08),
+      transparent 40%
+    );
+    opacity: 0;
+    transition: opacity 300ms;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  
+  .spotlight:hover::before {
+    opacity: 1;
+  }
+
+  /* Enhanced shimmer effect */
+  .shimmer {
+    background: linear-gradient(
+      110deg,
+      transparent 40%,
+      rgba(59, 130, 246, 0.1) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s linear infinite;
+  }
+  
+  /* Professional card styling */
+  .card-professional {
+    @apply bg-card/50 backdrop-blur-xl border border-border/40 rounded-lg shadow-card hover:shadow-card-hover transition-all duration-300;
+  }
+  
+  /* Gradient text for headers */
+  .gradient-text {
+    @apply bg-gradient-to-br from-foreground via-foreground to-foreground/70 bg-clip-text text-transparent;
+  }
+  
+  /* Professional button styling */
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground shadow-lg hover:shadow-glow-sm transition-all duration-300 hover:scale-[1.02];
+  }
+  
+  /* Status badges */
+  .badge-success {
+    @apply bg-success/10 text-success border border-success/20 rounded-full px-3 py-1 text-xs font-medium;
+  }
+  
+  .badge-warning {
+    @apply bg-warning/10 text-warning border border-warning/20 rounded-full px-3 py-1 text-xs font-medium;
+  }
+  
+  .badge-error {
+    @apply bg-error/10 text-error border border-error/20 rounded-full px-3 py-1 text-xs font-medium;
+  }
+  
+  .badge-info {
+    @apply bg-primary/10 text-primary border border-primary/20 rounded-full px-3 py-1 text-xs font-medium;
+  }
+  
+  /* Table improvements */
+  .table-professional {
+    @apply bg-card/30 backdrop-blur-xl border border-border/40 rounded-lg overflow-hidden;
+  }
+  
+  .table-professional th {
+    @apply bg-muted/30 font-semibold text-muted-foreground border-b border-border/40;
+  }
+  
+  .table-professional td {
+    @apply border-b border-border/20 last:border-b-0;
+  }
+  
+  .table-professional tr:hover {
+    @apply bg-muted/20;
+  }
+}
+
+/* Custom scrollbar for dark theme */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--background));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
 }
