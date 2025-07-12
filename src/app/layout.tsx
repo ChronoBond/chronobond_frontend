@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { FloatingNavbar } from "@/components/floating-navbar";
 import { FlowConfigProvider } from "@/components/flow-config-provider";
 
 const inter = Inter({ 
@@ -31,7 +30,6 @@ export default function RootLayout({
       <body className={`${inter.variable} font-inter antialiased bg-background text-foreground`}>
         <FlowConfigProvider>
           <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
-            <FloatingNavbar />
             <main className="relative">
               {children}
             </main>

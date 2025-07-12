@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { formatAddress } from "@/lib/utils"
+import Image from "next/image"
 
 interface FloatingNavbarProps {
   className?: string
@@ -48,25 +49,27 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
       className={cn(
-        "fixed top-4 left-1/2 z-50 -translate-x-1/2 transition-all duration-300",
-        isScrolled ? "top-2" : "top-4",
+        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         className
       )}
     >
       <motion.nav
         layout
         className={cn(
-          "flex items-center justify-between gap-4 rounded-full border border-border/40 bg-background/95 backdrop-blur-xl px-6 py-3 shadow-lg transition-all duration-300",
+          "flex items-center justify-between gap-4 border-b border-border/40 bg-background/95 backdrop-blur-xl px-6 py-4 shadow-lg transition-all duration-300 w-full",
           "bg-card/80 backdrop-blur-xl border-border/30 shadow-xl",
-          isScrolled ? "scale-95 shadow-2xl" : "scale-100"
+          isScrolled ? "py-3 shadow-2xl" : "py-4"
         )}
       >
         {/* Logo */}
         <div className="flex items-center gap-3">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-primary to-primary/80 shadow-lg">
-            <Clock className="h-5 w-5 text-primary-foreground" />
-            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 to-transparent animate-pulse" />
-          </div>
+          <Image 
+            src="/logo.png"
+            alt="ChronoBond Logo"
+            width={40}
+            height={40}
+            className="object-cover rounded-full shadow-lg"
+          />
           <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
             ChronoBond
           </span>
