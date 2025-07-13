@@ -7,6 +7,7 @@ import BondMinting from "@/components/bond-minting"
 import HoldingsView from "@/components/holdings-view"
 import Marketplace from "@/components/marketplace"
 import BondRedemption from "@/components/bond-redemption"
+import ChronoSplitComingSoon from "@/components/chronosplit-coming-soon"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { BackgroundGrid, BackgroundDots } from "@/components/ui/background-grid"
@@ -18,10 +19,11 @@ import {
   Shield, 
   Zap,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  Split
 } from "lucide-react"
 
-type TabType = "overview" | "mint" | "holdings" | "marketplace" | "redeem"
+type TabType = "overview" | "mint" | "holdings" | "marketplace" | "redeem" | "split"
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<TabType>("overview")
@@ -32,6 +34,7 @@ export default function Home() {
     { id: "holdings" as TabType, label: "My Holdings", icon: Clock },
     { id: "marketplace" as TabType, label: "Marketplace", icon: ShoppingCart },
     { id: "redeem" as TabType, label: "Redeem Bonds", icon: Shield },
+    { id: "split" as TabType, label: "Split", icon: Split },
   ]
 
   const renderTabContent = () => {
@@ -46,6 +49,8 @@ export default function Home() {
         return <Marketplace />
       case "redeem":
         return <BondRedemption />
+      case "split":
+        return <ChronoSplitComingSoon />
       default:
         return <OverviewTab setActiveTab={setActiveTab} />
     }
@@ -57,7 +62,7 @@ export default function Home() {
       <FloatingNavbar />
 
       {/* Main Content */}
-      <div className="relative pt-24">
+      <div className="relative pt-20">
         <BackgroundGrid className="absolute inset-0">
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20" />
         </BackgroundGrid>
