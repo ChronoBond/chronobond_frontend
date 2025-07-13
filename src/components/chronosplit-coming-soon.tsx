@@ -55,7 +55,7 @@ export default function ChronoSplitComingSoon() {
             <div className="flex items-center justify-center gap-4 mt-8">
               <Badge variant="info" className="text-lg px-6 py-2">
                 <Timer className="w-4 h-4 mr-2" />
-                Launch Q1 2025
+                Launch Q2 2025
               </Badge>
               <Badge variant="success" className="text-lg px-6 py-2">
                 <Target className="w-4 h-4 mr-2" />

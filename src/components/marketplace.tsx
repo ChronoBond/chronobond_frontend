@@ -325,12 +325,9 @@ export default function Marketplace() {
               </div>
             </div>
             <div className="flex items-center gap-4">
-              <Badge variant="success" className="w-fit">
-                🚀 Live Mode - Real Blockchain Transactions
-              </Badge>
-                             <div className="text-sm text-muted-foreground">
-                 Connected: <span className="font-mono">{formatAddress(user.addr || "")}</span>
-               </div>
+              <div className="text-sm text-muted-foreground">
+                Connected: <span className="font-mono">{formatAddress(user.addr || "")}</span>
+              </div>
             </div>
           </CardHeader>
         </Card>

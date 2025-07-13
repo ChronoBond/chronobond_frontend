@@ -231,9 +231,6 @@ export default function BondRedemption() {
                 <CardDescription>Redeem your matured bonds and track upcoming maturities</CardDescription>
               </div>
             </div>
-            <Badge variant="success" className="w-fit">
-              🚀 Live Mode - Real Blockchain Transactions
-            </Badge>
           </CardHeader>
         </Card>
       </motion.div>

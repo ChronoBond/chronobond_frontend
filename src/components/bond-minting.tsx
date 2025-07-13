@@ -217,9 +217,6 @@ export default function BondMinting() {
                 </CardDescription>
               </div>
             </div>
-            <Badge variant="success" className="w-fit mx-auto">
-              🚀 Live Mode - Real Blockchain Transactions
-            </Badge>
           </CardHeader>
 
           <CardContent className="space-y-8">

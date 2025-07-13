@@ -247,9 +247,6 @@ export default function HoldingsView() {
                 <CardDescription>Your ChronoBond portfolio overview</CardDescription>
               </div>
             </div>
-            <Badge variant="success" className="w-fit">
-              🚀 Live Mode - Real Blockchain Data
-            </Badge>
           </CardHeader>
           
           <CardContent>
