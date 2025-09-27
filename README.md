@@ -1,6 +1,6 @@
 # ChronoBond Frontend 🚀
 
-A decentralized finance (DeFi) application built on the Flow blockchain for creating, trading, and managing time-locked bonds with guaranteed yields.
+A revolutionary decentralized finance (DeFi) application built on the Flow blockchain, featuring an immersive editorial-style experience with advanced animations and professional frosted glass design.
 
 ## 🌟 Features
 
@@ -17,9 +17,11 @@ A decentralized finance (DeFi) application built on the Flow blockchain for crea
 - **HighYield**: High-risk strategies for maximum 15% returns
 
 ### User Experience
-- **🎨 Modern UI**: Built with shadcn/ui components and Tailwind CSS
+- **🎨 Immersive Editorial Design**: Typography-led layout with cinematic animations
+- **🪟 Frosted Glass UI**: Professional glassmorphism with adjustable opacity
 - **📱 Responsive Design**: Optimized for desktop and mobile devices
-- **⚡ Real-time Updates**: Live blockchain data integration
+- **⚡ Smooth Scrolling**: Section-based navigation with scroll snapping
+- **🎬 Advanced Animations**: GSAP-powered scroll reveals and typewriter effects
 - **🔗 Wallet Integration**: Seamless Flow wallet connection
 
 ## 🛠️ Technology Stack
@@ -28,7 +30,9 @@ A decentralized finance (DeFi) application built on the Flow blockchain for crea
 - **Language**: TypeScript
 - **Blockchain**: Flow Network
 - **Styling**: Tailwind CSS + shadcn/ui
-- **Animations**: Framer Motion
+- **Animations**: GSAP with ScrollTrigger
+- **Smooth Scrolling**: Lenis
+- **UI Components**: Custom glassmorphism components
 - **Flow Integration**: @onflow/fcl, @onflow/kit
 - **State Management**: React Hooks
 
@@ -75,56 +79,72 @@ npm start
 
 ```
 src/
-├── app/                    # Next.js app router
-│   ├── layout.tsx         # Root layout
-│   ├── page.tsx           # Home page with navigation
-│   └── globals.css        # Global styles
-├── components/            # React components
-│   ├── ui/               # shadcn/ui components
-│   ├── bond-minting.tsx  # Bond creation interface
-│   ├── marketplace.tsx   # Trading marketplace
-│   ├── holdings-view.tsx # Portfolio management
-│   ├── bond-redemption.tsx # Bond redemption center
-│   ├── chronosplit-coming-soon.tsx # ChronoSplit preview
-│   └── floating-navbar.tsx # Main navigation
-├── lib/                  # Utility libraries
-│   ├── chronobond-service.ts # Bond operations
-│   ├── marketplace-service.ts # Marketplace logic
+├── app/                           # Next.js app router
+│   ├── (components)/             # Route components
+│   │   ├── PageMain.tsx          # Landing page content
+│   │   ├── holdings/             # Holdings components
+│   │   ├── marketplace/          # Marketplace components
+│   │   ├── mint/                 # Mint components
+│   │   ├── overview/             # Overview components
+│   │   ├── redeem/               # Redeem components
+│   │   └── split/                # Split components
+│   ├── split/                    # Split page route
+│   │   └── (components)/         # Split page components
+│   │       └── ChronoSplitMain.tsx
+│   ├── transactions/             # Transactions page route
+│   ├── layout.tsx               # Root layout
+│   ├── page.tsx                 # Home page wrapper
+│   ├── globals.css              # Global styles with frosted glass
+│   └── metadata.ts              # App metadata
+├── components/                   # React components
+│   ├── ui/                      # UI components
+│   │   ├── glass-card.tsx      # Frosted glass cards
+│   │   ├── glass-input.tsx      # Glass input fields
+│   │   ├── squares.tsx          # Animated background squares
+│   │   ├── ScrollReveal.tsx    # GSAP scroll animations
+│   │   ├── TextType.tsx         # Typewriter effects
+│   │   ├── stepper-item.tsx     # Editorial stepper
+│   │   └── background-grid.tsx  # Animated backgrounds
+│   ├── floating-navbar.tsx      # Main navigation
+│   └── smooth-scroll-provider.tsx # Smooth scrolling
+├── lib/                         # Utility libraries
+│   ├── chronobond-service.ts    # Bond operations
+│   ├── marketplace-service.ts   # Marketplace logic
 │   ├── bond-redemption-service.ts # Redemption logic
-│   └── flow-config.ts    # Flow blockchain configuration
-├── scripts/              # Cadence scripts
-│   ├── transactions/     # Transaction scripts
-│   └── bonds/           # Bond query scripts
-└── types/               # TypeScript definitions
-    └── chronobond.ts    # App type definitions
+│   ├── flow-config.ts          # Flow blockchain configuration
+│   └── utils.ts                # Utility functions
+├── scripts/                     # Cadence scripts
+│   ├── transactions/            # Transaction scripts
+│   └── bonds/                   # Bond query scripts
+└── types/                       # TypeScript definitions
+    └── chronobond.ts            # App type definitions
 ```
 
 ## 🎯 Key Components
 
-### Bond Minting (`bond-minting.tsx`)
-- Create time-locked bonds with customizable parameters
-- Choose from multiple yield strategies
-- Real-time yield calculations and projections
+### Landing Page (`PageMain.tsx`)
+- **Hero Section**: Full-screen typography with typewriter effects
+- **Value Propositions**: Professional copy-driven metrics
+- **Features**: Editorial stepper flow with animated reveals
+- **How It Works**: 3-step process with GSAP animations
 
-### Marketplace (`marketplace.tsx`)
-- List bonds for sale with custom pricing
-- Browse and purchase available bonds
-- Real-time transaction processing
+### Split Page (`ChronoSplitMain.tsx`)
+- **Hero Section**: Coming soon announcement with dual icons
+- **How ChronoSplit Works**: 4-step stepper with detailed explanations
+- **DeFi Strategies**: Editorial flow for advanced trading strategies
+- **Call to Action**: Beta waitlist and notification signup
 
-### Holdings View (`holdings-view.tsx`)
-- Portfolio overview with total value calculations
-- Individual bond details and performance
-- Quick access to listing and redemption
+### Animation Components
+- **ScrollReveal**: Word-by-word scroll animations with blur effects
+- **TextType**: Typewriter effects for hero titles
+- **SmoothScrollProvider**: Lenis integration with GSAP ScrollTrigger
+- **Squares**: Animated background with interactive hover effects
 
-### Bond Redemption (`bond-redemption.tsx`)
-- Track matured bonds ready for redemption
-- Monitor upcoming maturities
-- Bulk redemption capabilities
-
-### ChronoSplit (`chronosplit-coming-soon.tsx`)
-- Preview of upcoming yield trading features
-- Educational content about Principal/Yield token splitting
-- Roadmap for AMM and analytics features
+### UI Components
+- **GlassCard**: Frosted glass cards with adjustable opacity
+- **StepperItem**: Editorial storytelling components
+- **BackgroundGrid**: Animated squares with diagonal movement
+- **FloatingNavbar**: Responsive navigation with wallet integration
 
 ## 🔧 Configuration
 
@@ -138,39 +158,75 @@ NEXT_PUBLIC_FLOW_ACCESS_NODE_API=https://rest-testnet.onflow.org
 NEXT_PUBLIC_FLOW_WALLET_DISCOVERY=https://fcl-discovery.onflow.org/testnet/authn
 ```
 
-## 🎨 UI Components
+## 🎨 Design System
 
-The app uses shadcn/ui components for consistent design:
-- **Cards**: Professional containers with backdrop blur
-- **Buttons**: Various variants with hover effects
-- **Badges**: Status indicators and labels
-- **Tables**: Data display with professional styling
-- **Inputs**: Form controls with validation
-- **Avatars**: User profile display
+### Frosted Glass Components
+- **GlassCard**: Professional glassmorphism with adjustable opacity
+- **GlassInput**: Glass input fields with consistent styling
+- **Frosted Glass Background**: CSS variables for opacity control
 
-## 🔄 ChronoSplit (Upcoming)
+### Animation System
+- **GSAP ScrollTrigger**: Scroll-based animations with one-time triggers
+- **Lenis Smooth Scrolling**: Section-based navigation with scroll snapping
+- **Typewriter Effects**: Hero title animations with customizable speed
+- **Word-by-Word Reveals**: ScrollReveal with blur and rotation effects
+
+### Typography System
+- **Hero Headlines**: 64px-80px display fonts with gradient text
+- **Section Titles**: 40px-48px with ScrollReveal animations
+- **Body Text**: 18px-24px with proper line height and spacing
+- **Captions**: 14px-16px for secondary information
+
+### Background System
+- **Animated Squares**: Canvas-based moving squares with hover interactions
+- **Gradient Overlays**: Layered visual effects for depth
+- **Scroll Snap**: Section-based navigation for immersive experience
+
+## 🔄 ChronoSplit (Coming Q2 2025)
 
 The next major feature will allow users to split their bonds into:
 - **Principal Tokens (cPT)**: Zero-coupon bond equivalent
 - **Yield Tokens (cYT)**: Tradeable future yield claims
 
-This enables advanced DeFi strategies like:
-- Selling yield for immediate liquidity
-- Buying discounted principal tokens
-- Speculating on future yield rates
+### Advanced DeFi Strategies
+- **Sell Your Yield**: Lock in profits by selling cYT tokens
+- **Buy Fixed-Rate Principal**: Purchase cPT at discount for guaranteed returns
+- **Speculate & Hedge**: Trade cYT to speculate on future yield rates
+
+### Implementation Preview
+- **4-Step Process**: ChronoBond NFT → Split Action → Principal Token → Yield Token
+- **Interactive Demo**: Stepper interface with detailed explanations
+- **Strategy Education**: Editorial flow explaining advanced trading concepts
 
 ## 📝 Development
 
 ### Code Style
 - TypeScript with strict type checking
 - ESLint and Prettier for code formatting
-- Modular component architecture
+- Modular component architecture with reusable animations
 - Consistent naming conventions
+- Editorial-first design approach
+
+### Animation Development
+- **GSAP**: ScrollTrigger for scroll-based animations
+- **Lenis**: Smooth scrolling with section snapping
+- **Custom Components**: ScrollReveal and TextType for reusable effects
+- **Performance**: 60fps animations with proper cleanup
 
 ### Testing
 ```bash
 npm run build  # Type checking and build validation
 npm run lint   # Code linting
+npm run dev    # Development server with hot reload
+```
+
+### Dependencies
+```bash
+# Core dependencies
+npm install gsap lenis
+
+# Development dependencies
+npm install -D @types/node
 ```
 
 ## 🤝 Contributing
@@ -185,9 +241,20 @@ npm run lint   # Code linting
 
 - [Flow Blockchain](https://flow.com)
 - [Next.js Documentation](https://nextjs.org/docs)
+- [GSAP Documentation](https://greensock.com/docs/)
+- [Lenis Smooth Scrolling](https://github.com/studio-freight/lenis)
 - [shadcn/ui](https://ui.shadcn.com)
 - [Tailwind CSS](https://tailwindcss.com)
+
+## 🎨 Design Inspiration
+
+- **Editorial Design**: Typography-led immersive experience
+- **Glassmorphism**: Modern frosted glass aesthetic
+- **Smooth Scrolling**: Section-based navigation
+- **Advanced Animations**: GSAP-powered cinematic effects
 
 ---
 
 **Built with ❤️ for the Flow ecosystem**
+
+*Featuring immersive editorial design, professional glassmorphism, and advanced GSAP animations for a truly modern DeFi experience.*

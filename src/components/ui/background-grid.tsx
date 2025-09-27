@@ -2,6 +2,7 @@
 
 import React from "react"
 import { cn } from "@/lib/utils"
+import Squares from "./squares"
 
 interface BackgroundGridProps {
   children: React.ReactNode
@@ -20,44 +21,19 @@ export function BackgroundGrid({
   strokeWidth = 1,
   fade = true
 }: BackgroundGridProps) {
-  const svgPatternId = React.useId()
-  
   return (
-    <div className={cn("relative w-full", className)}>
-      <div className="absolute inset-0 h-full w-full">
-        <svg className="h-full w-full">
-          <defs>
-            <pattern
-              id={svgPatternId}
-              width={gridSize}
-              height={gridSize}
-              patternUnits="userSpaceOnUse"
-            >
-              <path
-                d={`M.5 ${gridSize}V.5H${gridSize}`}
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={strokeWidth}
-                strokeDasharray={strokeDasharray}
-                className="text-gray-300/30 dark:text-gray-700"
-              />
-            </pattern>
-            {fade && (
-              <radialGradient id={`${svgPatternId}-fade`}>
-                <stop offset="0%" stopColor="white" stopOpacity="1" />
-                <stop offset="100%" stopColor="white" stopOpacity="0" />
-              </radialGradient>
-            )}
-          </defs>
-          <rect
-            width="100%"
-            height="100%"
-            fill={`url(#${svgPatternId})`}
-            mask={fade ? `url(#${svgPatternId}-fade)` : undefined}
-          />
-        </svg>
+    <div className={cn("relative w-full min-h-screen", className)}>
+      {/* Animated Squares Background */}
+      <div className="fixed inset-0 h-screen w-screen pointer-events-none z-0">
+        <Squares 
+          speed={0.5} 
+          squareSize={40}
+          direction='diagonal'
+          borderColor='rgba(255, 255, 255, 0.1)'
+          hoverFillColor='rgba(255, 255, 255, 0.05)'
+        />
       </div>
-      <div className="relative z-10">
+      <div className="relative z-10 min-h-screen">
         {children}
       </div>
     </div>
@@ -76,14 +52,18 @@ export function BackgroundDots({
   dotColor?: string
 }) {
   return (
-    <div 
-      className={cn("relative w-full", className)}
-      style={{
-        backgroundImage: `radial-gradient(circle, ${dotColor} ${dotSize}px, transparent ${dotSize}px)`,
-        backgroundSize: "20px 20px",
-      }}
-    >
-      <div className="relative z-10">
+    <div className={cn("relative w-full min-h-screen", className)}>
+      {/* Animated Squares Background */}
+      <div className="fixed inset-0 h-screen w-screen pointer-events-none z-0">
+        <Squares 
+          speed={0.3} 
+          squareSize={30}
+          direction='diagonal'
+          borderColor='rgba(255, 255, 255, 0.08)'
+          hoverFillColor='rgba(255, 255, 255, 0.03)'
+        />
+      </div>
+      <div className="relative z-10 min-h-screen">
         {children}
       </div>
     </div>

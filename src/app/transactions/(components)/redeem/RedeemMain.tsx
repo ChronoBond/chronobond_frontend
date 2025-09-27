@@ -4,13 +4,13 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import * as fcl from "@onflow/fcl";
 import { useFlowCurrentUser } from "@onflow/kit";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Badge } from "./ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Loader2, Clock, DollarSign, Bell, RefreshCw, Wallet } from "lucide-react";
 import { bondRedemptionService, type BondMaturityInfo } from "@/lib/bond-redemption-service";
 
-export default function BondRedemption() {
+const RedeemMain = () => {
   const { user } = useFlowCurrentUser();
   const [activeTab, setActiveTab] = useState<'redeemable' | 'pending' | 'notifications'>('redeemable');
   
@@ -41,7 +41,7 @@ export default function BondRedemption() {
     
     try {
       setLoading(true);
-      console.log("🔍 Loading bond redemption data...");
+      /* console.log("🔍 Loading bond redemption data..."); */
 
       // Load all bond data in parallel
       const [redeemable, pending, nearing, totalValue] = await Promise.all([
@@ -56,9 +56,9 @@ export default function BondRedemption() {
       setNearingMaturity(nearing);
       setTotalRedeemableValue(totalValue);
 
-      console.log(`📊 Loaded: ${redeemable.length} redeemable, ${pending.length} pending, ${nearing.length} nearing maturity`);
+      /* console.log(`📊 Loaded: ${redeemable.length} redeemable, ${pending.length} pending, ${nearing.length} nearing maturity`); */
     } catch (error) {
-      console.error("Error loading bond data:", error);
+      /* console.error("Error loading bond data:", error); */
       setError("Failed to load bond data");
     } finally {
       setLoading(false);
@@ -97,7 +97,7 @@ export default function BondRedemption() {
         bond !== null && !bond.isMatured
       );
     } catch (error) {
-      console.error("Error getting pending bonds:", error);
+      /* console.error("Error getting pending bonds:", error); */
       return [];
     }
   };
@@ -120,13 +120,13 @@ export default function BondRedemption() {
     setError(null);
 
     try {
-      console.log(`💰 Redeeming bond ${bond.bondID}...`);
+      /* console.log(`💰 Redeeming bond ${bond.bondID}...`); */
       
       const result = await bondRedemptionService.redeemBond(bond.bondID.toString());
 
       if (result.success) {
         setSuccess(`✅ Successfully redeemed Bond #${bond.bondID} for ${bondRedemptionService.formatCurrency(bond.expectedTotal)}!`);
-        console.log("✅ Bond redeemed successfully");
+        /* console.log("✅ Bond redeemed successfully"); */
         await loadBondData(); // Refresh data
 
         // Auto-clear success after 3 seconds
@@ -137,7 +137,7 @@ export default function BondRedemption() {
         throw new Error(result.error || "Redemption failed");
       }
     } catch (error: unknown) {
-      console.error("❌ Error redeeming bond:", error);
+      /* console.error("❌ Error redeeming bond:", error); */
       setError(error instanceof Error ? `❌ Failed to redeem bond: ${error.message}` : '❌ Failed to redeem bond');
     } finally {
       setRedeeming(prev => ({ ...prev, [bond.bondID]: false }));
@@ -157,7 +157,7 @@ export default function BondRedemption() {
     setError(null);
 
     try {
-      console.log(`💰 Redeeming ${redeemableBonds.length} bonds...`);
+      /* console.log(`💰 Redeeming ${redeemableBonds.length} bonds...`); */
       
       const redemptionPromises = redeemableBonds.map(bond => 
         bondRedemptionService.redeemBond(bond.bondID.toString())
@@ -177,7 +177,7 @@ export default function BondRedemption() {
 
       await loadBondData(); // Refresh data
     } catch (error: unknown) {
-      console.error("❌ Error redeeming bonds:", error);
+      /* console.error("❌ Error redeeming bonds:", error); */
       setError(error instanceof Error ? `❌ Failed to redeem bonds: ${error.message}` : '❌ Failed to redeem bonds');
     } finally {
       setLoading(false);
@@ -523,7 +523,9 @@ export default function BondRedemption() {
       )}
     </div>
   );
-}
+};
+
+export default RedeemMain;
 
 // Summary Card Component
 const SummaryCard = ({ title, value, count, color }: {
@@ -630,4 +632,4 @@ const BondPendingCard = ({ bond }: {
       </div>
     </motion.div>
   );
-}; 
+};

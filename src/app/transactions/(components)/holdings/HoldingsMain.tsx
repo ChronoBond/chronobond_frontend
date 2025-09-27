@@ -1,14 +1,13 @@
- 
 "use client";
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useFlowCurrentUser } from "@onflow/kit";
-import { Button } from "./ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
-import { Input } from "./ui/input";
-import { Badge } from "./ui/badge";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "./ui/table";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Clock, TrendingUp, Tag, Loader2, Wallet, DollarSign, X, CheckCircle } from "lucide-react";
 import { chronoBondService, type BondData, type BondDetails } from "@/lib/chronobond-service";
 import { bondRedemptionService } from "@/lib/bond-redemption-service";
@@ -23,7 +22,7 @@ interface ListingStatus {
   txId: string | null
 }
 
-export default function HoldingsView() {
+const HoldingsMain = () => {
   const { user } = useFlowCurrentUser();
   const [selectedBond, setSelectedBond] = useState<BondData | null>(null);
   const [selectedBondDetails, setSelectedBondDetails] = useState<BondDetails | null>(null);
@@ -57,7 +56,7 @@ export default function HoldingsView() {
       const userBonds = await chronoBondService.getUserBonds(user.addr);
       setBonds(userBonds);
     } catch (error) {
-      console.error("Error loading bonds:", error);
+      /* console.error("Error loading bonds:", error); */
       setBonds([]);
     } finally {
       setIsLoading(false);
@@ -73,7 +72,7 @@ export default function HoldingsView() {
         const details = await chronoBondService.getBondDetails(user.addr, bond.id.toString());
         setSelectedBondDetails(details);
       } catch (error) {
-        console.error("Error getting bond details:", error);
+        /* console.error("Error getting bond details:", error); */
       }
     }
     
@@ -126,7 +125,7 @@ export default function HoldingsView() {
       }
 
     } catch (error: unknown) {
-      console.error("Listing failed:", error);
+      /* console.error("Listing failed:", error); */
       
       setListingState({
         state: 'error',
@@ -170,19 +169,19 @@ export default function HoldingsView() {
     if (!confirm(confirmMessage)) return;
 
     try {
-      console.log(`💰 Redeeming bond ${bond.id}...`);
+      /* console.log(`💰 Redeeming bond ${bond.id}...`); */
       
       const result = await bondRedemptionService.redeemBond(bond.id.toString());
 
       if (result.success) {
         alert(`✅ Successfully redeemed Bond #${bond.id}!`);
-        console.log("✅ Bond redeemed successfully");
+        /* console.log("✅ Bond redeemed successfully"); */
         await loadUserBonds(); // Refresh the holdings
       } else {
         throw new Error(result.error || "Redemption failed");
       }
     } catch (error: unknown) {
-      console.error("❌ Error redeeming bond:", error);
+      /* console.error("❌ Error redeeming bond:", error); */
       alert(error instanceof Error ? `❌ Failed to redeem bond: ${error.message}` : '❌ Failed to redeem bond');
     }
   };
@@ -421,12 +420,12 @@ export default function HoldingsView() {
 
       {/* Listing Modal */}
       {showListingForm && selectedBond && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 modal-mobile">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.2 }}
-            className="bg-card/95 backdrop-blur-xl p-6 rounded-lg max-w-md w-full mx-4 border border-border/40 shadow-2xl"
+            className="bg-card/95 backdrop-blur-xl p-4 sm:p-6 rounded-lg max-w-md w-full border border-border/40 shadow-2xl modal-content-mobile"
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-semibold gradient-text">List Bond for Sale</h3>
@@ -569,4 +568,6 @@ export default function HoldingsView() {
       )}
     </div>
   );
-} 
+};
+
+export default HoldingsMain;

@@ -62,7 +62,7 @@ export class BondRedemptionService {
     `;
 
     try {
-      console.log(`🔍 Checking maturity for bond ${bondID}...`);
+      /* console.log(`🔍 Checking maturity for bond ${bondID}...`); */
       const result = await fcl.query({
         cadence: script,
         args: (arg: any, t: any) => [
@@ -71,11 +71,11 @@ export class BondRedemptionService {
         ]
       });
       
-      console.log(`📊 Bond ${bondID} maturity info:`, result);
+      /* console.log(`📊 Bond ${bondID} maturity info:`, result); */
       
       // Check if result is valid
       if (!result || typeof result !== 'object') {
-        console.error(`Invalid result for bond ${bondID}:`, result);
+        /* console.error(`Invalid result for bond ${bondID}:`, result); */
         return null;
       }
       
@@ -95,13 +95,13 @@ export class BondRedemptionService {
       
       // Validate that we got reasonable values
       if (bondInfo.bondID === 0 || bondInfo.principal === 0) {
-        console.error(`Invalid bond data for bond ${bondID}:`, bondInfo);
+        /* console.error(`Invalid bond data for bond ${bondID}:`, bondInfo); */
         return null;
       }
       
       return bondInfo;
     } catch (error) {
-      console.error("Error checking bond maturity:", error);
+      /* console.error("Error checking bond maturity:", error); */
       return null;
     }
   }
@@ -153,14 +153,14 @@ export class BondRedemptionService {
     `;
 
     try {
-      console.log(`💰 Redeeming bond ${bondID}...`);
+      /* console.log(`💰 Redeeming bond ${bondID}...`); */
       
       const transactionId = await fcl.mutate({
         cadence: transaction,
         args: (arg: any, t: any) => [arg(bondID, t.UInt64)],
-        proposer: fcl.authz,
-        authorizations: [fcl.authz],
-        payer: fcl.authz,
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
         limit: 9999
       });
 

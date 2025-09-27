@@ -6,9 +6,9 @@ import {
   BackgroundDots,
 } from "@/components/ui/background-grid";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
-import PageMain from "@/app/(components)/PageMain";
+import ChronoSplitMain from "@/app/split/(components)/ChronoSplitMain";
 
-export default function Home() {
+export default function SplitPage() {
   return (
     <SmoothScrollProvider>
       <BackgroundDots className="min-h-screen bg-black text-white frosted-glass-bg">
@@ -32,7 +32,8 @@ export default function Home() {
         {/* Main Content */}
         <div className="relative pt-16 sm:pt-20">
           <div className="relative z-10">
-            <PageMain />
+            {/* Import and render the comprehensive ChronoSplitMain component */}
+            <ChronoSplitMain />
           </div>
         </div>
       </BackgroundDots>

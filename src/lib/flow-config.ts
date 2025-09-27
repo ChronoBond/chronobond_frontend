@@ -7,6 +7,15 @@ export const initializeFlowTestnet = () => {
     "app.detail.title": "ChronoBond",
     "app.detail.icon": "https://your-app-icon.com/icon.png",
     
+    // WalletConnect Configuration
+    "fcl.walletConnect.projectId": process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_WALLETCONNECT_PROJECT_ID",
+    "fcl.walletConnect.requiredMethods": ["eth_sendTransaction", "eth_signTransaction", "eth_sign"],
+    "fcl.walletConnect.optionalMethods": ["eth_accounts", "eth_requestAccounts"],
+    
+    // Alternative wallet discovery for better compatibility
+    "discovery.wallet.method": "POP/RPC",
+    "discovery.wallet.method.default": "POP/RPC",
+    
     // Standard contracts on testnet
     "0xNonFungibleToken": "0x631e88ae7f1d7c20",
     "0xFungibleToken": "0x9a0766d93b6608b7",

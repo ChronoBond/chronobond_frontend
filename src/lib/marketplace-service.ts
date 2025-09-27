@@ -76,7 +76,7 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error listing bond for sale:", error);
+      /* console.error("Error listing bond for sale:", error); */
       return {
         status: 0,
         errorMessage: error.message || "Failed to list bond for sale"
@@ -136,7 +136,7 @@ export class MarketplaceService {
     `;
 
     try {
-      console.log("🔍 Querying marketplace listings from blockchain...");
+      /* console.log("🔍 Querying marketplace listings from blockchain..."); */
       const result = await fcl.query({
         cadence: script,
         args: (arg: any, t: any) => [
@@ -144,10 +144,10 @@ export class MarketplaceService {
         ]
       });
       
-      console.log(`📊 Found ${result.length} listings from blockchain`);
+      /* console.log(`📊 Found ${result.length} listings from blockchain`); */
       return result || [];
     } catch (error) {
-      console.error("Error getting marketplace listings:", error);
+      /* console.error("Error getting marketplace listings:", error); */
       return [];
     }
   }
@@ -212,7 +212,7 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error purchasing bond:", error);
+      /* console.error("Error purchasing bond:", error); */
       return {
         status: 0,
         errorMessage: error.message || "Failed to purchase bond"
@@ -263,7 +263,7 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error withdrawing bond from sale:", error);
+      /* console.error("Error withdrawing bond from sale:", error); */
       return {
         status: 0,
         errorMessage: error.message || "Failed to withdraw bond from sale"
@@ -309,7 +309,7 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error setting up marketplace:", error);
+      /* console.error("Error setting up marketplace:", error); */
       return {
         status: 0,
         errorMessage: error.message || "Failed to setup marketplace"

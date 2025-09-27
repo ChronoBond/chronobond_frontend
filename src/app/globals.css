@@ -3,40 +3,61 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Smooth Scroll and Scroll Snap */
+html {
+  scroll-behavior: smooth;
+}
+
+.smooth-scroll-container {
+  scroll-snap-type: y mandatory;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.scroll-snap-section {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96%;
-    --secondary-foreground: 222.2 84% 4.9%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96%;
-    --accent-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 3.9%;
+    --primary: 0 0% 9%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 0 0% 96.1%;
+    --secondary-foreground: 0 0% 9%;
+    --muted: 0 0% 96.1%;
+    --muted-foreground: 0 0% 45.1%;
+    --accent: 0 0% 96.1%;
+    --accent-foreground: 0 0% 9%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
-    --radius: 0.75rem;
+    --destructive-foreground: 0 0% 98%;
+    --border: 0 0% 89.8%;
+    --input: 0 0% 89.8%;
+    --ring: 0 0% 3.9%;
+    --radius: 0.5rem;
+    --chart-1: 12 76% 61%;
+    --chart-2: 173 58% 39%;
+    --chart-3: 197 37% 24%;
+    --chart-4: 43 74% 66%;
+    --chart-5: 27 87% 67%;
   }
 
   .dark {
-    /* Ultra-dark professional background */
+    /* Ultra-dark professional background with glassmorphism */
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
     
-    /* Card with subtle separation from background */
+    /* Glassmorphism card styling */
     --card: 222.2 47.4% 11.2%;
     --card-foreground: 210 40% 98%;
     
-    /* Popover styling */
+    /* Popover with glassmorphism */
     --popover: 222.2 47.4% 11.2%;
     --popover-foreground: 210 40% 98%;
     
@@ -64,6 +85,31 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 217.2 91.2% 59.8%;
+    --chart-1: 220 70% 50%;
+    --chart-2: 160 60% 45%;
+    --chart-3: 30 80% 55%;
+    --chart-4: 280 65% 60%;
+    --chart-5: 340 75% 55%;
+    
+    /* Frosted Glass Opacity Variables */
+    --glass-opacity-primary: 0.20;
+    --glass-opacity-secondary: 0.20;
+    --glass-opacity-tertiary: 0.10;
+    --glass-border-opacity: 0.25;
+    --glass-shadow-opacity: 0.3;
+    --glass-inset-highlight: 0.4;
+    --glass-inset-shadow: 0.1;
+    --glass-blur: 30px;
+    --glass-saturation: 120%;
+    --glass-brightness: 1.1;
+    
+    /* Hover state variables */
+    --glass-hover-blur: 35px;
+    --glass-hover-saturation: 140%;
+    --glass-hover-brightness: 1.15;
+    --glass-hover-shadow-opacity: 0.4;
+    --glass-hover-inset-highlight: 0.5;
+    --glass-hover-inset-shadow: 0.15;
   }
 }
 
@@ -94,10 +140,273 @@
   .app-container {
     @apply px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto;
   }
+
+  /* Ensure proper scrolling on mobile for navigation tabs */
+  .tab-navigation {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  }
+  
+  .tab-navigation::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+  }
+
+  /* Mobile navigation improvements */
+  .mobile-menu-backdrop {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  /* Mobile menu card styling */
+  .mobile-menu-card {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Prevent body scroll when mobile menu is open */
+  .menu-open {
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  /* Mobile modal improvements */
+  .modal-mobile {
+    /* Use 100dvh for dynamic viewport height on mobile */
+    min-height: 100dvh;
+    /* Ensure proper centering on mobile */
+    align-items: center;
+    justify-content: center;
+    /* Prevent modal from being cut off */
+    padding: 1rem;
+    /* Handle safe areas */
+    padding-top: max(1rem, env(safe-area-inset-top));
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+    padding-left: max(1rem, env(safe-area-inset-left));
+    padding-right: max(1rem, env(safe-area-inset-right));
+  }
+
+  /* Modal content mobile optimizations */
+  .modal-content-mobile {
+    /* Ensure modal doesn't exceed viewport */
+    max-height: calc(100dvh - 2rem);
+    /* Smooth scrolling for long content */
+    overflow-y: auto;
+    /* Better touch scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent horizontal overflow */
+    overflow-x: hidden;
+  }
+
+  /* Scrollbar hide utility */
+  .scrollbar-hide {
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar { /* WebKit */
+    width: 0;
+    height: 0;
+  }
+  
+  /* Mobile-first responsive utilities */
+  @screen sm {
+    .mobile-hidden {
+      @apply block;
+    }
+  }
+  
+  /* Ensure full height coverage */
+  .bg-pattern-full {
+    min-height: 100vh;
+    min-width: 100vw;
+  }
 }
 
 @layer components {
-  /* Grid background pattern */
+  /* Professional Frosted Glass Effect */
+  .glass {
+    @apply backdrop-blur-2xl border border-white/20 rounded-xl shadow-glass;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, calc(var(--glass-opacity-primary) - 0.05)), 
+      rgba(255, 255, 255, var(--glass-opacity-tertiary)));
+    backdrop-filter: blur(calc(var(--glass-blur) - 2px)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 2px)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    box-shadow: 
+      0 12px 40px 0 rgba(0, 0, 0, var(--glass-shadow-opacity)),
+      inset 0 1px 0 0 rgba(255, 255, 255, calc(var(--glass-inset-highlight) - 0.05)),
+      inset 0 -1px 0 0 rgba(255, 255, 255, var(--glass-inset-shadow));
+  }
+  
+  .glass-hover {
+    @apply hover:shadow-glass-hover transition-all duration-300 ease-out;
+    backdrop-filter: blur(28px) saturate(180%) brightness(1.15);
+    -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.15);
+  }
+  
+  .glass-hover:hover {
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, var(--glass-opacity-primary)), 
+      rgba(255, 255, 255, var(--glass-opacity-secondary)));
+  }
+  
+  .glass-card {
+    @apply glass glass-hover;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.1) 0%, 
+      rgba(255, 255, 255, 0.05) 50%, 
+      rgba(255, 255, 255, 0.02) 100%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  
+  .glass-button {
+    @apply text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105;
+    background: linear-gradient(135deg, 
+      rgba(6, 182, 212, 0.8) 0%, 
+      rgba(59, 130, 246, 0.9) 50%, 
+      rgba(139, 92, 246, 0.8) 100%);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 
+      0 8px 32px 0 rgba(6, 182, 212, 0.3),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .glass-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(255, 255, 255, 0.2), 
+      transparent);
+    transition: left 0.5s;
+  }
+  
+  .glass-button:hover::before {
+    left: 100%;
+  }
+  
+  .glass-button:hover {
+    backdrop-filter: blur(15px) saturate(150%);
+    -webkit-backdrop-filter: blur(15px) saturate(150%);
+    box-shadow: 
+      0 12px 40px 0 rgba(6, 182, 212, 0.4),
+      inset 0 1px 0 0 rgba(255, 255, 255, 0.4);
+  }
+  
+  .glass-input {
+    @apply backdrop-blur-sm border border-white/25 rounded-lg px-4 py-3 text-white placeholder-white/50 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 transition-all duration-300;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, calc(var(--glass-opacity-secondary) - 0.03)), 
+      rgba(255, 255, 255, calc(var(--glass-opacity-tertiary) - 0.04)));
+    backdrop-filter: blur(calc(var(--glass-blur) - 10px)) saturate(var(--glass-saturation));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 10px)) saturate(var(--glass-saturation));
+    box-shadow: 
+      inset 0 1px 0 0 rgba(255, 255, 255, calc(var(--glass-inset-highlight) - 0.2)),
+      0 4px 16px 0 rgba(0, 0, 0, calc(var(--glass-shadow-opacity) - 0.15));
+  }
+  
+  /* Professional Frosted Glass Effect */
+  .frosted-glass {
+    @apply relative overflow-hidden rounded-xl;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, var(--glass-opacity-primary)) 0%, 
+      rgba(255, 255, 255, var(--glass-opacity-secondary)) 50%, 
+      rgba(255, 255, 255, var(--glass-opacity-tertiary)) 100%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturation)) brightness(var(--glass-brightness));
+    border: 1px solid rgba(255, 255, 255, var(--glass-border-opacity));
+    box-shadow: 
+      0 12px 40px 0 rgba(0, 0, 0, var(--glass-shadow-opacity)),
+      inset 0 1px 0 0 rgba(255, 255, 255, var(--glass-inset-highlight)),
+      inset 0 -1px 0 0 rgba(255, 255, 255, var(--glass-inset-shadow));
+    will-change: transform, backdrop-filter;
+    transform: translateZ(0);
+  }
+  
+  .frosted-glass::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, 
+      rgba(255, 255, 255, 0.15) 0%, 
+      transparent 30%, 
+      transparent 70%, 
+      rgba(255, 255, 255, 0.08) 100%);
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  
+  .frosted-glass:hover {
+    backdrop-filter: blur(var(--glass-hover-blur)) saturate(var(--glass-hover-saturation)) brightness(var(--glass-hover-brightness));
+    -webkit-backdrop-filter: blur(var(--glass-hover-blur)) saturate(var(--glass-hover-saturation)) brightness(var(--glass-hover-brightness));
+    box-shadow: 
+      0 16px 50px 0 rgba(0, 0, 0, var(--glass-hover-shadow-opacity)),
+      inset 0 1px 0 0 rgba(255, 255, 255, var(--glass-hover-inset-highlight)),
+      inset 0 -1px 0 0 rgba(255, 255, 255, var(--glass-hover-inset-shadow));
+    transform: translateY(-1px);
+  }
+  
+  /* Frosted Glass Variants with Different Opacity Levels */
+  .frosted-glass-light {
+    @apply frosted-glass;
+    --glass-opacity-primary: 0.15;
+    --glass-opacity-secondary: 0.1;
+    --glass-opacity-tertiary: 0.05;
+    --glass-border-opacity: 0.15;
+    --glass-shadow-opacity: 0.2;
+    --glass-inset-highlight: 0.25;
+    --glass-inset-shadow: 0.05;
+  }
+  
+  .frosted-glass-medium {
+    @apply frosted-glass;
+    --glass-opacity-primary: 0.25;
+    --glass-opacity-secondary: 0.18;
+    --glass-opacity-tertiary: 0.12;
+    --glass-border-opacity: 0.25;
+    --glass-shadow-opacity: 0.3;
+    --glass-inset-highlight: 0.4;
+    --glass-inset-shadow: 0.1;
+  }
+  
+  .frosted-glass-heavy {
+    @apply frosted-glass;
+    --glass-opacity-primary: 0.35;
+    --glass-opacity-secondary: 0.28;
+    --glass-opacity-tertiary: 0.22;
+    --glass-border-opacity: 0.35;
+    --glass-shadow-opacity: 0.4;
+    --glass-inset-highlight: 0.5;
+    --glass-inset-shadow: 0.15;
+  }
+  
+  @keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+  }
+  
+  /* Advanced Background Patterns for Liquid Glass */
   .grid-bg {
     background-image: 
       linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
@@ -105,10 +414,46 @@
     background-size: 50px 50px;
   }
   
-  /* Dot background pattern */
+  /* Enhanced Dot background with liquid glass effect */
   .dot-bg {
-    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-image: 
+      radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+      radial-gradient(rgba(6, 182, 212, 0.03) 1px, transparent 1px);
+    background-size: 20px 20px, 40px 40px;
+    background-position: 0 0, 10px 10px;
+  }
+  
+  /* Professional Frosted Glass Background */
+  .frosted-glass-bg {
+    position: relative;
+    background: linear-gradient(135deg, 
+      rgba(6, 182, 212, 0.03) 0%, 
+      rgba(59, 130, 246, 0.02) 25%, 
+      rgba(139, 92, 246, 0.03) 50%, 
+      rgba(236, 72, 153, 0.02) 75%, 
+      rgba(6, 182, 212, 0.03) 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
+  }
+  
+  .frosted-glass-bg::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(6, 182, 212, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(139, 92, 246, 0.06) 0%, transparent 50%),
+      radial-gradient(circle at 40% 40%, rgba(59, 130, 246, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   
   /* Enhanced spotlight effect */
@@ -218,4 +563,15 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

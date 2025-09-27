@@ -1,176 +1,212 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { motion } from "framer-motion"
-import { useFlowCurrentUser } from "@onflow/kit"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select } from "@/components/ui/select"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Coins, Clock, TrendingUp, Loader2, Shield, AlertCircle, DollarSign, CheckCircle, Wallet } from "lucide-react"
-import { MintBondParams, YieldStrategy } from "@/types/chronobond"
-import { chronoBondService } from "@/lib/chronobond-service"
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { useFlowCurrentUser } from "@onflow/kit";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select } from "@/components/ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Coins,
+  Clock,
+  TrendingUp,
+  Loader2,
+  Shield,
+  AlertCircle,
+  DollarSign,
+  CheckCircle,
+  Wallet,
+} from "lucide-react";
+import { MintBondParams, YieldStrategy } from "@/types/chronobond";
+import { chronoBondService } from "@/lib/chronobond-service";
 
 const YIELD_STRATEGIES: YieldStrategy[] = [
   {
     name: "FlowStaking",
     description: "Low-risk staking strategy with consistent yields",
     expectedYield: "5.0%",
-    riskLevel: "LOW"
+    riskLevel: "LOW",
   },
   {
     name: "DeFiYield",
     description: "Medium-risk DeFi strategy with higher yields",
     expectedYield: "8.5%",
-    riskLevel: "MEDIUM"
+    riskLevel: "MEDIUM",
   },
   {
     name: "HighYield",
     description: "High-risk strategy for maximum returns",
     expectedYield: "15.0%",
-    riskLevel: "HIGH"
-  }
-]
+    riskLevel: "HIGH",
+  },
+];
 
 const DURATION_OPTIONS = [
   { value: 0.000001, label: "1 Day", multiplier: 1 },
   { value: 30, label: "30 Days", multiplier: 1.0 },
   { value: 90, label: "3 Months", multiplier: 1.2 },
   { value: 180, label: "6 Months", multiplier: 1.5 },
-  { value: 365, label: "1 Year", multiplier: 2.0 }
-]
+  { value: 365, label: "1 Year", multiplier: 2.0 },
+];
 
 // Real transaction states
-type TransactionState = 'idle' | 'checking' | 'setup' | 'minting' | 'success' | 'error'
+type TransactionState =
+  | "idle"
+  | "checking"
+  | "setup"
+  | "minting"
+  | "success"
+  | "error";
 
 interface TransactionStatus {
-  state: TransactionState
-  statusString: string
-  txId: string | null
+  state: TransactionState;
+  statusString: string;
+  txId: string | null;
 }
 
-export default function BondMinting() {
-  const { user } = useFlowCurrentUser()
+const MintMain = () => {
+  const { user } = useFlowCurrentUser();
   const [formData, setFormData] = useState<MintBondParams>({
     strategyID: "FlowStaking",
     amount: "",
-    lockupPeriod: 30
-  })
+    lockupPeriod: 30,
+  });
 
   const [txStatus, setTxStatus] = useState<TransactionStatus>({
-    state: 'idle',
-    statusString: '',
-    txId: null
-  })
+    state: "idle",
+    statusString: "",
+    txId: null,
+  });
 
-  const handleInputChange = (field: keyof MintBondParams, value: string | number) => {
-    setFormData(prev => ({
+  const handleInputChange = (
+    field: keyof MintBondParams,
+    value: string | number
+  ) => {
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
-    }))
-  }
+      [field]: value,
+    }));
+  };
 
   // Complete mint bond flow using the service
   const handleMintBond = async () => {
     if (!user?.loggedIn) {
-      alert("Please connect your wallet first")
-      return
+      alert("Please connect your wallet first");
+      return;
     }
 
     if (!formData.amount || parseFloat(formData.amount) <= 0) {
-      alert("Please enter a valid amount")
-      return
+      alert("Please enter a valid amount");
+      return;
     }
 
     try {
       // Step 1: Check account setup
       setTxStatus({
-        state: 'checking',
-        statusString: 'Checking account setup...',
-        txId: null
-      })
+        state: "checking",
+        statusString: "Checking account setup...",
+        txId: null,
+      });
 
-      const isSetup = await chronoBondService.checkAccountSetup(user.addr || "")
+      const isSetup = await chronoBondService.checkAccountSetup(
+        user.addr || ""
+      );
 
       if (!isSetup) {
         // Step 2: Setup account if needed
         setTxStatus({
-          state: 'setup',
-          statusString: 'Setting up account for ChronoBond...',
-          txId: null
-        })
+          state: "setup",
+          statusString: "Setting up account for ChronoBond...",
+          txId: null,
+        });
 
-        const setupResult = await chronoBondService.setupAccount()
+        const setupResult = await chronoBondService.setupAccount();
         if (!setupResult.success) {
-          throw new Error(setupResult.error || "Failed to setup account")
+          throw new Error(setupResult.error || "Failed to setup account");
         }
       }
 
       // Step 3: Mint the bond
       setTxStatus({
-        state: 'minting',
-        statusString: 'Minting bond...',
-        txId: null
-      })
+        state: "minting",
+        statusString: "Minting bond...",
+        txId: null,
+      });
 
-      const lockupSeconds = (formData.lockupPeriod * 24 * 60 * 60).toString()
+      const lockupSeconds = (formData.lockupPeriod * 24 * 60 * 60).toString();
       const mintResult = await chronoBondService.mintBond(
         formData.strategyID,
         formData.amount || "0",
         lockupSeconds
-      )
+      );
 
       if (!mintResult.success) {
-        throw new Error(mintResult.error || "Failed to mint bond")
+        throw new Error(mintResult.error || "Failed to mint bond");
       }
 
       // Step 4: Success
       setTxStatus({
-        state: 'success',
-        statusString: 'Bond minted successfully!',
-        txId: mintResult.transactionId || null
-      })
+        state: "success",
+        statusString: "Bond minted successfully!",
+        txId: mintResult.transactionId || null,
+      });
 
       // Reset form after success
       setTimeout(() => {
         setFormData({
           strategyID: "FlowStaking",
           amount: "",
-          lockupPeriod: 30
-        })
+          lockupPeriod: 30,
+        });
         setTxStatus({
-          state: 'idle',
-          statusString: '',
-          txId: null
-        })
-      }, 5000)
-
+          state: "idle",
+          statusString: "",
+          txId: null,
+        });
+      }, 5000);
     } catch (error: unknown) {
-      console.error("Error in mint bond flow:", error)
+      /* console.error("Error in mint bond flow:", error); */
 
       setTxStatus({
-        state: 'error',
-        statusString: error instanceof Error ? error.message : 'Transaction failed',
-        txId: null
-      })
+        state: "error",
+        statusString:
+          error instanceof Error ? error.message : "Transaction failed",
+        txId: null,
+      });
 
       // Auto-clear error after 5 seconds
       setTimeout(() => {
         setTxStatus({
-          state: 'idle',
-          statusString: '',
-          txId: null
-        })
-      }, 5000)
+          state: "idle",
+          statusString: "",
+          txId: null,
+        });
+      }, 5000);
     }
-  }
+  };
 
-  const selectedStrategy = YIELD_STRATEGIES.find(s => s.name === formData.strategyID)
-  const selectedDuration = DURATION_OPTIONS.find(d => d.value === formData.lockupPeriod)
-  const estimatedYield = formData.amount ?
-    (parseFloat(formData.amount) * parseFloat(selectedStrategy?.expectedYield || "0") / 100 * (selectedDuration?.multiplier || 1)).toFixed(4) :
-    "0.0000"
+  const selectedStrategy = YIELD_STRATEGIES.find(
+    (s) => s.name === formData.strategyID
+  );
+  const selectedDuration = DURATION_OPTIONS.find(
+    (d) => d.value === formData.lockupPeriod
+  );
+  const estimatedYield = formData.amount
+    ? (
+        ((parseFloat(formData.amount) *
+          parseFloat(selectedStrategy?.expectedYield || "0")) /
+          100) *
+        (selectedDuration?.multiplier || 1)
+      ).toFixed(4)
+    : "0.0000";
 
   if (!user?.loggedIn) {
     return (
@@ -185,15 +221,18 @@ export default function BondMinting() {
               <div className="mb-6 mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
                 <Wallet className="w-10 h-10 text-primary" />
               </div>
-              <h3 className="text-2xl font-bold mb-4 gradient-text">Connect Wallet to Mint Bonds</h3>
+              <h3 className="text-2xl font-bold mb-4 gradient-text">
+                Connect Wallet to Mint Bonds
+              </h3>
               <p className="text-muted-foreground mb-6">
-                Please connect your Flow wallet to start minting time-locked bonds
+                Please connect your Flow wallet to start minting time-locked
+                bonds
               </p>
             </CardContent>
           </Card>
         </motion.div>
       </div>
-    )
+    );
   }
 
   return (
@@ -211,7 +250,9 @@ export default function BondMinting() {
                 <Coins className="w-6 h-6 text-primary-foreground" />
               </div>
               <div>
-                <CardTitle className="text-3xl font-bold gradient-text">Mint ChronoBond</CardTitle>
+                <CardTitle className="text-3xl font-bold gradient-text">
+                  Mint ChronoBond
+                </CardTitle>
                 <CardDescription className="text-lg">
                   Create time-locked bonds with guaranteed yields
                 </CardDescription>
@@ -239,7 +280,9 @@ export default function BondMinting() {
                         type="number"
                         placeholder="Enter amount"
                         value={formData.amount}
-                        onChange={(e) => handleInputChange('amount', e.target.value)}
+                        onChange={(e) =>
+                          handleInputChange("amount", e.target.value)
+                        }
                         className="pl-10 pr-16 text-lg h-12"
                         min="0"
                         step="0.01"
@@ -256,7 +299,9 @@ export default function BondMinting() {
                     </label>
                     <Select
                       value={formData.strategyID}
-                      onValueChange={(value) => handleInputChange('strategyID', value)}
+                      onValueChange={(value) =>
+                        handleInputChange("strategyID", value)
+                      }
                     >
                       {YIELD_STRATEGIES.map((strategy) => (
                         <option key={strategy.name} value={strategy.name}>
@@ -272,10 +317,15 @@ export default function BondMinting() {
                     </label>
                     <Select
                       value={formData.lockupPeriod.toString()}
-                      onValueChange={(value) => handleInputChange('lockupPeriod', parseInt(value))}
+                      onValueChange={(value) =>
+                        handleInputChange("lockupPeriod", parseInt(value))
+                      }
                     >
                       {DURATION_OPTIONS.map((option) => (
-                        <option key={option.value} value={option.value.toString()}>
+                        <option
+                          key={option.value}
+                          value={option.value.toString()}
+                        >
                           {option.label}
                         </option>
                       ))}
@@ -290,42 +340,45 @@ export default function BondMinting() {
                 >
                   <Button
                     onClick={handleMintBond}
-                    disabled={!formData.amount || parseFloat(formData.amount) <= 0 ||
-                      ['checking', 'setup', 'minting'].includes(txStatus.state)}
+                    disabled={
+                      !formData.amount ||
+                      parseFloat(formData.amount) <= 0 ||
+                      ["checking", "setup", "minting"].includes(txStatus.state)
+                    }
                     className="w-full btn-primary h-12 text-lg"
                     size="lg"
                   >
-                    {txStatus.state === 'checking' && (
+                    {txStatus.state === "checking" && (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin mr-2" />
                         Checking Account...
                       </>
                     )}
-                    {txStatus.state === 'setup' && (
+                    {txStatus.state === "setup" && (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin mr-2" />
                         Setting Up Account...
                       </>
                     )}
-                    {txStatus.state === 'minting' && (
+                    {txStatus.state === "minting" && (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin mr-2" />
                         Minting Bond...
                       </>
                     )}
-                    {txStatus.state === 'idle' && (
+                    {txStatus.state === "idle" && (
                       <>
                         <Coins className="w-5 h-5 mr-2" />
                         Mint Bond
                       </>
                     )}
-                    {txStatus.state === 'success' && (
+                    {txStatus.state === "success" && (
                       <>
                         <CheckCircle className="w-5 h-5 mr-2" />
                         Bond Minted!
                       </>
                     )}
-                    {txStatus.state === 'error' && (
+                    {txStatus.state === "error" && (
                       <>
                         <AlertCircle className="w-5 h-5 mr-2" />
                         Retry
@@ -351,8 +404,11 @@ export default function BondMinting() {
                       </CardTitle>
                       <Badge
                         variant={
-                          selectedStrategy?.riskLevel === 'LOW' ? 'success' :
-                            selectedStrategy?.riskLevel === 'MEDIUM' ? 'warning' : 'error'
+                          selectedStrategy?.riskLevel === "LOW"
+                            ? "success"
+                            : selectedStrategy?.riskLevel === "MEDIUM"
+                            ? "warning"
+                            : "error"
                         }
                         className="w-fit"
                       >
@@ -392,18 +448,26 @@ export default function BondMinting() {
                           <div className="text-2xl font-bold text-primary">
                             {formData.amount || "0.00"}
                           </div>
-                          <div className="text-xs text-muted-foreground">Principal</div>
+                          <div className="text-xs text-muted-foreground">
+                            Principal
+                          </div>
                         </div>
                         <div className="text-center p-3 bg-muted/30 rounded-lg">
                           <div className="text-2xl font-bold text-success">
                             +{estimatedYield}
                           </div>
-                          <div className="text-xs text-muted-foreground">Est. Yield</div>
+                          <div className="text-xs text-muted-foreground">
+                            Est. Yield
+                          </div>
                         </div>
                       </div>
                       <div className="text-center p-4 bg-gradient-to-r from-success/10 to-primary/10 rounded-lg border border-success/20">
                         <div className="text-3xl font-bold gradient-text mb-1">
-                          {(parseFloat(formData.amount || "0") + parseFloat(estimatedYield)).toFixed(4)} FLOW
+                          {(
+                            parseFloat(formData.amount || "0") +
+                            parseFloat(estimatedYield)
+                          ).toFixed(4)}{" "}
+                          FLOW
                         </div>
                         <div className="text-sm text-muted-foreground">
                           Total at Maturity ({selectedDuration?.label})
@@ -421,17 +485,24 @@ export default function BondMinting() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3 }}
-                className={`p-4 rounded-lg border ${txStatus.state === 'success' ? 'bg-success/10 text-success border-success/20' :
-                    txStatus.state === 'error' ? 'bg-error/10 text-error border-error/20' :
-                      'bg-primary/10 text-primary border-primary/20'
-                  }`}
+                className={`p-4 rounded-lg border ${
+                  txStatus.state === "success"
+                    ? "bg-success/10 text-success border-success/20"
+                    : txStatus.state === "error"
+                    ? "bg-error/10 text-error border-error/20"
+                    : "bg-primary/10 text-primary border-primary/20"
+                }`}
               >
                 <div className="flex items-center gap-3">
-                  {['checking', 'setup', 'minting'].includes(txStatus.state) && (
-                    <Loader2 className="w-5 h-5 animate-spin" />
+                  {["checking", "setup", "minting"].includes(
+                    txStatus.state
+                  ) && <Loader2 className="w-5 h-5 animate-spin" />}
+                  {txStatus.state === "success" && (
+                    <CheckCircle className="w-5 h-5" />
                   )}
-                  {txStatus.state === 'success' && <CheckCircle className="w-5 h-5" />}
-                  {txStatus.state === 'error' && <AlertCircle className="w-5 h-5" />}
+                  {txStatus.state === "error" && (
+                    <AlertCircle className="w-5 h-5" />
+                  )}
                   <div>
                     <div className="font-semibold">{txStatus.statusString}</div>
                     {txStatus.txId && (
@@ -447,5 +518,7 @@ export default function BondMinting() {
         </Card>
       </motion.div>
     </div>
-  )
-} 
+  );
+};
+
+export default MintMain;

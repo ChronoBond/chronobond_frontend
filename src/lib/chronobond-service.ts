@@ -53,7 +53,7 @@ export class ChronoBondService {
       });
       return result;
     } catch (error) {
-      console.error("Error checking account setup:", error);
+      /* console.error("Error checking account setup:", error); */
       return false;
     }
   }
@@ -75,7 +75,7 @@ export class ChronoBondService {
       await fcl.tx(transactionId).onceSealed();
       return { success: true, transactionId };
     } catch (error: any) {
-      console.error("Error setting up account:", error);
+      /* console.error("Error setting up account:", error); */
       return { success: false, error: error.message || "Failed to setup account" };
     }
   }
@@ -105,7 +105,7 @@ export class ChronoBondService {
       await fcl.tx(transactionId).onceSealed();
       return { success: true, transactionId };
     } catch (error: any) {
-      console.error("Error minting bond:", error);
+      /* console.error("Error minting bond:", error); */
       return { success: false, error: error.message || "Failed to mint bond" };
     }
   }
@@ -121,7 +121,7 @@ export class ChronoBondService {
       });
       return result || [];
     } catch (error) {
-      console.error("Error getting user bonds:", error);
+      /* console.error("Error getting user bonds:", error); */
       return [];
     }
   }
@@ -140,7 +140,7 @@ export class ChronoBondService {
       });
       return result;
     } catch (error) {
-      console.error("Error getting bond details:", error);
+      /* console.error("Error getting bond details:", error); */
       return null;
     }
   }
@@ -166,7 +166,7 @@ export class ChronoBondService {
       });
       return result;
     } catch (error) {
-      console.error("Error checking marketplace setup:", error);
+      /* console.error("Error checking marketplace setup:", error); */
       return false;
     }
   }
