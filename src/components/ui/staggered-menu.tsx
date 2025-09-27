@@ -97,7 +97,18 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       preLayerElsRef.current = preLayers;
 
       const offscreen = position === "left" ? -100 : 100;
-      gsap.set([panel, ...preLayers], { xPercent: offscreen });
+      
+      // Set initial state immediately to prevent flash
+      gsap.set([panel, ...preLayers], { 
+        xPercent: offscreen,
+        visibility: "hidden"
+      });
+      
+      // Show elements after a brief delay to ensure proper initialization
+      gsap.set([panel, ...preLayers], { 
+        visibility: "visible",
+        delay: 0.01
+      });
 
       gsap.set(plusH, { transformOrigin: "50% 50%", rotate: 0 });
       gsap.set(plusV, { transformOrigin: "50% 50%", rotate: 90 });
@@ -648,6 +659,8 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
       <style>{`
 .sm-scope .staggered-menu-wrapper { position: relative; width: 100%; height: 100%; z-index: 40; }
+.sm-scope .staggered-menu-panel { visibility: hidden; }
+.sm-scope .staggered-menu-wrapper[data-open] .staggered-menu-panel { visibility: visible; }
 .sm-scope .staggered-menu-button-wrapper { position: relative; display: inline-block; }
 .sm-scope .sm-toggle { position: relative; display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(2, 8, 23, 0.5); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 9999px; padding: 0px 8px; cursor: pointer; color: #fff; font-weight: 500; line-height: 1; overflow: visible; transition: all 0.2s ease; backdrop-filter: blur(8px); height: 32px; }
 .sm-scope .sm-toggle:hover { background: rgba(0, 0, 0, 0.5); border-color: rgba(0, 212, 255, 0.5); box-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }

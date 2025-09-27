@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { ReactNode } from "react";
 import { LucideIcon } from "lucide-react";
 import { GlassCard, GlassCardContent, GlassCardDescription, GlassCardHeader, GlassCardTitle } from "./glass-card";
@@ -26,13 +27,19 @@ export function TimelineItem({
   delay = 0,
   className = "",
 }: TimelineItemProps) {
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (itemRef.current) {
+      gsap.fromTo(itemRef.current,
+        { opacity: 0, x: -20 },
+        { opacity: 1, x: 0, duration: 0.5, delay }
+      );
+    }
+  }, [delay]);
+
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.5, delay }}
-      className={`relative ${className}`}
-    >
+    <div ref={itemRef} className={`relative ${className}`}>
       {/* Timeline connector line */}
       {!isLast && (
         <div className="absolute left-6 top-16 w-0.5 h-full bg-gradient-to-b from-cyan-400/50 via-blue-500/30 to-violet-500/20" />
@@ -41,12 +48,9 @@ export function TimelineItem({
       {/* Timeline node */}
       <div className="relative z-10 flex items-start gap-6">
         {/* Icon badge */}
-        <motion.div
-          whileHover={{ scale: 1.05 }}
-          className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-500 flex items-center justify-center shadow-lg"
-        >
+        <div className="flex-shrink-0 w-12 h-12 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-500 flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200">
           <Icon className="w-6 h-6 text-white" />
-        </motion.div>
+        </div>
         
         {/* Content card */}
         <div className="flex-1 min-w-0">
@@ -72,6 +76,6 @@ export function TimelineItem({
           </GlassCard>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }

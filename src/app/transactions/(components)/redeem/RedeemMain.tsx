@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import * as fcl from "@onflow/fcl";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,7 @@ import { bondRedemptionService, type BondMaturityInfo } from "@/lib/bond-redempt
 
 const RedeemMain = () => {
   const { user } = useFlowCurrentUser();
+  const containerRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'redeemable' | 'pending' | 'notifications'>('redeemable');
   
   // Bond states
@@ -189,14 +190,26 @@ const RedeemMain = () => {
     setSuccess(null);
   };
 
+  // Reveal animation when component mounts
+  useEffect(() => {
+    const elements = containerRef.current?.querySelectorAll('.reveal-item');
+    if (elements && elements.length > 0) {
+      gsap.fromTo(elements, 
+        { opacity: 0, y: 30 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6, 
+          stagger: 0.1,
+          ease: "power2.out"
+        }
+      );
+    }
+  }, []);
+
   if (!user?.loggedIn) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="app-container"
-      >
+      <div className="app-container">
         <Card className="card-professional mx-auto max-w-md">
           <CardContent className="p-12 text-center">
             <div className="mb-6 mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
@@ -208,18 +221,14 @@ const RedeemMain = () => {
             </p>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     );
   }
 
   return (
-    <div className="app-container space-y-8">
+    <div ref={containerRef} className="app-container space-y-8 pb-8">
       {/* Bond Redemption Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="reveal-item">
         <Card className="card-professional">
           <CardHeader>
             <div className="flex items-center gap-3">
@@ -233,14 +242,10 @@ const RedeemMain = () => {
             </div>
           </CardHeader>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Summary Cards */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
-      >
+      <div className="reveal-item">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <SummaryCard
             title="💰 Ready to Redeem"
@@ -261,43 +266,29 @@ const RedeemMain = () => {
             color="orange"
           />
         </div>
-      </motion.div>
+      </div>
 
       {/* Messages */}
       {error && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-error/10 text-error border border-error/20 px-4 py-3 rounded-lg"
-        >
+        <div className="bg-error/10 text-error border border-error/20 px-4 py-3 rounded-lg">
           <div className="flex justify-between items-center">
             <span>{error}</span>
             <button onClick={clearMessages} className="text-error hover:text-error/80">×</button>
           </div>
-        </motion.div>
+        </div>
       )}
       
       {success && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="bg-success/10 text-success border border-success/20 px-4 py-3 rounded-lg"
-        >
+        <div className="bg-success/10 text-success border border-success/20 px-4 py-3 rounded-lg">
           <div className="flex justify-between items-center">
             <span>{success}</span>
             <button onClick={clearMessages} className="text-success hover:text-success/80">×</button>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Tab Navigation */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-      >
+      <div className="reveal-item">
         <div className="flex space-x-1 bg-muted/30 p-1 rounded-lg">
           {[
             { key: 'redeemable', label: '💰 Ready to Redeem', count: redeemableBonds.length },
@@ -324,15 +315,11 @@ const RedeemMain = () => {
             </button>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Redeemable Bonds Tab */}
       {activeTab === 'redeemable' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div>
           <Card className="card-professional">
             <CardHeader>
               <div className="flex justify-between items-center">
@@ -395,16 +382,12 @@ const RedeemMain = () => {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Pending Bonds Tab */}
       {activeTab === 'pending' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div>
           <Card className="card-professional">
             <CardHeader>
               <div className="flex justify-between items-center">
@@ -450,16 +433,12 @@ const RedeemMain = () => {
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Notifications Tab */}
       {activeTab === 'notifications' && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
-        >
+        <div>
           <Card className="card-professional">
             <CardHeader>
               <div className="flex justify-between items-center">
@@ -494,11 +473,8 @@ const RedeemMain = () => {
               ) : (
                 <div className="space-y-4">
                   {nearingMaturity.map((bond) => (
-                    <motion.div
+                    <div
                       key={bond.bondID}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
                       className="border border-warning/20 bg-warning/10 rounded-lg p-4"
                     >
                       <div className="flex items-center justify-between">
@@ -513,13 +489,13 @@ const RedeemMain = () => {
                         </div>
                         <div className="text-warning text-2xl">⏰</div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
     </div>
   );
@@ -541,16 +517,11 @@ const SummaryCard = ({ title, value, count, color }: {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.3 }}
-      className={`border rounded-lg p-4 ${colorClasses[color]}`}
-    >
+    <div className={`border rounded-lg p-4 ${colorClasses[color]}`}>
       <h3 className="font-semibold text-sm">{title}</h3>
       <p className="text-2xl font-bold mt-1">{value}</p>
       <p className="text-sm opacity-75">{count}</p>
-    </motion.div>
+    </div>
   );
 };
 
@@ -561,12 +532,7 @@ const BondRedemptionCard = ({ bond, onRedeem, isRedeeming }: {
   isRedeeming: boolean;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3 }}
-      className="border border-success/20 bg-success/5 rounded-lg p-4"
-    >
+    <div className="border border-success/20 bg-success/5 rounded-lg p-4">
       <div className="flex justify-between items-center">
         <div className="flex-1">
           <h3 className="font-semibold text-lg text-success">🔗 Bond #{bond.bondID}</h3>
@@ -598,7 +564,7 @@ const BondRedemptionCard = ({ bond, onRedeem, isRedeeming }: {
           )}
         </Button>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
@@ -607,12 +573,7 @@ const BondPendingCard = ({ bond }: {
   bond: BondMaturityInfo;
 }) => {
   return (
-    <motion.div
-      initial={{ opacity: 0, x: -20 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ duration: 0.3 }}
-      className="border border-info/20 bg-info/5 rounded-lg p-4"
-    >
+    <div className="border border-info/20 bg-info/5 rounded-lg p-4">
       <div className="flex justify-between items-center">
         <div className="flex-1">
           <h3 className="font-semibold text-lg text-info">🔗 Bond #{bond.bondID}</h3>
@@ -630,6 +591,6 @@ const BondPendingCard = ({ bond }: {
         </div>
         <div className="text-info text-3xl">⏰</div>
       </div>
-    </motion.div>
+    </div>
   );
 };

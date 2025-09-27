@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { gsap } from "gsap";
 import { FloatingNavbar } from "@/components/floating-navbar";
 import { Button } from "@/components/ui/button";
 import {
@@ -29,6 +29,7 @@ export default function TransactionsPage() {
   const [activeTab, setActiveTab] = useState<TransactionTabType>("mint");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const tabContentRef = useRef<HTMLDivElement>(null);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
@@ -42,6 +43,20 @@ export default function TransactionsPage() {
       document.body.style.overflow = "unset";
     };
   }, [showMobileMenu]);
+
+  // Tab transition animations
+  useEffect(() => {
+    if (tabContentRef.current) {
+      // Reset and animate in
+      gsap.set(tabContentRef.current, { opacity: 0, y: 20 });
+      gsap.to(tabContentRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    }
+  }, [activeTab]);
 
   const tabs = [
     { id: "mint" as TransactionTabType, label: "Mint Bonds", icon: Coins },
@@ -79,24 +94,22 @@ export default function TransactionsPage() {
   };
 
   return (
-    <BackgroundDots className="min-h-screen bg-black text-white frosted-glass-bg">
+    <div className="min-h-screen bg-black text-white">
       {/* Floating Navbar */}
       <FloatingNavbar />
 
       {/* Main Content */}
-      <div className="relative pt-16 sm:pt-20">
-        <BackgroundGrid className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20" />
+      <div className="relative pt-16 sm:pt-20 min-h-screen">
+        <BackgroundDots className="absolute inset-0 dot-bg">
+          <div className="absolute inset-0" />
+        </BackgroundDots>
+        <BackgroundGrid className="absolute inset-0 grid-bg">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10 backdrop-blur-sm" />
         </BackgroundGrid>
 
-        <div className="relative z-10 mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="transactions-content relative z-10 mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
           {/* Navigation Tabs */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="mb-12 relative"
-          >
+          <div className="mb-12 relative">
             {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center justify-center mb-4">
               <Button
@@ -135,15 +148,9 @@ export default function TransactionsPage() {
                       <Icon className="h-4 w-4" />
                       {tab.label}
                       {activeTab === tab.id && (
-                        <motion.div
-                          layoutId="activeTab"
+                        <div
                           className="absolute inset-0 rounded-full bg-primary"
                           style={{ zIndex: -1 }}
-                          transition={{
-                            type: "spring",
-                            bounce: 0.2,
-                            duration: 0.6,
-                          }}
                         />
                       )}
                     </Button>
@@ -153,70 +160,51 @@ export default function TransactionsPage() {
             </nav>
 
             {/* Mobile Menu Modal */}
-            <AnimatePresence>
-              {showMobileMenu && (
-                <>
-                  {/* Backdrop */}
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden mobile-menu-backdrop"
-                    onClick={() => setShowMobileMenu(false)}
-                  />
+            {showMobileMenu && (
+              <>
+                {/* Backdrop */}
+                <div
+                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden mobile-menu-backdrop"
+                  onClick={() => setShowMobileMenu(false)}
+                />
 
-                  {/* Mobile Menu */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9, y: -8 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.9, y: -8 }}
-                    transition={{
-                      duration: 0.25,
-                      type: "spring",
-                      damping: 24,
-                      stiffness: 260,
-                    }}
-                    className="fixed inset-0 z-50 flex items-center justify-center p-4 md:hidden"
-                  >
-                    <div className="w-full max-w-sm">
-                      <GlassCard className="mobile-menu-card overflow-hidden frosted-glass">
-                        <GlassCardHeader className="pb-3">
-                          <div className="flex items-center justify-between">
-                            <div>
-                              <GlassCardTitle className="text-base font-semibold">
-                                Transaction Menu
-                              </GlassCardTitle>
-                              <GlassCardDescription className="text-xs mt-0.5">
-                                Currently viewing:{" "}
-                                {
-                                  tabs.find((tab) => tab.id === activeTab)
-                                    ?.label
-                                }
-                              </GlassCardDescription>
-                            </div>
-                            <Button
-                              onClick={() => setShowMobileMenu(false)}
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 w-7 p-0 rounded-full hover:bg-white/10 text-white"
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </Button>
+                {/* Mobile Menu */}
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:hidden">
+                  <div className="w-full max-w-sm">
+                    <GlassCard className="mobile-menu-card overflow-hidden frosted-glass">
+                      <GlassCardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <GlassCardTitle className="text-base font-semibold">
+                              Transaction Menu
+                            </GlassCardTitle>
+                            <GlassCardDescription className="text-xs mt-0.5">
+                              Currently viewing:{" "}
+                              {tabs.find((tab) => tab.id === activeTab)?.label}
+                            </GlassCardDescription>
                           </div>
-                        </GlassCardHeader>
-                        <GlassCardContent className="pt-0">
-                          <div className="space-y-2">
-                            {tabs.map((tab) => {
-                              const Icon = tab.icon;
-                              return (
-                                <Button
-                                  key={tab.id}
-                                  onClick={() => handleTabChange(tab.id)}
-                                  variant={
-                                    activeTab === tab.id ? "gradient" : "ghost"
-                                  }
-                                  className={`
+                          <Button
+                            onClick={() => setShowMobileMenu(false)}
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 w-7 p-0 rounded-full hover:bg-white/10 text-white"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </Button>
+                        </div>
+                      </GlassCardHeader>
+                      <GlassCardContent className="pt-0">
+                        <div className="space-y-2">
+                          {tabs.map((tab) => {
+                            const Icon = tab.icon;
+                            return (
+                              <Button
+                                key={tab.id}
+                                onClick={() => handleTabChange(tab.id)}
+                                variant={
+                                  activeTab === tab.id ? "gradient" : "ghost"
+                                }
+                                className={`
                                   w-full justify-start gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200
                                   ${
                                     activeTab === tab.id
@@ -224,33 +212,25 @@ export default function TransactionsPage() {
                                       : "text-white/70 hover:text-white hover:bg-white/10"
                                   }
                                 `}
-                                >
-                                  <Icon className="h-4 w-4" />
-                                  {tab.label}
-                                </Button>
-                              );
-                            })}
-                          </div>
-                        </GlassCardContent>
-                      </GlassCard>
-                    </div>
-                  </motion.div>
-                </>
-              )}
-            </AnimatePresence>
-          </motion.div>
+                              >
+                                <Icon className="h-4 w-4" />
+                                {tab.label}
+                              </Button>
+                            );
+                          })}
+                        </div>
+                      </GlassCardContent>
+                    </GlassCard>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Tab Content */}
-          <motion.div
-            key={activeTab}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderTabContent()}
-          </motion.div>
+          <div ref={tabContentRef}>{renderTabContent()}</div>
         </div>
       </div>
-    </BackgroundDots>
+    </div>
   );
 }

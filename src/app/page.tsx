@@ -11,7 +11,7 @@ import PageMain from "@/app/(components)/PageMain";
 export default function Home() {
   return (
     <SmoothScrollProvider>
-      <BackgroundDots className="min-h-screen bg-black text-white frosted-glass-bg">
+      <BackgroundDots className="page-main-gradient min-h-screen bg-black text-white">
         {/* Floating Navbar */}
         <FloatingNavbar />
 

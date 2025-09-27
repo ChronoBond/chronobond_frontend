@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import { cn } from "@/lib/utils";
 
 interface SkeletonProps {
@@ -35,22 +35,26 @@ const Skeleton: React.FC<SkeletonProps> = ({
     />
   );
 
+  const skeletonRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (animate && skeletonRef.current) {
+      gsap.to(skeletonRef.current, {
+        opacity: 0.6,
+        duration: 1.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "easeInOut"
+      });
+    }
+  }, [animate]);
+
   if (!animate) return content;
 
   return (
-    <motion.div
-      initial={{ opacity: 0.6 }}
-      animate={{ 
-        opacity: [0.6, 1, 0.6],
-      }}
-      transition={{
-        duration: 1.5,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    >
+    <div ref={skeletonRef}>
       {content}
-    </motion.div>
+    </div>
   );
 };
 

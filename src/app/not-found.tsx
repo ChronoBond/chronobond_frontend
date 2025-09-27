@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
 import {
@@ -30,6 +30,14 @@ import {
 } from "lucide-react";
 
 export default function NotFound() {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLDivElement>(null);
+  const numberRef = useRef<HTMLDivElement>(null);
+  const messageRef = useRef<HTMLDivElement>(null);
+  const buttonsRef = useRef<HTMLDivElement>(null);
+  const linksRef = useRef<HTMLDivElement>(null);
+  const helpRef = useRef<HTMLDivElement>(null);
+
   const quickLinks = [
     { id: "overview", label: "Overview", icon: TrendingUp, href: "/" },
     { id: "mint", label: "Mint Bonds", icon: Coins, href: "/#mint" },
@@ -38,6 +46,65 @@ export default function NotFound() {
     { id: "redeem", label: "Redeem Bonds", icon: Shield, href: "/#redeem" },
     { id: "split", label: "Split", icon: Split, href: "/#split" },
   ];
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const tl = gsap.timeline();
+      
+      tl.fromTo(containerRef.current, 
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6 }
+      );
+      
+      if (heroRef.current) {
+        tl.fromTo(heroRef.current,
+          { opacity: 0, scale: 0.95 },
+          { opacity: 1, scale: 1, duration: 0.8 },
+          "-=0.4"
+        );
+      }
+      
+      if (numberRef.current) {
+        tl.fromTo(numberRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          "-=0.6"
+        );
+      }
+      
+      if (messageRef.current) {
+        tl.fromTo(messageRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          "-=0.4"
+        );
+      }
+      
+      if (buttonsRef.current) {
+        tl.fromTo(buttonsRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          "-=0.2"
+        );
+      }
+      
+      if (linksRef.current) {
+        tl.fromTo(linksRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          "-=0.1"
+        );
+      }
+      
+      if (helpRef.current) {
+        tl.fromTo(helpRef.current,
+          { opacity: 0, y: 30 },
+          { opacity: 1, y: 0, duration: 0.6 },
+          "-=0.1"
+        );
+      }
+    }
+  }, []);
 
   return (
     <BackgroundDots className="min-h-screen bg-black text-white">
@@ -48,30 +115,15 @@ export default function NotFound() {
         </BackgroundGrid>
 
         <div className="relative z-10 mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="min-h-[80vh] flex items-center justify-center"
-          >
+          <div ref={containerRef} className="min-h-[80vh] flex items-center justify-center">
             <div className="w-full max-w-4xl">
               {/* 404 Hero Section */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.8, delay: 0.2 }}
-                className="text-center mb-12"
-              >
+              <div ref={heroRef} className="text-center mb-12">
                 <Card className="relative overflow-hidden border-border/40 bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl">
                   <div className="absolute inset-0 bg-gradient-to-br from-red-600/10 via-transparent to-orange-600/10" />
                   <CardContent className="relative z-10 p-6 sm:p-8 md:p-12">
                     {/* 404 Number */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.4 }}
-                      className="mb-6"
-                    >
+                    <div ref={numberRef} className="mb-6">
                       <div className="inline-flex items-center gap-2 rounded-full border border-red-500/20 bg-red-500/10 px-4 py-2 text-red-400 mb-6">
                         <AlertTriangle className="h-4 w-4" />
                         <span className="text-sm font-medium">Page Not Found</span>
@@ -80,15 +132,10 @@ export default function NotFound() {
                       <h1 className="text-8xl sm:text-9xl md:text-[12rem] font-bold bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 bg-clip-text text-transparent mb-4">
                         404
                       </h1>
-                    </motion.div>
+                    </div>
 
                     {/* Error Message */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.6 }}
-                      className="mb-8"
-                    >
+                    <div ref={messageRef} className="mb-8">
                       <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
                         Oops! Page Not Found
                       </h2>
@@ -96,15 +143,10 @@ export default function NotFound() {
                         The page you&apos;re looking for doesn&apos;t exist or has been moved. 
                         Let&apos;s get you back on track with ChronoBond.
                       </p>
-                    </motion.div>
+                    </div>
 
                     {/* Action Buttons */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.6, delay: 0.8 }}
-                      className="flex flex-col sm:flex-row gap-4 justify-center"
-                    >
+                    <div ref={buttonsRef} className="flex flex-col sm:flex-row gap-4 justify-center">
                       <Button
                         asChild
                         size="lg"
@@ -130,18 +172,13 @@ export default function NotFound() {
                           Go Back
                         </Link>
                       </Button>
-                    </motion.div>
+                    </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
 
               {/* Quick Links Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.0 }}
-                className="mb-12"
-              >
+              <div ref={linksRef} className="mb-12">
                 <Card className="border-border/40 bg-background/20 backdrop-blur-xl">
                   <CardHeader className="text-center">
                     <CardTitle className="text-2xl font-bold flex items-center justify-center gap-2">
@@ -157,12 +194,7 @@ export default function NotFound() {
                       {quickLinks.map((link, index) => {
                         const Icon = link.icon;
                         return (
-                          <motion.div
-                            key={link.id}
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: 1.2 + index * 0.1 }}
-                          >
+                          <div key={link.id}>
                             <Button
                               asChild
                               variant="ghost"
@@ -177,20 +209,16 @@ export default function NotFound() {
                                 </div>
                               </Link>
                             </Button>
-                          </motion.div>
+                          </div>
                         );
                       })}
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
 
               {/* Help Section */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 1.4 }}
-              >
+              <div ref={helpRef}>
                 <Card className="border-border/40 bg-background/20 backdrop-blur-xl">
                   <CardContent className="p-6 sm:p-8 text-center">
                     <div className="flex items-center justify-center gap-2 mb-4">
@@ -224,9 +252,9 @@ export default function NotFound() {
                     </div>
                   </CardContent>
                 </Card>
-              </motion.div>
+              </div>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
     </BackgroundDots>

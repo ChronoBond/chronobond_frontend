@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { Button } from "@/components/ui/button";
 import {
@@ -334,10 +334,7 @@ const MarketplaceMain = () => {
 
   if (!user?.loggedIn) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+      <div
         className="app-container"
       >
         <Card className="card-professional mx-auto max-w-md">
@@ -353,17 +350,14 @@ const MarketplaceMain = () => {
             </p>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     );
   }
 
   return (
     <div className="app-container space-y-8">
       {/* Marketplace Header */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
       >
         <Card className="card-professional">
           <CardHeader>
@@ -390,13 +384,10 @@ const MarketplaceMain = () => {
             </div>
           </CardHeader>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Tab Navigation */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.1 }}
+      <div
       >
         <div className="flex space-x-1 bg-muted/30 p-1 rounded-lg">
           {[
@@ -430,14 +421,11 @@ const MarketplaceMain = () => {
             </button>
           ))}
         </div>
-      </motion.div>
+      </div>
 
       {/* Transaction Status */}
       {txStatus.statusString && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
+        <div
           className={`p-4 rounded-lg border ${
             txStatus.state === "success"
               ? "bg-success/10 text-success border-success/20"
@@ -459,15 +447,12 @@ const MarketplaceMain = () => {
               )}
             </div>
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Buy Tab - Real Marketplace Listings */}
       {activeTab === "buy" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <div
         >
           <Card className="card-professional">
             <CardHeader>
@@ -516,11 +501,8 @@ const MarketplaceMain = () => {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {marketplaceListings.map((listing) => (
-                    <motion.div
+                    <div
                       key={`${listing.seller}-${listing.bondID}`}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3 }}
                       className="border border-border rounded-lg p-4"
                     >
                       <h3 className="font-semibold text-lg mb-2">
@@ -559,21 +541,18 @@ const MarketplaceMain = () => {
                           ? "Processing..."
                           : `Buy for ${listing.price} FLOW`}
                       </Button>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Sell Tab - User's Bonds */}
       {activeTab === "sell" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <div
         >
           <Card className="card-professional">
             <CardHeader>
@@ -622,11 +601,8 @@ const MarketplaceMain = () => {
               ) : (
                 <div className="space-y-4">
                   {userBonds.map((bond, index) => (
-                    <motion.div
+                    <div
                       key={bond.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
                       className="border border-border rounded-lg p-4"
                     >
                       <div className="flex justify-between items-center">
@@ -647,7 +623,7 @@ const MarketplaceMain = () => {
                               <span className="font-medium">⚡ Strategy:</span>{" "}
                               {bond.strategyID}
                             </p>
-                            <p>
+                            <div className="flex items-center">
                               <span className="font-medium">📅 Status:</span>
                               <Badge
                                 variant={
@@ -661,7 +637,7 @@ const MarketplaceMain = () => {
                                   ? "Matured"
                                   : "Active"}
                               </Badge>
-                            </p>
+                            </div>
                           </div>
                         </div>
                         <div className="ml-4 flex items-center space-x-2">
@@ -704,21 +680,18 @@ const MarketplaceMain = () => {
                           </Button>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
 
       {/* Manage Tab - User's Listings */}
       {activeTab === "manage" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+        <div
         >
           <Card className="card-professional">
             <CardHeader>
@@ -767,11 +740,8 @@ const MarketplaceMain = () => {
               ) : (
                 <div className="space-y-4">
                   {userListings.map((listing, index) => (
-                    <motion.div
+                    <div
                       key={listing.bondID}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.1 }}
                       className="border border-border rounded-lg p-4"
                     >
                       <div className="flex justify-between items-center">
@@ -817,13 +787,13 @@ const MarketplaceMain = () => {
                           </Button>
                         )}
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
                 </div>
               )}
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   BackgroundGrid,
@@ -14,6 +14,17 @@ import Skeleton, {
 } from "@/components/ui/skeleton";
 
 export default function Loading() {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (containerRef.current) {
+      gsap.fromTo(containerRef.current, 
+        { opacity: 0 },
+        { opacity: 1, duration: 0.3 }
+      );
+    }
+  }, []);
+
   return (
     <BackgroundDots className="min-h-screen bg-black text-white">
       {/* Main Content */}
@@ -23,12 +34,7 @@ export default function Loading() {
         </BackgroundGrid>
 
         <div className="relative z-10 mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-12"
-          >
+          <div ref={containerRef} className="space-y-12">
             {/* Hero Section Skeleton */}
             <Card className="border-border/40 bg-background/20 backdrop-blur-xl">
               <CardContent className="p-6 sm:p-8 md:p-12">
@@ -70,7 +76,7 @@ export default function Loading() {
                 </div>
               </CardContent>
             </Card>
-          </motion.div>
+          </div>
         </div>
       </div>
     </BackgroundDots>

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -188,10 +188,7 @@ const HoldingsMain = () => {
 
   if (!user?.loggedIn) {
     return (
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+      <div
         className="app-container"
       >
         <Card className="card-professional mx-auto max-w-md">
@@ -205,7 +202,7 @@ const HoldingsMain = () => {
             </p>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
     );
   }
 
@@ -230,10 +227,7 @@ const HoldingsMain = () => {
   return (
     <div className="app-container space-y-8">
       {/* Portfolio Summary */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+      <div
       >
         <Card className="card-professional">
           <CardHeader>
@@ -250,45 +244,33 @@ const HoldingsMain = () => {
           
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.1 }}
+              <div
                 className="text-center p-6 rounded-lg bg-primary/5 border border-primary/20"
               >
                 <div className="text-3xl font-bold text-primary mb-2">{bonds.length}</div>
                 <div className="text-sm text-muted-foreground">Total Bonds</div>
-              </motion.div>
+              </div>
               
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.2 }}
+              <div
                 className="text-center p-6 rounded-lg bg-success/5 border border-success/20"
               >
                 <div className="text-3xl font-bold text-success mb-2">{formatFlow(totalValue)}</div>
                 <div className="text-sm text-muted-foreground">Total Principal</div>
-              </motion.div>
+              </div>
               
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 0.3 }}
+              <div
                 className="text-center p-6 rounded-lg bg-warning/5 border border-warning/20"
               >
                 <div className="text-3xl font-bold text-warning mb-2">{formatFlow(totalYield)}</div>
                 <div className="text-sm text-muted-foreground">Expected Yield</div>
-              </motion.div>
+              </div>
             </div>
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Bonds Table */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+      <div
       >
         <Card className="card-professional">
           <CardHeader>
@@ -343,11 +325,8 @@ const HoldingsMain = () => {
                   </TableHeader>
                   <TableBody>
                     {bonds.map((bond, index) => (
-                      <motion.tr
+                      <tr
                         key={bond.id}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.1 }}
                       >
                         <TableCell className="font-medium">
                           #{bond.id}
@@ -408,7 +387,7 @@ const HoldingsMain = () => {
                             )}
                           </div>
                         </TableCell>
-                      </motion.tr>
+                      </tr>
                     ))}
                   </TableBody>
                 </Table>
@@ -416,15 +395,12 @@ const HoldingsMain = () => {
             )}
           </CardContent>
         </Card>
-      </motion.div>
+      </div>
 
       {/* Listing Modal */}
       {showListingForm && selectedBond && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 modal-mobile">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.2 }}
+          <div
             className="bg-card/95 backdrop-blur-xl p-4 sm:p-6 rounded-lg max-w-md w-full border border-border/40 shadow-2xl modal-content-mobile"
           >
             <div className="flex items-center justify-between mb-6">
@@ -563,7 +539,7 @@ const HoldingsMain = () => {
                 </div>
               )}
             </div>
-          </motion.div>
+          </div>
         </div>
       )}
     </div>

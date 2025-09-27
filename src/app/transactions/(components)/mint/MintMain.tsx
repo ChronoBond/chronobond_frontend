@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,6 +74,11 @@ interface TransactionStatus {
 
 const MintMain = () => {
   const { user } = useFlowCurrentUser();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const headerRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+  const summaryRef = useRef<HTMLDivElement>(null);
+  
   const [formData, setFormData] = useState<MintBondParams>({
     strategyID: "FlowStaking",
     amount: "",
@@ -85,6 +90,58 @@ const MintMain = () => {
     statusString: "",
     txId: null,
   });
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const tl = gsap.timeline();
+      
+      tl.fromTo(containerRef.current,
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.5 }
+      );
+      
+      if (headerRef.current) {
+        tl.fromTo(headerRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          "-=0.3"
+        );
+      }
+      
+      if (formRef.current) {
+        tl.fromTo(formRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          "-=0.2"
+        );
+      }
+      
+      if (summaryRef.current) {
+        tl.fromTo(summaryRef.current,
+          { opacity: 0, y: 20 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          "-=0.1"
+        );
+      }
+    }
+  }, []);
+
+  // Reveal animation when component mounts
+  useEffect(() => {
+    const elements = containerRef.current?.querySelectorAll('.reveal-item');
+    if (elements && elements.length > 0) {
+      gsap.fromTo(elements, 
+        { opacity: 0, y: 30 },
+        { 
+          opacity: 1, 
+          y: 0, 
+          duration: 0.6, 
+          stagger: 0.1,
+          ease: "power2.out"
+        }
+      );
+    }
+  }, []);
 
   const handleInputChange = (
     field: keyof MintBondParams,
@@ -211,11 +268,7 @@ const MintMain = () => {
   if (!user?.loggedIn) {
     return (
       <div className="app-container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <div>
           <Card className="card-professional mx-auto max-w-md">
             <CardContent className="p-12 text-center">
               <div className="mb-6 mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
@@ -230,20 +283,14 @@ const MintMain = () => {
               </p>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="app-container">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="max-w-6xl mx-auto"
-      >
-        <Card className="card-professional">
+    <div ref={containerRef} className="app-container max-w-6xl mx-auto">
+        <Card className="card-professional reveal-item">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
@@ -263,13 +310,8 @@ const MintMain = () => {
           <CardContent className="space-y-8">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               {/* Left Column - Form */}
-              <div className="space-y-6">
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2 }}
-                  className="space-y-4"
-                >
+              <div ref={formRef} className="space-y-6">
+                <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-semibold mb-2">
                       Principal Amount
@@ -331,13 +373,9 @@ const MintMain = () => {
                       ))}
                     </Select>
                   </div>
-                </motion.div>
+                </div>
 
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
+                <div>
                   <Button
                     onClick={handleMintBond}
                     disabled={
@@ -385,17 +423,13 @@ const MintMain = () => {
                       </>
                     )}
                   </Button>
-                </motion.div>
+                </div>
               </div>
 
               {/* Right Column - Strategy Details and Yield Calculator */}
-              <div className="space-y-6">
+              <div ref={summaryRef} className="space-y-6">
                 {/* Strategy Details */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
+                <div className="reveal-item">
                   <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
@@ -427,14 +461,10 @@ const MintMain = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </div>
 
                 {/* Yield Calculator */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
+                <div className="reveal-item">
                   <Card className="bg-gradient-to-br from-success/5 to-success/10 border-success/20">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
@@ -475,17 +505,13 @@ const MintMain = () => {
                       </div>
                     </CardContent>
                   </Card>
-                </motion.div>
+                </div>
               </div>
             </div>
 
             {/* Transaction Status */}
             {txStatus.statusString && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-                className={`p-4 rounded-lg border ${
+              <div className={`p-4 rounded-lg border ${
                   txStatus.state === "success"
                     ? "bg-success/10 text-success border-success/20"
                     : txStatus.state === "error"
@@ -512,11 +538,10 @@ const MintMain = () => {
                     )}
                   </div>
                 </div>
-              </motion.div>
+              </div>
             )}
           </CardContent>
         </Card>
-      </motion.div>
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useEffect, useRef } from "react";
+import { gsap } from "gsap";
 import Link from "next/link";
 import { useFlowCurrentUser } from "@onflow/kit";
 import {
@@ -30,6 +30,10 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
   const { user, authenticate, unauthenticate } = useFlowCurrentUser();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const navbarRef = useRef<HTMLDivElement>(null);
+  const connectedRef = useRef<HTMLDivElement>(null);
+  const disconnectedRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const menuItems = [
     { label: "Home", ariaLabel: "Go to home page", link: "/" },
@@ -55,6 +59,24 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      gsap.fromTo(navbarRef.current,
+        { y: -100, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.3 }
+      );
+    }
+  }, []);
+
+  useEffect(() => {
+    if (showUserMenu && menuRef.current) {
+      gsap.fromTo(menuRef.current,
+        { opacity: 0, scale: 0.95, y: -10 },
+        { opacity: 1, scale: 1, y: 0, duration: 0.15 }
+      );
+    }
+  }, [showUserMenu]);
 
   const handleConnect = async () => {
     try {
@@ -85,19 +107,11 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
   };
 
   return (
-    <motion.div
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.3 }}
-      className={cn("nav-container", className)}
-    >
-      <motion.nav
-        layout
-        className={cn(
-          "nav-bar",
-          isScrolled ? "py-2 sm:py-3 shadow-2xl" : "py-3 sm:py-4"
-        )}
-      >
+    <div ref={navbarRef} className={cn("nav-container", className)}>
+      <nav className={cn(
+        "nav-bar",
+        isScrolled ? "py-2 sm:py-3 shadow-2xl" : "py-3 sm:py-4"
+      )}>
         {/* Logo */}
         <div className="nav-logo-container">
           <Image
@@ -115,16 +129,8 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
         {/* Right side - Connect Button + Menu */}
         <div className="nav-actions">
           {/* Wallet Connection */}
-          <AnimatePresence mode="wait">
-            {user?.loggedIn ? (
-              <motion.div
-                key="connected"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-                className="relative"
-              >
+          {user?.loggedIn ? (
+            <div ref={connectedRef} className="relative">
                 <Button
                   variant="outline"
                   onClick={() => setShowUserMenu(!showUserMenu)}
@@ -142,21 +148,14 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                 </Button>
 
                 {/* User Menu Dropdown */}
-                <AnimatePresence>
-                  {showUserMenu && (
-                    <>
-                      {/* Backdrop */}
-                      <div
-                        className="fixed inset-0 z-40"
-                        onClick={() => setShowUserMenu(false)}
-                      />
-                      <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: -10 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                        transition={{ duration: 0.15 }}
-                        className="menu-dropdown"
-                      >
+                {showUserMenu && (
+                  <>
+                    {/* Backdrop */}
+                    <div
+                      className="fixed inset-0 z-40"
+                      onClick={() => setShowUserMenu(false)}
+                    />
+                    <div ref={menuRef} className="menu-dropdown">
                         <div className="menu-dropdown-content">
                           <div className="space-y-3">
                             <div className="flex items-center gap-3 pb-3 border-b border-border/40">
@@ -217,19 +216,12 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                             </div>
                           </div>
                         </div>
-                      </motion.div>
-                    </>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                    </div>
+                  </>
+                )}
+              </div>
             ) : (
-              <motion.div
-                key="disconnected"
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                transition={{ duration: 0.2 }}
-              >
+              <div ref={disconnectedRef}>
                 <Button
                   onClick={handleConnect}
                   variant="outline"
@@ -241,9 +233,8 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                   </span>
                   <Wallet className="h-3 w-3 sm:h-4 sm:w-4" />
                 </Button>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
 
           {/* Staggered Menu */}
           <div className="relative">
@@ -264,7 +255,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
             />
           </div>
         </div>
-      </motion.nav>
-    </motion.div>
+      </nav>
+    </div>
   );
 }
