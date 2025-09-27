@@ -66,9 +66,9 @@ export class ChronoBondService {
       const transactionId = await fcl.mutate({
         cadence: TRANSACTIONS.SETUP_ACCOUNT,
         args: (_arg: any, _t: any) => [],
-        proposer: fcl.authz,
-        authorizations: [fcl.authz],
-        payer: fcl.authz,
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
         limit: 9999
       });
 
@@ -96,9 +96,9 @@ export class ChronoBondService {
           arg(formatForUFix64(amount), t.UFix64),
           arg(lockupPeriod, t.UInt64)
         ],
-        proposer: fcl.authz,
-        authorizations: [fcl.authz],
-        payer: fcl.authz,
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
         limit: 9999
       });
 

@@ -32,7 +32,6 @@ export const TextType: React.FC<TextTypeProps> = ({
   useEffect(() => {
     if (!containerRef.current || text.length === 0) return;
 
-    let currentIndex = 0;
     let currentText = "";
     let isDeleting = false;
     let timeoutId: NodeJS.Timeout;

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
 import { useFlowCurrentUser } from "@onflow/kit";
 import {
   Clock,
@@ -96,12 +97,12 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
             height={32}
             className="object-cover rounded-full shadow-lg sm:w-10 sm:h-10 flex-shrink-0"
           />
-          <a
+          <Link
             href="/"
             className="hidden sm:block text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent truncate hover:from-cyan-400 hover:to-blue-500 transition-all duration-300"
           >
             ChronoBond
-          </a>
+          </Link>
         </div>
 
         {/* Right side - Connect Button + Menu */}
