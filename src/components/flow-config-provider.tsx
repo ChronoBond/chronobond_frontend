@@ -9,7 +9,6 @@ interface FlowConfigProviderProps {
 
 export function FlowConfigProvider({ children }: FlowConfigProviderProps) {
   useEffect(() => {
-    // Initialize Flow testnet configuration on client side
     initializeFlowTestnet();
   }, []);
 

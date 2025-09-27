@@ -2,8 +2,9 @@
 
 import { useFlowCurrentUser } from "@onflow/kit";
 import { Button } from "./ui/button";
-import { Wallet, LogOut, AlertCircle } from "lucide-react";
+import { Wallet, LogOut, AlertCircle, RefreshCw } from "lucide-react";
 import { useState } from "react";
+import { authenticateWithFlow, logoutFromFlow } from "@/lib/flow-auth-utils";
 
 export default function WalletConnection() {
   const { user, authenticate, unauthenticate } = useFlowCurrentUser();
@@ -14,17 +15,36 @@ export default function WalletConnection() {
     try {
       setIsConnecting(true);
       setError(null);
-      await authenticate();
-    } catch (err) {
-      /* console.error("Wallet connection error:", err); */
-      setError("Failed to connect wallet. Please try again.");
+      
+      // Use enhanced authentication
+      await authenticateWithFlow();
+    } catch (err: any) {
+      console.error("Wallet connection error:", err);
+      
+      // Handle specific error messages
+      if (err.message?.includes("cancelled")) {
+        setError("Connection was cancelled. Please try again.");
+      } else if (err.message?.includes("declined")) {
+        setError("Connection was declined. Please try again.");
+      } else if (err.message?.includes("WalletConnect")) {
+        setError("WalletConnect configuration issue. Please contact support.");
+      } else {
+        setError(err.message || "Failed to connect wallet. Please try again.");
+      }
     } finally {
       setIsConnecting(false);
     }
   };
 
-  const handleDisconnect = () => {
-    unauthenticate();
+  const handleDisconnect = async () => {
+    try {
+      await logoutFromFlow();
+      unauthenticate();
+    } catch (err) {
+      console.error("Logout error:", err);
+      // Still try to disconnect even if logout fails
+      unauthenticate();
+    }
   };
 
   const formatAddress = (address: string) => {

@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { GlassCard, GlassCardContent } from "@/components/ui/glass-card";
 import { ScrollReveal } from "@/components/ui/ScrollReveal";
 import { TextType } from "@/components/ui/TextType";
+import { FeatureCard } from "@/components/ui/feature-card";
+import { FeatureStep } from "@/components/ui/feature-step";
+import { SectionHeader } from "@/components/ui/section-header";
 import {
   Coins,
   ShoppingCart,
@@ -202,16 +205,13 @@ const PageMain: React.FC = () => {
   return (
     <div className="mx-auto max-w-6xl px-6 pb-20">
       {/* Typography-Led Hero Section */}
-      <section
-        ref={heroRef}
-        className="scroll-snap-section min-h-screen flex items-center justify-center text-center"
-      >
+      <section ref={heroRef} className="layout-hero">
         <div className="flex flex-col items-center justify-center gap-8">
-          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-2xl">
+          <div className="card-hero-icon">
             <Zap className="w-10 h-10 text-white" />
           </div>
 
-          <h1 className="text-hero-lg sm:text-hero-xl lg:text-hero-2xl font-bold mb-8 bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent tracking-tight">
+          <h1 className="text-hero-title">
             <TextType
               text={["ChronoBond", "Revolutionary DeFi", "Time-Locked Bonds"]}
               typingSpeed={100}
@@ -229,7 +229,7 @@ const PageMain: React.FC = () => {
               baseRotation={3}
               blurStrength={8}
               stagger={0.1}
-              className="text-body-lg sm:text-body-xl lg:text-subheading-xl text-white/80 leading-relaxed"
+              className="text-hero-subtitle"
             >
               Revolutionary time-locked DeFi bonds on Flow blockchain. Mint,
               trade, and redeem bonds with guaranteed yields.
@@ -243,7 +243,7 @@ const PageMain: React.FC = () => {
             <Button
               variant="primary"
               size="lg"
-              className="rounded-full px-12 py-4 text-body-lg font-semibold shadow-2xl hover:scale-105 transition-transform"
+              className="btn-primary-cta"
               onClick={() => router.push("/transactions")}
             >
               Start Trading
@@ -254,247 +254,80 @@ const PageMain: React.FC = () => {
       </section>
 
       {/* Value Propositions Section */}
-      <section className="scroll-snap-section py-8">
-        <div className="max-w-6xl mx-auto">
-          <div
-            ref={statsRef}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
+      <section className="layout-section">
+        <div className="layout-container">
+          <div ref={statsRef} className="layout-grid-features">
             {valuePropositions.map((proposition, index) => (
-              <GlassCard key={index} className="frosted-glass p-8 text-center">
-                <GlassCardContent className="p-0">
-                  <div
-                    className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${proposition.color} flex items-center justify-center mx-auto mb-6 shadow-lg`}
-                  >
-                    <proposition.icon className="w-8 h-8 text-white" />
-                  </div>
-                  <div className="text-subheading-md sm:text-subheading-lg font-bold text-white mb-3">
-                    {proposition.headline}
-                  </div>
-                  <div className="text-body-md text-white/80 leading-relaxed">
-                    {proposition.subtext}
-                  </div>
-                </GlassCardContent>
-              </GlassCard>
+              <FeatureCard
+                key={index}
+                icon={proposition.icon}
+                title={proposition.headline}
+                description={proposition.subtext}
+                color={proposition.color}
+              />
             ))}
           </div>
         </div>
       </section>
 
       {/* Typography-Led Features Section */}
-      <section className="scroll-snap-section py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <ScrollReveal
-              baseOpacity={0}
-              enableBlur={true}
-              baseRotation={5}
-              blurStrength={10}
-              stagger={0.15}
-              className="text-section-lg sm:text-section-xl lg:text-section-2xl font-bold text-white mb-6 tracking-tight"
-            >
-              Why ChronoBond?
-            </ScrollReveal>
-            <ScrollReveal
-              baseOpacity={0}
-              enableBlur={true}
-              baseRotation={2}
-              blurStrength={6}
-              stagger={0.08}
-              className="text-body-lg sm:text-body-xl lg:text-body-xl text-white/80 max-w-3xl mx-auto leading-relaxed"
-            >
-              Built for the future of DeFi with{" "}
-              <span className="text-cyan-400 font-semibold">Security</span>,{" "}
-              <span className="text-cyan-400 font-semibold">Transparency</span>,
-              and{" "}
-              <span className="text-cyan-400 font-semibold">Innovation</span> at
-              its core.
-            </ScrollReveal>
-          </div>
+      <section className="layout-section">
+        <div className="layout-container">
+          <SectionHeader
+            title="Why ChronoBond?"
+            subtitle="Built for the future of DeFi with Security, Transparency, and Innovation at its core."
+          />
 
           {/* Editorial Stepper Flow */}
-          <div className="space-y-8 max-w-4xl mx-auto">
-            {/* Feature 1 */}
-            <div className="flex items-start gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg flex-shrink-0">
-                <Lock className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={2}
-                  blurStrength={6}
-                  stagger={0.08}
-                  className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-                >
-                  Time-Locked <span className="text-green-400">Security</span>
-                </ScrollReveal>
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={1}
-                  blurStrength={3}
-                  stagger={0.03}
-                  className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch]"
-                >
-                  Bonds are secured by smart contracts with guaranteed
-                  time-locked returns and transparent execution.
-                </ScrollReveal>
-              </div>
-            </div>
+          <div className="space-y-8 layout-container-small">
+            <FeatureStep
+              icon={Lock}
+              title="Time-Locked Security"
+              description="Bonds are secured by smart contracts with guaranteed time-locked returns and transparent execution."
+              color="from-green-400 to-emerald-500"
+            />
 
-            {/* Feature 2 */}
-            <div className="flex items-start gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-lg flex-shrink-0">
-                <BarChart3 className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={2}
-                  blurStrength={6}
-                  stagger={0.08}
-                  className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-                >
-                  Predictable <span className="text-cyan-400">Yields</span>
-                </ScrollReveal>
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={1}
-                  blurStrength={3}
-                  stagger={0.03}
-                  className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch]"
-                >
-                  Fixed interest rates with transparent, auditable return
-                  calculations and guaranteed payouts.
-                </ScrollReveal>
-              </div>
-            </div>
+            <FeatureStep
+              icon={BarChart3}
+              title="Predictable Yields"
+              description="Fixed interest rates with transparent, auditable return calculations and guaranteed payouts."
+              color="from-blue-400 to-cyan-500"
+            />
           </div>
         </div>
       </section>
 
       {/* Typography-Led How It Works Section */}
-      <section className="scroll-snap-section py-16 sm:py-20 pb-32 sm:pb-40">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <ScrollReveal
-              baseOpacity={0}
-              enableBlur={true}
-              baseRotation={5}
-              blurStrength={10}
-              stagger={0.15}
-              className="text-section-lg sm:text-section-xl lg:text-section-2xl font-bold text-white mb-6 tracking-tight"
-            >
-              How It Works
-            </ScrollReveal>
-            <ScrollReveal
-              baseOpacity={0}
-              enableBlur={true}
-              baseRotation={2}
-              blurStrength={6}
-              stagger={0.08}
-              className="text-body-lg sm:text-body-xl lg:text-body-xl text-white/80 max-w-3xl mx-auto leading-relaxed"
-            >
-              Three simple steps to start earning with time-locked bonds.
-            </ScrollReveal>
-          </div>
+      <section className="layout-section-large">
+        <div className="layout-container">
+          <SectionHeader
+            title="How It Works"
+            subtitle="Three simple steps to start earning with time-locked bonds."
+          />
 
           {/* Editorial Stepper Flow */}
-          <div ref={howItWorksRef} className="space-y-16 max-w-4xl mx-auto">
-            {/* Step 1 */}
-            <div className="flex items-start gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-lg flex-shrink-0">
-                <Coins className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={2}
-                  blurStrength={6}
-                  stagger={0.08}
-                  className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-                >
-                  1. Mint <span className="text-cyan-400">Bonds</span>
-                </ScrollReveal>
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={1}
-                  blurStrength={3}
-                  stagger={0.03}
-                  className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch]"
-                >
-                  Create time-locked bonds with your preferred duration and
-                  yield parameters using our intuitive interface.
-                </ScrollReveal>
-              </div>
-            </div>
+          <div ref={howItWorksRef} className="space-y-16 layout-container-small">
+            <FeatureStep
+              icon={Coins}
+              title="1. Mint Bonds"
+              description="Create time-locked bonds with your preferred duration and yield parameters using our intuitive interface."
+              color="from-cyan-400 to-blue-500"
+            />
 
-            {/* Step 2 */}
-            <div className="flex items-start gap-6">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-400 to-pink-500 flex items-center justify-center shadow-lg flex-shrink-0">
-                <ShoppingCart className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={2}
-                  blurStrength={6}
-                  stagger={0.08}
-                  className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-                >
-                  2. Trade on{" "}
-                  <span className="text-purple-400">Marketplace</span>
-                </ScrollReveal>
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={1}
-                  blurStrength={3}
-                  stagger={0.03}
-                  className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch]"
-                >
-                  Buy and sell bonds on our decentralized marketplace for
-                  maximum liquidity and competitive pricing.
-                </ScrollReveal>
-              </div>
-            </div>
+            <FeatureStep
+              icon={ShoppingCart}
+              title="2. Trade on Marketplace"
+              description="Buy and sell bonds on our decentralized marketplace for maximum liquidity and competitive pricing."
+              color="from-purple-400 to-pink-500"
+            />
 
-            {/* Step 3 */}
-            <div className="flex items-start gap-6 mb-8">
-              <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-lg flex-shrink-0">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <div className="flex-1">
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={2}
-                  blurStrength={6}
-                  stagger={0.08}
-                  className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-                >
-                  3. Redeem & <span className="text-green-400">Earn</span>
-                </ScrollReveal>
-                <ScrollReveal
-                  baseOpacity={0}
-                  enableBlur={true}
-                  baseRotation={1}
-                  blurStrength={3}
-                  stagger={0.03}
-                  className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch]"
-                >
-                  Redeem matured bonds and earn guaranteed yields with full
-                  transparency and smart contract security.
-                </ScrollReveal>
-              </div>
-            </div>
+            <FeatureStep
+              icon={Shield}
+              title="3. Redeem & Earn"
+              description="Redeem matured bonds and earn guaranteed yields with full transparency and smart contract security."
+              color="from-green-400 to-emerald-500"
+              className="layout-flex-feature-large"
+            />
           </div>
         </div>
       </section>

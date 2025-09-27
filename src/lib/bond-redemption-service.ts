@@ -1,5 +1,6 @@
 // src/lib/bond-redemption-service.ts
 import * as fcl from "@onflow/fcl";
+import { toast } from "@/hooks/use-toast";
 
 export interface BondMaturityInfo {
   bondID: number;
@@ -75,7 +76,11 @@ export class BondRedemptionService {
       
       // Check if result is valid
       if (!result || typeof result !== 'object') {
-        /* console.error(`Invalid result for bond ${bondID}:`, result); */
+        toast({
+          title: "Invalid Bond Data",
+          description: `Unable to retrieve data for bond ${bondID}`,
+          variant: "destructive",
+        });
         return null;
       }
       
@@ -95,13 +100,21 @@ export class BondRedemptionService {
       
       // Validate that we got reasonable values
       if (bondInfo.bondID === 0 || bondInfo.principal === 0) {
-        /* console.error(`Invalid bond data for bond ${bondID}:`, bondInfo); */
+        toast({
+          title: "Invalid Bond Data",
+          description: `Bond ${bondID} has invalid data`,
+          variant: "destructive",
+        });
         return null;
       }
       
       return bondInfo;
-    } catch (error) {
-      /* console.error("Error checking bond maturity:", error); */
+    } catch (error: any) {
+      toast({
+        title: "Bond Check Failed",
+        description: error.message || "Unable to check bond maturity",
+        variant: "destructive",
+      });
       return null;
     }
   }
@@ -176,7 +189,11 @@ export class BondRedemptionService {
         throw new Error(`Transaction failed: ${result.errorMessage}`);
       }
     } catch (error: any) {
-      console.error("❌ Error redeeming bond:", error);
+      toast({
+        title: "Redemption Failed",
+        description: error.message || "Failed to redeem bond",
+        variant: "destructive",
+      });
       return {
         success: false,
         error: error.message
@@ -230,8 +247,12 @@ export class BondRedemptionService {
 
       console.log(`📊 Found ${redeemableBonds.length} redeemable bonds out of ${bondIDs.length} total`);
       return redeemableBonds;
-    } catch (error) {
-      console.error("Error getting redeemable bonds:", error);
+    } catch (error: any) {
+      toast({
+        title: "Failed to Load Bonds",
+        description: error.message || "Unable to fetch redeemable bonds",
+        variant: "destructive",
+      });
       return [];
     }
   }
@@ -282,8 +303,12 @@ export class BondRedemptionService {
         );
 
       return nearingMaturity;
-    } catch (error) {
-      console.error("Error getting bonds nearing maturity:", error);
+    } catch (error: any) {
+      toast({
+        title: "Failed to Load Bonds",
+        description: error.message || "Unable to fetch bonds nearing maturity",
+        variant: "destructive",
+      });
       return [];
     }
   }
@@ -296,8 +321,12 @@ export class BondRedemptionService {
       
       console.log(`💰 Total redeemable value: ${totalValue} FLOW`);
       return totalValue;
-    } catch (error) {
-      console.error("Error calculating total redeemable value:", error);
+    } catch (error: any) {
+      toast({
+        title: "Calculation Failed",
+        description: error.message || "Unable to calculate total redeemable value",
+        variant: "destructive",
+      });
       return 0;
     }
   }

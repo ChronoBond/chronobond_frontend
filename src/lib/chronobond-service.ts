@@ -1,6 +1,7 @@
 import * as fcl from "@onflow/fcl";
 import { TRANSACTIONS, SCRIPTS } from "./flow-config";
 import { formatForUFix64 } from "./utils";
+import { toast } from "@/hooks/use-toast";
 
 export interface BondData {
   id: number;
@@ -52,8 +53,12 @@ export class ChronoBondService {
         args: (arg: any, t: any) => [arg(address, t.Address)]
       });
       return result;
-    } catch (error) {
-      /* console.error("Error checking account setup:", error); */
+    } catch (error: any) {
+      toast({
+        title: "Account Check Failed",
+        description: error.message || "Unable to verify account setup",
+        variant: "destructive",
+      });
       return false;
     }
   }
@@ -75,7 +80,11 @@ export class ChronoBondService {
       await fcl.tx(transactionId).onceSealed();
       return { success: true, transactionId };
     } catch (error: any) {
-      /* console.error("Error setting up account:", error); */
+      toast({
+        title: "Account Setup Failed",
+        description: error.message || "Failed to setup account",
+        variant: "destructive",
+      });
       return { success: false, error: error.message || "Failed to setup account" };
     }
   }
@@ -105,7 +114,11 @@ export class ChronoBondService {
       await fcl.tx(transactionId).onceSealed();
       return { success: true, transactionId };
     } catch (error: any) {
-      /* console.error("Error minting bond:", error); */
+      toast({
+        title: "Minting Failed",
+        description: error.message || "Failed to mint bond",
+        variant: "destructive",
+      });
       return { success: false, error: error.message || "Failed to mint bond" };
     }
   }
@@ -120,8 +133,12 @@ export class ChronoBondService {
         args: (arg: any, t: any) => [arg(address, t.Address)]
       });
       return result || [];
-    } catch (error) {
-      /* console.error("Error getting user bonds:", error); */
+    } catch (error: any) {
+      toast({
+        title: "Failed to Load Bonds",
+        description: error.message || "Unable to fetch user bonds",
+        variant: "destructive",
+      });
       return [];
     }
   }
@@ -139,8 +156,12 @@ export class ChronoBondService {
         ]
       });
       return result;
-    } catch (error) {
-      /* console.error("Error getting bond details:", error); */
+    } catch (error: any) {
+      toast({
+        title: "Failed to Load Bond Details",
+        description: error.message || "Unable to fetch bond information",
+        variant: "destructive",
+      });
       return null;
     }
   }
@@ -165,8 +186,12 @@ export class ChronoBondService {
         args: (arg: any, t: any) => [arg(address, t.Address)]
       });
       return result;
-    } catch (error) {
-      /* console.error("Error checking marketplace setup:", error); */
+    } catch (error: any) {
+      toast({
+        title: "Marketplace Check Failed",
+        description: error.message || "Unable to verify marketplace setup",
+        variant: "destructive",
+      });
       return false;
     }
   }

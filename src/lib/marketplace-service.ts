@@ -1,5 +1,6 @@
 // src/lib/marketplace-service.ts (WORKING VERSION - Real Blockchain Queries)
 import * as fcl from "@onflow/fcl";
+import { toast } from "@/hooks/use-toast";
 
 export interface MarketplaceListing {
   bondID: number;
@@ -76,7 +77,11 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error listing bond for sale:", error);
+      toast({
+        title: "Listing Failed",
+        description: error.message || "Failed to list bond for sale",
+        variant: "destructive",
+      });
       return {
         status: 0,
         errorMessage: error.message || "Failed to list bond for sale"
@@ -146,8 +151,12 @@ export class MarketplaceService {
       
       console.log(`📊 Found ${result.length} listings from blockchain`);
       return result || [];
-    } catch (error) {
-      console.error("Error getting marketplace listings:", error);
+    } catch (error: any) {
+      toast({
+        title: "Failed to Load Listings",
+        description: error.message || "Unable to fetch marketplace listings",
+        variant: "destructive",
+      });
       return [];
     }
   }
@@ -212,7 +221,11 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error purchasing bond:", error);
+      toast({
+        title: "Purchase Failed",
+        description: error.message || "Failed to purchase bond",
+        variant: "destructive",
+      });
       return {
         status: 0,
         errorMessage: error.message || "Failed to purchase bond"
@@ -263,7 +276,11 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error withdrawing bond from sale:", error);
+      toast({
+        title: "Withdrawal Failed",
+        description: error.message || "Failed to withdraw bond from sale",
+        variant: "destructive",
+      });
       return {
         status: 0,
         errorMessage: error.message || "Failed to withdraw bond from sale"
@@ -309,7 +326,11 @@ export class MarketplaceService {
         errorMessage: result.errorMessage
       };
     } catch (error: any) {
-      console.error("Error setting up marketplace:", error);
+      toast({
+        title: "Setup Failed",
+        description: error.message || "Failed to setup marketplace",
+        variant: "destructive",
+      });
       return {
         status: 0,
         errorMessage: error.message || "Failed to setup marketplace"

@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { StaggeredMenu } from "@/components/ui/staggered-menu";
 import { formatAddress } from "@/lib/utils";
+import { authenticateWithFlow, logoutFromFlow } from "@/lib/flow-auth-utils";
 import Image from "next/image";
 
 interface FloatingNavbarProps {
@@ -55,13 +56,26 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleConnect = () => {
-    authenticate();
+  const handleConnect = async () => {
+    try {
+      await authenticateWithFlow();
+    } catch (error: any) {
+      console.error("Authentication error:", error);
+      // Error handling is done in the utility function
+    }
   };
 
-  const handleDisconnect = () => {
-    unauthenticate();
-    setShowUserMenu(false);
+  const handleDisconnect = async () => {
+    try {
+      await logoutFromFlow();
+      unauthenticate();
+      setShowUserMenu(false);
+    } catch (error: any) {
+      console.error("Logout error:", error);
+      // Still try to disconnect even if logout fails
+      unauthenticate();
+      setShowUserMenu(false);
+    }
   };
 
   const copyAddress = () => {
@@ -75,21 +89,17 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className={cn(
-        "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
-        className
-      )}
+      className={cn("nav-container", className)}
     >
       <motion.nav
         layout
         className={cn(
-          "flex items-center justify-between gap-2 sm:gap-4 border-b border-border/40 bg-background/95 backdrop-blur-xl px-3 sm:px-6 py-3 sm:py-4 shadow-lg transition-all duration-300 w-full max-w-none",
-          "bg-card/80 backdrop-blur-xl border-border/30 shadow-xl",
+          "nav-bar",
           isScrolled ? "py-2 sm:py-3 shadow-2xl" : "py-3 sm:py-4"
         )}
       >
         {/* Logo */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="nav-logo-container">
           <Image
             src="/logo.png"
             alt="ChronoBond Logo"
@@ -97,16 +107,13 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
             height={32}
             className="object-cover rounded-full shadow-lg sm:w-10 sm:h-10 flex-shrink-0"
           />
-          <Link
-            href="/"
-            className="hidden sm:block text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent truncate hover:from-cyan-400 hover:to-blue-500 transition-all duration-300"
-          >
+          <Link href="/" className="nav-logo-text">
             ChronoBond
           </Link>
         </div>
 
         {/* Right side - Connect Button + Menu */}
-        <div className="flex items-center gap-2">
+        <div className="nav-actions">
           {/* Wallet Connection */}
           <AnimatePresence mode="wait">
             {user?.loggedIn ? (
@@ -121,10 +128,10 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                 <Button
                   variant="outline"
                   onClick={() => setShowUserMenu(!showUserMenu)}
-                  className="flex items-center gap-2 sm:gap-3 rounded-full bg-background/50 px-2 sm:px-4 py-2 backdrop-blur-sm border-border/40 hover:border-border/60 transition-all duration-200 hover:shadow-lg min-w-0 max-w-[200px] sm:max-w-none"
+                  className="btn-user-menu"
                 >
-                  <Avatar className="h-6 w-6 sm:h-7 sm:w-7 flex-shrink-0">
-                    <AvatarFallback className="text-xs font-semibold bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
+                  <Avatar className="avatar-user">
+                    <AvatarFallback className="avatar-fallback">
                       {user.addr ? user.addr.slice(2, 4).toUpperCase() : "??"}
                     </AvatarFallback>
                   </Avatar>
@@ -148,13 +155,13 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: -10 }}
                         transition={{ duration: 0.15 }}
-                        className="absolute right-0 top-full mt-2 w-64 sm:w-72 z-50 mx-2 sm:mx-0"
+                        className="menu-dropdown"
                       >
-                        <div className="rounded-lg border border-border/40 bg-card/95 backdrop-blur-xl p-4 shadow-xl">
+                        <div className="menu-dropdown-content">
                           <div className="space-y-3">
                             <div className="flex items-center gap-3 pb-3 border-b border-border/40">
-                              <Avatar className="h-8 w-8">
-                                <AvatarFallback className="text-xs font-semibold bg-gradient-to-br from-primary/20 to-primary/5 text-primary">
+                              <Avatar className="avatar-user-large">
+                                <AvatarFallback className="avatar-fallback">
                                   {user.addr
                                     ? user.addr.slice(2, 4).toUpperCase()
                                     : "??"}
@@ -175,7 +182,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                                 variant="ghost"
                                 size="sm"
                                 onClick={copyAddress}
-                                className="w-full justify-start text-left h-8 px-2"
+                                className="menu-item"
                               >
                                 <Copy className="mr-2 h-3 w-3" />
                                 Copy Address
@@ -190,7 +197,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                                     "_blank"
                                   )
                                 }
-                                className="w-full justify-start text-left h-8 px-2"
+                                className="menu-item"
                               >
                                 <ExternalLink className="mr-2 h-3 w-3" />
                                 View on Explorer
@@ -201,7 +208,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                                   variant="ghost"
                                   size="sm"
                                   onClick={handleDisconnect}
-                                  className="w-full justify-start text-left h-8 px-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                  className="menu-item-danger"
                                 >
                                   <LogOut className="mr-2 h-3 w-3" />
                                   Disconnect
@@ -227,7 +234,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                   onClick={handleConnect}
                   variant="outline"
                   size="sm"
-                  className="sm-toggle relative inline-flex items-center gap-1 sm:gap-2 rounded-full bg-background/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20 px-2 sm:px-4 sm:py-4 cursor-pointer text-white font-medium leading-none overflow-visible pointer-events-auto"
+                  className="btn-connect"
                 >
                   <span className="hidden sm:inline text-xs sm:text-sm">
                     Connect

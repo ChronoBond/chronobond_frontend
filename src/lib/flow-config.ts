@@ -1,20 +1,31 @@
 import * as fcl from "@onflow/fcl";
 
 export const initializeFlowTestnet = () => {
-  fcl.config({
-    "accessNode.api": "https://rest-testnet.onflow.org",
-    "discovery.wallet": "https://fcl-discovery.onflow.org/testnet/authn",
-    "app.detail.title": "ChronoBond",
-    "app.detail.icon": "https://your-app-icon.com/icon.png",
-    
-    // WalletConnect Configuration
-    "fcl.walletConnect.projectId": process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "YOUR_WALLETCONNECT_PROJECT_ID",
-    "fcl.walletConnect.requiredMethods": ["eth_sendTransaction", "eth_signTransaction", "eth_sign"],
-    "fcl.walletConnect.optionalMethods": ["eth_accounts", "eth_requestAccounts"],
+  // Check if we have a valid WalletConnect project ID
+  const hasValidWalletConnectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID && 
+    process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID !== "your_walletconnect_project_id_here" &&
+    process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID.length > 10;
+
+  const config: any = {
+    "accessNode.api": process.env.NEXT_PUBLIC_ACCESS_NODE_URL || "https://rest-testnet.onflow.org",
+    "discovery.wallet": process.env.NEXT_PUBLIC_DISCOVERY_WALLET || "https://fcl-discovery.onflow.org/testnet/authn",
+    "app.detail.title": process.env.NEXT_PUBLIC_APP_TITLE || "ChronoBond",
+    "app.detail.icon": process.env.NEXT_PUBLIC_APP_ICON || "https://your-app-icon.com/icon.png",
     
     // Alternative wallet discovery for better compatibility
     "discovery.wallet.method": "POP/RPC",
     "discovery.wallet.method.default": "POP/RPC",
+    
+    // Additional configuration for better error handling
+    "fcl.limit": 1000,
+    "fcl.txPollRate": 1000,
+    "fcl.eventPollRate": 1000,
+    "fcl.eventPollRateMultiplier": 1.5,
+    "fcl.maxEventPollRate": 5000,
+    "fcl.warn": false,
+    
+    // Disable WalletConnect warnings if no valid project ID
+    "fcl.walletConnect.enabled": hasValidWalletConnectId,
     
     // Standard contracts on testnet
     "0xNonFungibleToken": "0x631e88ae7f1d7c20",
@@ -30,7 +41,16 @@ export const initializeFlowTestnet = () => {
     "0xMarketplace": "0x45722594009505d7",
     "0xIYieldStrategy": "0x45722594009505d7",
     "0xFlowStakingStrategy": "0x45722594009505d7",
-  });
+  };
+
+  // Add WalletConnect configuration only if we have a valid project ID
+  if (hasValidWalletConnectId) {
+    config["fcl.walletConnect.projectId"] = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID;
+    config["fcl.walletConnect.requiredMethods"] = ["eth_sendTransaction", "eth_signTransaction", "eth_sign"];
+    config["fcl.walletConnect.optionalMethods"] = ["eth_accounts", "eth_requestAccounts"];
+  }
+
+  fcl.config(config);
 };
 
 // Transaction codes with proper testnet addresses
