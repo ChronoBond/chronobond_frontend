@@ -70,7 +70,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
             height={40}
             className="object-cover rounded-full shadow-lg"
           />
-          <span className="text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+          <span className="text-lg sm:text-xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
             ChronoBond
           </span>
         </div>
@@ -96,7 +96,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                     {user.addr ? user.addr.slice(2, 4).toUpperCase() : "??"}
                   </AvatarFallback>
                 </Avatar>
-                <span className="text-sm font-medium">
+                <span className="hidden sm:inline text-sm font-medium">
                   {user.addr ? formatAddress(user.addr) : "Connected"}
                 </span>
                 <ChevronDown className="h-4 w-4 opacity-50" />
@@ -186,8 +186,8 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
                 size="sm"
                 className="rounded-full bg-background/50 backdrop-blur-sm border-border/40 hover:border-primary/50 transition-all duration-200 hover:shadow-lg hover:shadow-primary/20"
               >
-                <Wallet className="mr-2 h-4 w-4" />
-                Connect Wallet
+                <Wallet className="h-4 w-4 sm:mr-2" />
+                <span className="hidden sm:inline">Connect Wallet</span>
               </Button>
             </motion.div>
           )}

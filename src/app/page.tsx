@@ -57,17 +57,18 @@ export default function Home() {
   }
 
   return (
-    <BackgroundDots className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white">
+      {/* Full-width background layers */}
+      <BackgroundDots className="fixed inset-0" />
+      <BackgroundGrid className="fixed inset-0" />
+      <div className="fixed inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20" />
+      
       {/* Floating Navbar */}
       <FloatingNavbar />
 
       {/* Main Content */}
-      <div className="relative pt-20">
-        <BackgroundGrid className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20" />
-        </BackgroundGrid>
-        
-        <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
+      <div className="relative pt-20 z-10">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
           {/* Navigation Tabs */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -75,8 +76,8 @@ export default function Home() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="mb-12"
           >
-            <nav className="flex items-center justify-center">
-              <div className="flex space-x-1 rounded-full border border-border/40 bg-background/5 backdrop-blur-xl p-1">
+            <nav className="w-full overflow-x-auto pb-2 tab-nav-scroll">
+              <div className="flex space-x-1 rounded-full border border-border/40 bg-background/5 backdrop-blur-xl p-1 w-max mx-auto min-w-full">
                 {tabs.map((tab) => {
                   const Icon = tab.icon
                   return (
@@ -85,7 +86,7 @@ export default function Home() {
                       onClick={() => setActiveTab(tab.id)}
                       variant={activeTab === tab.id ? "default" : "ghost"}
                       className={`
-                        relative flex items-center gap-2 rounded-full px-6 py-2 text-sm font-medium transition-all duration-200
+                        relative flex items-center gap-1 sm:gap-2 rounded-full px-3 sm:px-6 py-2 text-sm font-medium transition-all duration-200 flex-shrink-0 whitespace-nowrap
                         ${activeTab === tab.id 
                           ? "bg-primary text-primary-foreground shadow-lg" 
                           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
@@ -93,7 +94,8 @@ export default function Home() {
                       `}
                     >
                       <Icon className="h-4 w-4" />
-                      {tab.label}
+                      <span className="hidden sm:inline">{tab.label}</span>
+                      <span className="sm:hidden text-xs">{tab.label.split(' ')[0]}</span>
                       {activeTab === tab.id && (
                         <motion.div
                           layoutId="activeTab"
@@ -120,7 +122,7 @@ export default function Home() {
           </motion.main>
         </div>
       </div>
-    </BackgroundDots>
+    </div>
   )
 }
 

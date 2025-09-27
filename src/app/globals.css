@@ -219,3 +219,13 @@
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground));
 }
+
+/* Hide scrollbar for horizontal tab navigation on mobile */
+.tab-nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.tab-nav-scroll {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
