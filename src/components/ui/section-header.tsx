@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "./scroll-reveal";
 import { cn } from "@/lib/utils";
 
 interface SectionHeaderProps {

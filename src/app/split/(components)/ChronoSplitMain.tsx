@@ -11,8 +11,8 @@ import {
   GlassCardHeader,
   GlassCardTitle,
 } from "@/components/ui/glass-card";
-import { ScrollReveal } from "@/components/ui/ScrollReveal";
-import { TextType } from "@/components/ui/TextType";
+import { ScrollReveal } from "@/components/ui/scroll-reveal";
+import { TextType } from "@/components/ui/text-type";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { StepperItem } from "@/components/ui/stepper-item";

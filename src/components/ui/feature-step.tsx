@@ -1,6 +1,6 @@
 import React from "react";
 import { LucideIcon } from "lucide-react";
-import { ScrollReveal } from "./ScrollReveal";
+import { ScrollReveal } from "./scroll-reveal";
 import { cn } from "@/lib/utils";
 
 interface FeatureStepProps {
