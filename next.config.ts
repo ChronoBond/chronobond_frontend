@@ -4,7 +4,7 @@ import { generateRedirects, generateRewrites, generateSecurityHeaders } from "./
 const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
-    optimizeCss: true,
+    // optimizeCss: true, // Temporarily disabled due to critters dependency issue
     optimizePackageImports: ['lucide-react', '@onflow/kit'],
   },
 
@@ -44,6 +44,15 @@ const nextConfig: NextConfig = {
           {
             key: 'X-Robots-Tag',
             value: 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+          },
+          // Ensure proper metadata handling
+          {
+            key: 'X-Frame-Options',
+            value: 'DENY',
+          },
+          {
+            key: 'Referrer-Policy',
+            value: 'strict-origin-when-cross-origin',
           },
         ],
       },
