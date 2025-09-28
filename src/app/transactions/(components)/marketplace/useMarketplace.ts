@@ -143,7 +143,7 @@ export const useMarketplace = (): MarketplaceHooksReturn => {
     });
 
     try {
-      const result = await marketplaceService.purchaseBond(listing.seller, listing.bondID.toString());
+      const result = await marketplaceService.purchaseBond(listing.seller, listing.bondID.toString(), listing.price.toString());
 
       if (result.status === 4) {
         setTxStatus({
@@ -190,7 +190,7 @@ export const useMarketplace = (): MarketplaceHooksReturn => {
     });
 
     try {
-      const result = await marketplaceService.withdrawListing(listing.seller, listing.bondID.toString());
+      const result = await marketplaceService.withdrawBondFromSale(listing.bondID.toString());
 
       if (result.status === 4) {
         setTxStatus({
