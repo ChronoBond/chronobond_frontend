@@ -137,6 +137,7 @@ export const generateRedirects = () => {
       has: [
         {
           type: "host",
+          key: "host",
           value: "www.chronobond.com",
         },
       ],

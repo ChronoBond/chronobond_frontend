@@ -80,7 +80,7 @@ const nextConfig: NextConfig = {
 
   // Webpack optimization
   webpack: (config, { dev, isServer }) => {
-    // Optimize bundle size
+    // Optimize bundle size for production
     if (!dev && !isServer) {
       config.optimization.splitChunks = {
         chunks: 'all',
@@ -89,21 +89,30 @@ const nextConfig: NextConfig = {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
             chunks: 'all',
+            priority: 10,
           },
           common: {
             name: 'common',
             minChunks: 2,
             chunks: 'all',
+            priority: 5,
             enforce: true,
           },
         },
       };
     }
 
-    // SVG optimization
+    // SVG optimization with proper loader
     config.module.rules.push({
       test: /\.svg$/,
-      use: ['@svgr/webpack'],
+      use: [
+        {
+          loader: '@svgr/webpack',
+          options: {
+            svgo: true,
+          },
+        },
+      ],
     });
 
     return config;
@@ -125,20 +134,10 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: false,
   },
 
-  // Environment variables
-  env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
-  },
-
-  // Public runtime config
-  publicRuntimeConfig: {
-    // Add any public runtime config here
-  },
-
-  // Server runtime config
-  serverRuntimeConfig: {
-    // Add any server runtime config here
-  },
+  // Environment variables (if needed)
+  // env: {
+  //   CUSTOM_KEY: process.env.CUSTOM_KEY,
+  // },
 
   // Trailing slash configuration
   trailingSlash: false,
