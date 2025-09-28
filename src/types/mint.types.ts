@@ -46,6 +46,7 @@ export interface MintTransactionStatusProps {
   txStatus: TransactionStatus;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface MintWalletPromptProps {
   // No props needed for wallet prompt
 }

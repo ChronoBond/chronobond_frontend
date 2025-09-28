@@ -54,7 +54,7 @@ export const PendingBonds = ({
             No pending bonds
           </h3>
           <p className="text-brand-neutral mb-6">
-            All your bonds have matured or you don't have any bonds yet
+            All your bonds have matured or you don&apos;t have any bonds yet
           </p>
         </div>
       ) : (
