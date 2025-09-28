@@ -147,7 +147,7 @@ export const generateRedirects = () => {
     // Redirect trailing slash
     {
       source: "/(.*)/",
-      destination: "/:path*",
+      destination: "/$1",
       permanent: true,
     },
     

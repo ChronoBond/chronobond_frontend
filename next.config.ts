@@ -6,12 +6,14 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ['lucide-react', '@onflow/kit'],
-    turbo: {
-      rules: {
-        '*.svg': {
-          loaders: ['@svgr/webpack'],
-          as: '*.js',
-        },
+  },
+
+  // Turbopack configuration (moved from experimental)
+  turbopack: {
+    rules: {
+      '*.svg': {
+        loaders: ['@svgr/webpack'],
+        as: '*.js',
       },
     },
   },
@@ -109,9 +111,6 @@ const nextConfig: NextConfig = {
 
   // Output optimization
   output: 'standalone',
-  
-  // Enable SWC minification
-  swcMinify: true,
 
   // Enable React strict mode
   reactStrictMode: true,
