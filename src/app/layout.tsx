@@ -1,43 +1,19 @@
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { FlowConfigProvider } from "@/components/flow-config-provider";
-import { Toaster } from "@/components/ui/toaster";
+import { metadata as homeMetadata } from "@/lib/metadata";
 
-const inter = Inter({ 
-  subsets: ["latin"],
-  variable: "--font-inter"
-});
+const inter = Inter({ subsets: ["latin"] });
 
-export const metadata: Metadata = {
-  title: "ChronoBond - Time-Locked DeFi Bonds",
-  description: "Mint and trade time-locked bonds on Flow blockchain with guaranteed yields",
-  keywords: ["DeFi", "bonds", "yield", "Flow", "blockchain", "time-locked"],
-  authors: [{ name: "ChronoBond Team" }],
-  openGraph: {
-    title: "ChronoBond - Time-Locked DeFi Bonds",
-    description: "Mint and trade time-locked bonds on Flow blockchain with guaranteed yields",
-    type: "website",
-  },
-};
+export const metadata = homeMetadata;
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en" className="dark">
-      <body suppressHydrationWarning className={`${inter.variable} font-inter antialiased bg-background text-foreground`}>
-        <FlowConfigProvider>
-          <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
-            <main className="relative">
-              {children}
-            </main>
-            <Toaster />
-          </div>
-        </FlowConfigProvider>
-      </body>
+    <html lang="en">
+      <body className={inter.className}>{children}</body>
     </html>
   );
 }

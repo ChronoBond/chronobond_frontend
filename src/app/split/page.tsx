@@ -1,5 +1,3 @@
-"use client";
-
 import { FloatingNavbar } from "@/components/floating-navbar";
 import {
   BackgroundGrid,
