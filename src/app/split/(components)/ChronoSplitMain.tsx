@@ -184,26 +184,26 @@ const ChronoSplitMain = () => {
             description="Your time-locked bond containing both principal and future yield potential."
             stepNumber={1}
           >
-            <div className="bg-white/5 rounded-lg p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-6">
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
                       <div className="flex justify-between">
                   <span className="text-sm text-gray-400">Principal:</span>
-                  <span className="font-semibold text-white">10,000 FLOW</span>
+                  <span className="font-semibold text-white break-words">10,000 FLOW</span>
                       </div>
                       <div className="flex justify-between">
                   <span className="text-sm text-gray-400">Expected Yield:</span>
-                  <span className="font-semibold text-green-400">1,200 FLOW</span>
+                  <span className="font-semibold text-green-400 break-words">1,200 FLOW</span>
                       </div>
                       <div className="flex justify-between">
                   <span className="text-sm text-gray-400">Maturity:</span>
-                  <span className="font-semibold text-white">365 days</span>
+                  <span className="font-semibold text-white break-words">365 days</span>
                       </div>
                       <div className="flex justify-between">
                   <span className="text-sm text-gray-400">Strategy:</span>
-                  <span className="font-semibold text-white">FlowStaking</span>
+                  <span className="font-semibold text-white break-words">FlowStaking</span>
                 </div>
               </div>
-              <Button disabled variant="secondary" className="w-full">
+              <Button disabled variant="secondary" className="w-full mt-2 sm:mt-0">
                 Select Bond to Split
               </Button>
                       </div>
@@ -220,7 +220,7 @@ const ChronoSplitMain = () => {
               <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mx-auto mb-6 shadow-2xl">
                 <ArrowRight className="w-12 h-12 text-white" />
               </div>
-              <Button disabled variant="primary" size="lg" className="px-12 py-4">
+              <Button disabled variant="primary" size="lg" className="px-10 sm:px-12 py-4 w-full sm:w-auto">
                 <Split className="w-6 h-6 mr-3" />
                 Execute Split (Coming Soon)
               </Button>
@@ -234,14 +234,14 @@ const ChronoSplitMain = () => {
             description="Represents the principal amount of your bond, redeemable at maturity."
             stepNumber={3}
           >
-            <div className="bg-white/5 rounded-lg p-6 space-y-4">
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6 space-y-4">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-400">Amount:</span>
-                <span className="font-semibold text-cyan-400">10,000 cPT</span>
+                <span className="font-semibold text-cyan-400 break-words">10,000 cPT</span>
                 </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-400">Redeemable:</span>
-                <span className="font-semibold text-white">10,000 FLOW</span>
+                <span className="font-semibold text-white break-words">10,000 FLOW</span>
                 </div>
                 </div>
           </StepperItem>
@@ -254,14 +254,14 @@ const ChronoSplitMain = () => {
             stepNumber={4}
             isLast={true}
           >
-            <div className="bg-white/5 rounded-lg p-6 space-y-4">
+            <div className="bg-white/5 rounded-lg p-4 sm:p-6 space-y-4">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-400">Amount:</span>
-                <span className="font-semibold text-green-400">1,200 cYT</span>
+                <span className="font-semibold text-green-400 break-words">1,200 cYT</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-400">Yield Claim:</span>
-                <span className="font-semibold text-white">1,200 FLOW</span>
+                <span className="font-semibold text-white break-words">1,200 FLOW</span>
                   </div>
                 </div>
           </StepperItem>

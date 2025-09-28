@@ -290,17 +290,17 @@ const MintMain = () => {
 
   return (
     <div ref={containerRef} className="app-container max-w-6xl mx-auto">
-        <Card className="card-professional reveal-item">
+        <Card className="reveal-item relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10">
           <CardHeader className="text-center">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <Coins className="w-6 h-6 text-primary-foreground" />
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+                <Coins className="w-6 h-6 text-white" />
               </div>
               <div>
-                <CardTitle className="text-3xl font-bold gradient-text">
+                <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent">
                   Mint ChronoBond
                 </CardTitle>
-                <CardDescription className="text-lg">
+                <CardDescription className="text-lg text-brand-neutral">
                   Create time-locked bonds with guaranteed yields
                 </CardDescription>
               </div>
@@ -317,7 +317,7 @@ const MintMain = () => {
                       Principal Amount
                     </label>
                     <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                      <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/70" />
                       <Input
                         type="number"
                         placeholder="Enter amount"
@@ -325,11 +325,11 @@ const MintMain = () => {
                         onChange={(e) =>
                           handleInputChange("amount", e.target.value)
                         }
-                        className="pl-10 pr-16 text-lg h-12"
+                        className="pl-10 pr-16 text-lg h-12 bg-white/5 border-white/20 text-white placeholder:text-white/50"
                         min="0"
                         step="0.01"
                       />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-muted-foreground bg-muted/50 px-2 py-1 rounded">
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-white/70 bg-white/10 px-2 py-1 rounded">
                         FLOW
                       </div>
                     </div>
@@ -430,32 +430,27 @@ const MintMain = () => {
               <div ref={summaryRef} className="space-y-6">
                 {/* Strategy Details */}
                 <div className="reveal-item">
-                  <Card className="bg-gradient-to-br from-primary/5 to-primary/10 border-primary/20">
+                  <Card className="relative overflow-hidden bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Shield className="w-5 h-5" />
                         {selectedStrategy?.name} Strategy
                       </CardTitle>
-                      <Badge
-                        variant={
-                          selectedStrategy?.riskLevel === "LOW"
-                            ? "success"
-                            : selectedStrategy?.riskLevel === "MEDIUM"
-                            ? "warning"
-                            : "error"
-                        }
-                        className="w-fit"
-                      >
+                      <Badge className={`w-fit ${
+                        selectedStrategy?.riskLevel === 'LOW' ? 'bg-brand-accent/20 text-brand-accent border-brand-accent/40' :
+                        selectedStrategy?.riskLevel === 'MEDIUM' ? 'bg-brand-warning/20 text-brand-warning border-brand-warning/40' :
+                        'bg-brand-error/20 text-brand-error border-brand-error/40'
+                      }`}>
                         {selectedStrategy?.riskLevel} RISK
                       </Badge>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-sm text-muted-foreground mb-4">
+                      <p className="text-sm text-brand-neutral mb-4">
                         {selectedStrategy?.description}
                       </p>
                       <div className="flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-success" />
-                        <span className="text-success font-semibold">
+                        <TrendingUp className="w-4 h-4 text-brand-accent" />
+                        <span className="text-brand-accent font-semibold">
                           {selectedStrategy?.expectedYield} Expected APY
                         </span>
                       </div>
@@ -465,7 +460,7 @@ const MintMain = () => {
 
                 {/* Yield Calculator */}
                 <div className="reveal-item">
-                  <Card className="bg-gradient-to-br from-success/5 to-success/10 border-success/20">
+                  <Card className="relative overflow-hidden bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10">
                     <CardHeader>
                       <CardTitle className="text-lg flex items-center gap-2">
                         <Clock className="w-5 h-5" />
@@ -474,32 +469,32 @@ const MintMain = () => {
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="grid grid-cols-2 gap-4">
-                        <div className="text-center p-3 bg-muted/30 rounded-lg">
-                          <div className="text-2xl font-bold text-primary">
+                        <div className="text-center p-3 bg-white/5 border border-white/10 rounded-lg">
+                          <div className="text-2xl font-bold text-brand-primary">
                             {formData.amount || "0.00"}
                           </div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-brand-neutral">
                             Principal
                           </div>
                         </div>
-                        <div className="text-center p-3 bg-muted/30 rounded-lg">
-                          <div className="text-2xl font-bold text-success">
+                        <div className="text-center p-3 bg-white/5 border border-white/10 rounded-lg">
+                          <div className="text-2xl font-bold text-brand-accent">
                             +{estimatedYield}
                           </div>
-                          <div className="text-xs text-muted-foreground">
+                          <div className="text-xs text-brand-neutral">
                             Est. Yield
                           </div>
                         </div>
                       </div>
-                      <div className="text-center p-4 bg-gradient-to-r from-success/10 to-primary/10 rounded-lg border border-success/20">
-                        <div className="text-3xl font-bold gradient-text mb-1">
+                      <div className="text-center p-4 bg-gradient-to-r from-brand-accent/10 to-brand-primary/10 rounded-lg border border-white/10">
+                        <div className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent mb-1">
                           {(
                             parseFloat(formData.amount || "0") +
                             parseFloat(estimatedYield)
                           ).toFixed(4)}{" "}
                           FLOW
                         </div>
-                        <div className="text-sm text-muted-foreground">
+                        <div className="text-sm text-brand-neutral">
                           Total at Maturity ({selectedDuration?.label})
                         </div>
                       </div>
@@ -513,10 +508,10 @@ const MintMain = () => {
             {txStatus.statusString && (
               <div className={`p-4 rounded-lg border ${
                   txStatus.state === "success"
-                    ? "bg-success/10 text-success border-success/20"
+                    ? "bg-brand-accent/10 text-brand-accent border-brand-accent/20"
                     : txStatus.state === "error"
-                    ? "bg-error/10 text-error border-error/20"
-                    : "bg-primary/10 text-primary border-primary/20"
+                    ? "bg-brand-error/10 text-brand-error border-brand-error/20"
+                    : "bg-brand-primary/10 text-brand-primary border-brand-primary/20"
                 }`}
               >
                 <div className="flex items-center gap-3">

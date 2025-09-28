@@ -5,27 +5,52 @@ import { gsap } from "gsap";
 import * as fcl from "@onflow/fcl";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Clock, DollarSign, Bell, RefreshCw, Wallet } from "lucide-react";
-import { bondRedemptionService, type BondMaturityInfo } from "@/lib/bond-redemption-service";
+import {
+  Loader2,
+  Clock,
+  DollarSign,
+  Bell,
+  RefreshCw,
+  Wallet,
+  Link as LinkIcon,
+  CheckCircle,
+  AlertTriangle,
+} from "lucide-react";
+import {
+  bondRedemptionService,
+  type BondMaturityInfo,
+} from "@/lib/bond-redemption-service";
 
 const RedeemMain = () => {
   const { user } = useFlowCurrentUser();
   const containerRef = useRef<HTMLDivElement>(null);
-  const [activeTab, setActiveTab] = useState<'redeemable' | 'pending' | 'notifications'>('redeemable');
-  
+  const [activeTab, setActiveTab] = useState<
+    "redeemable" | "pending" | "notifications"
+  >("redeemable");
+
   // Bond states
-  const [redeemableBonds, setRedeemableBonds] = useState<BondMaturityInfo[]>([]);
+  const [redeemableBonds, setRedeemableBonds] = useState<BondMaturityInfo[]>(
+    []
+  );
   const [pendingBonds, setPendingBonds] = useState<BondMaturityInfo[]>([]);
-  const [nearingMaturity, setNearingMaturity] = useState<BondMaturityInfo[]>([]);
+  const [nearingMaturity, setNearingMaturity] = useState<BondMaturityInfo[]>(
+    []
+  );
   const [totalRedeemableValue, setTotalRedeemableValue] = useState<number>(0);
-  
+
   // UI states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [redeeming, setRedeeming] = useState<{[key: number]: boolean}>({});
+  const [redeeming, setRedeeming] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
     if (user?.loggedIn) {
@@ -39,7 +64,7 @@ const RedeemMain = () => {
   // 🔍 LOAD BOND DATA FROM BLOCKCHAIN
   const loadBondData = async () => {
     if (!user?.addr) return;
-    
+
     try {
       setLoading(true);
       /* console.log("🔍 Loading bond redemption data..."); */
@@ -49,7 +74,7 @@ const RedeemMain = () => {
         bondRedemptionService.getRedeemableBonds(user.addr),
         getAllPendingBonds(),
         bondRedemptionService.getBondsNearingMaturity(user.addr, 24),
-        bondRedemptionService.getTotalRedeemableValue(user.addr)
+        bondRedemptionService.getTotalRedeemableValue(user.addr),
       ]);
 
       setRedeemableBonds(redeemable);
@@ -83,19 +108,22 @@ const RedeemMain = () => {
 
       const bondIDs = await fcl.query({
         cadence: bondsScript,
-        args: (arg: any, t: any) => [arg(user?.addr, t.Address)]
+        args: (arg: any, t: any) => [arg(user?.addr, t.Address)],
       });
 
       if (!bondIDs || bondIDs.length === 0) return [];
 
-      const maturityPromises = bondIDs.map((bondID: number) => 
-        bondRedemptionService.checkBondMaturity(user?.addr || "", bondID.toString())
+      const maturityPromises = bondIDs.map((bondID: number) =>
+        bondRedemptionService.checkBondMaturity(
+          user?.addr || "",
+          bondID.toString()
+        )
       );
 
       const maturityResults = await Promise.all(maturityPromises);
-      
-      return maturityResults.filter((bond): bond is BondMaturityInfo => 
-        bond !== null && !bond.isMatured
+
+      return maturityResults.filter(
+        (bond): bond is BondMaturityInfo => bond !== null && !bond.isMatured
       );
     } catch (error) {
       /* console.error("Error getting pending bonds:", error); */
@@ -110,23 +138,30 @@ const RedeemMain = () => {
       return;
     }
 
-    const confirmMessage = `Redeem Bond #${bond.bondID}?\n\n` +
+    const confirmMessage =
+      `Redeem Bond #${bond.bondID}?\n\n` +
       `Principal: ${bondRedemptionService.formatCurrency(bond.principal)}\n` +
       `Yield: ${bondRedemptionService.formatCurrency(bond.expectedYield)}\n` +
       `Total: ${bondRedemptionService.formatCurrency(bond.expectedTotal)}`;
 
     if (!confirm(confirmMessage)) return;
 
-    setRedeeming(prev => ({ ...prev, [bond.bondID]: true }));
+    setRedeeming((prev) => ({ ...prev, [bond.bondID]: true }));
     setError(null);
 
     try {
       /* console.log(`💰 Redeeming bond ${bond.bondID}...`); */
-      
-      const result = await bondRedemptionService.redeemBond(bond.bondID.toString());
+
+      const result = await bondRedemptionService.redeemBond(
+        bond.bondID.toString()
+      );
 
       if (result.success) {
-        setSuccess(`✅ Successfully redeemed Bond #${bond.bondID} for ${bondRedemptionService.formatCurrency(bond.expectedTotal)}!`);
+        setSuccess(
+          `✅ Successfully redeemed Bond #${
+            bond.bondID
+          } for ${bondRedemptionService.formatCurrency(bond.expectedTotal)}!`
+        );
         /* console.log("✅ Bond redeemed successfully"); */
         await loadBondData(); // Refresh data
 
@@ -139,9 +174,13 @@ const RedeemMain = () => {
       }
     } catch (error: unknown) {
       /* console.error("❌ Error redeeming bond:", error); */
-      setError(error instanceof Error ? `❌ Failed to redeem bond: ${error.message}` : '❌ Failed to redeem bond');
+      setError(
+        error instanceof Error
+          ? `❌ Failed to redeem bond: ${error.message}`
+          : "❌ Failed to redeem bond"
+      );
     } finally {
-      setRedeeming(prev => ({ ...prev, [bond.bondID]: false }));
+      setRedeeming((prev) => ({ ...prev, [bond.bondID]: false }));
     }
   };
 
@@ -149,8 +188,11 @@ const RedeemMain = () => {
   const handleRedeemAllBonds = async () => {
     if (redeemableBonds.length === 0) return;
 
-    const confirmMessage = `Redeem all ${redeemableBonds.length} matured bonds?\n\n` +
-      `Total value: ${bondRedemptionService.formatCurrency(totalRedeemableValue)}`;
+    const confirmMessage =
+      `Redeem all ${redeemableBonds.length} matured bonds?\n\n` +
+      `Total value: ${bondRedemptionService.formatCurrency(
+        totalRedeemableValue
+      )}`;
 
     if (!confirm(confirmMessage)) return;
 
@@ -159,19 +201,23 @@ const RedeemMain = () => {
 
     try {
       /* console.log(`💰 Redeeming ${redeemableBonds.length} bonds...`); */
-      
-      const redemptionPromises = redeemableBonds.map(bond => 
+
+      const redemptionPromises = redeemableBonds.map((bond) =>
         bondRedemptionService.redeemBond(bond.bondID.toString())
       );
 
       const results = await Promise.all(redemptionPromises);
-      const successful = results.filter(r => r.success).length;
+      const successful = results.filter((r) => r.success).length;
       const failed = results.length - successful;
 
       if (successful > 0) {
-        setSuccess(`✅ Successfully redeemed ${successful} bonds for ${bondRedemptionService.formatCurrency(totalRedeemableValue)}!`);
+        setSuccess(
+          `✅ Successfully redeemed ${successful} bonds for ${bondRedemptionService.formatCurrency(
+            totalRedeemableValue
+          )}!`
+        );
       }
-      
+
       if (failed > 0) {
         setError(`❌ Failed to redeem ${failed} bonds`);
       }
@@ -179,7 +225,11 @@ const RedeemMain = () => {
       await loadBondData(); // Refresh data
     } catch (error: unknown) {
       /* console.error("❌ Error redeeming bonds:", error); */
-      setError(error instanceof Error ? `❌ Failed to redeem bonds: ${error.message}` : '❌ Failed to redeem bonds');
+      setError(
+        error instanceof Error
+          ? `❌ Failed to redeem bonds: ${error.message}`
+          : "❌ Failed to redeem bonds"
+      );
     } finally {
       setLoading(false);
     }
@@ -192,20 +242,38 @@ const RedeemMain = () => {
 
   // Reveal animation when component mounts
   useEffect(() => {
-    const elements = containerRef.current?.querySelectorAll('.reveal-item');
+    const elements = containerRef.current?.querySelectorAll(".reveal-item");
     if (elements && elements.length > 0) {
-      gsap.fromTo(elements, 
+      gsap.fromTo(
+        elements,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.6, 
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
           stagger: 0.1,
-          ease: "power2.out"
+          ease: "power2.out",
         }
       );
     }
   }, []);
+
+  // Tab switching animation
+  useEffect(() => {
+    const tabContent = containerRef.current?.querySelector(".tab-content");
+    if (tabContent) {
+      gsap.fromTo(
+        tabContent,
+        { opacity: 0, y: 20 },
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.4,
+          ease: "power2.out",
+        }
+      );
+    }
+  }, [activeTab]);
 
   if (!user?.loggedIn) {
     return (
@@ -215,7 +283,9 @@ const RedeemMain = () => {
             <div className="mb-6 mx-auto w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center">
               <Wallet className="w-10 h-10 text-primary" />
             </div>
-            <h3 className="text-2xl font-bold mb-4 gradient-text">Connect Wallet to Redeem Bonds</h3>
+            <h3 className="text-2xl font-bold mb-4 gradient-text">
+              Connect Wallet to Redeem Bonds
+            </h3>
             <p className="text-muted-foreground mb-6">
               Please connect your Flow wallet to view and redeem your bonds
             </p>
@@ -226,45 +296,51 @@ const RedeemMain = () => {
   }
 
   return (
-    <div ref={containerRef} className="app-container space-y-8 pb-8">
-      {/* Bond Redemption Header */}
+    <div ref={containerRef} className="app-container space-y-6 pb-8">
+      {/* Modern Bond Redemption Header */}
       <div className="reveal-item">
-        <Card className="card-professional">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <DollarSign className="w-5 h-5 text-primary-foreground" />
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10 p-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 via-transparent to-brand-accent/10" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+                <DollarSign className="w-6 h-6 text-white" />
               </div>
               <div>
-                <CardTitle className="text-2xl font-bold gradient-text">Bond Redemption Center</CardTitle>
-                <CardDescription>Redeem your matured bonds and track upcoming maturities</CardDescription>
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent">
+                  Bond Redemption Center
+                </h1>
+                <p className="text-brand-neutral text-lg">
+                  Redeem your matured bonds and track upcoming maturities
+                </p>
               </div>
             </div>
-          </CardHeader>
-        </Card>
-      </div>
 
-      {/* Summary Cards */}
-      <div className="reveal-item">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <SummaryCard
-            title="💰 Ready to Redeem"
-            value={bondRedemptionService.formatCurrency(totalRedeemableValue)}
-            count={`${redeemableBonds.length} bonds`}
-            color="green"
-          />
-          <SummaryCard
-            title="⏳ Pending Maturity"
-            value={`${pendingBonds.length} bonds`}
-            count={`Total value when mature`}
-            color="blue"
-          />
-          <SummaryCard
-            title="🔔 Nearing Maturity"
-            value={`${nearingMaturity.length} bonds`}
-            count="Within 24 hours"
-            color="orange"
-          />
+            {/* Compact Status Overview Bar */}
+            <div className="flex flex-wrap gap-3">
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-accent/10 border border-brand-accent/40">
+                <div className="w-2 h-2 rounded-full bg-brand-accent animate-pulse" />
+                <span className="text-brand-accent font-medium text-sm">
+                  {redeemableBonds.length} Ready
+                </span>
+                <span className="text-brand-accent/80 text-sm">
+                  {bondRedemptionService.formatCurrency(totalRedeemableValue)}
+                </span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/40">
+                <div className="w-2 h-2 rounded-full bg-brand-primary" />
+                <span className="text-brand-primary font-medium text-sm">
+                  {pendingBonds.length} Pending
+                </span>
+              </div>
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-brand-warning/10 border border-brand-warning/40">
+                <div className="w-2 h-2 rounded-full bg-brand-warning animate-pulse" />
+                <span className="text-brand-warning font-medium text-sm">
+                  {nearingMaturity.length} Nearing
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -273,228 +349,377 @@ const RedeemMain = () => {
         <div className="bg-error/10 text-error border border-error/20 px-4 py-3 rounded-lg">
           <div className="flex justify-between items-center">
             <span>{error}</span>
-            <button onClick={clearMessages} className="text-error hover:text-error/80">×</button>
+            <button
+              onClick={clearMessages}
+              className="text-error hover:text-error/80"
+            >
+              ×
+            </button>
           </div>
         </div>
       )}
-      
+
       {success && (
         <div className="bg-success/10 text-success border border-success/20 px-4 py-3 rounded-lg">
           <div className="flex justify-between items-center">
             <span>{success}</span>
-            <button onClick={clearMessages} className="text-success hover:text-success/80">×</button>
+            <button
+              onClick={clearMessages}
+              className="text-success hover:text-success/80"
+            >
+              ×
+            </button>
           </div>
         </div>
       )}
 
-      {/* Tab Navigation */}
+      {/* Modern Tab Navigation */}
       <div className="reveal-item">
-        <div className="flex space-x-1 bg-muted/30 p-1 rounded-lg">
-          {[
-            { key: 'redeemable', label: '💰 Ready to Redeem', count: redeemableBonds.length },
-            { key: 'pending', label: '⏳ Pending Bonds', count: pendingBonds.length },
-            { key: 'notifications', label: '🔔 Notifications', count: nearingMaturity.length }
-          ].map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key as 'redeemable' | 'pending' | 'notifications')}
-              className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.key
-                  ? 'bg-card text-primary shadow-sm border border-border'
-                  : 'text-muted-foreground hover:text-foreground'
-              }`}
-            >
-              <div className="flex items-center justify-center space-x-2">
-                <span>{tab.label}</span>
+        <div className="relative">
+          {/* Desktop: Horizontal Pills */}
+          <div className="hidden sm:flex items-center gap-2 p-2 bg-background/20 backdrop-blur-xl rounded-2xl border border-white/10">
+            {[
+              {
+                key: "redeemable",
+                label: "Ready to Redeem",
+                icon: "💰",
+                count: redeemableBonds.length,
+                badgeBg: "bg-brand-accent/20",
+                badgeText: "text-brand-accent",
+              },
+              {
+                key: "pending",
+                label: "Pending Bonds",
+                icon: "⏳",
+                count: pendingBonds.length,
+                badgeBg: "bg-brand-primary/20",
+                badgeText: "text-brand-primary",
+              },
+              {
+                key: "notifications",
+                label: "Notifications",
+                icon: "🔔",
+                count: nearingMaturity.length,
+                badgeBg: "bg-brand-warning/20",
+                badgeText: "text-brand-warning",
+              },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() =>
+                  setActiveTab(
+                    tab.key as "redeemable" | "pending" | "notifications"
+                  )
+                }
+                className={`relative flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                  activeTab === tab.key
+                    ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
+                    : "text-white/70 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {activeTab === tab.key && (
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 animate-pulse" />
+                )}
+                <span className="relative z-10 text-lg">
+                  {tab.key === "redeemable" && (
+                    <CheckCircle className="w-4 h-4" />
+                  )}
+                  {tab.key === "pending" && <Clock className="w-4 h-4" />}
+                  {tab.key === "notifications" && <Bell className="w-4 h-4" />}
+                </span>
+                <span className="relative z-10">{tab.label}</span>
                 {tab.count > 0 && (
-                  <span className="bg-primary text-primary-foreground rounded-full px-2 py-1 text-xs">
+                  <span
+                    className={`relative z-10 inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
+                      activeTab === tab.key
+                        ? "bg-white text-brand-primary"
+                        : `${tab.badgeBg} ${tab.badgeText}`
+                    }`}
+                  >
                     {tab.count}
                   </span>
                 )}
-              </div>
-            </button>
-          ))}
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile: Scrollable Pills */}
+          <div className="sm:hidden">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {[
+                {
+                  key: "redeemable",
+                  label: "Ready",
+                  icon: "💰",
+                  count: redeemableBonds.length,
+                  badgeBg: "bg-brand-accent/20",
+                  badgeText: "text-brand-accent",
+                },
+                {
+                  key: "pending",
+                  label: "Pending",
+                  icon: "⏳",
+                  count: pendingBonds.length,
+                  badgeBg: "bg-brand-primary/20",
+                  badgeText: "text-brand-primary",
+                },
+                {
+                  key: "notifications",
+                  label: "Alerts",
+                  icon: "🔔",
+                  count: nearingMaturity.length,
+                  badgeBg: "bg-brand-warning/20",
+                  badgeText: "text-brand-warning",
+                },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() =>
+                    setActiveTab(
+                      tab.key as "redeemable" | "pending" | "notifications"
+                    )
+                  }
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                    activeTab === tab.key
+                      ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
+                      : "bg-background/20 text-white/70 hover:text-white hover:bg-white/5 border border-white/10"
+                  }`}
+                >
+                  <span className="text-lg">
+                    {tab.key === "redeemable" && (
+                      <CheckCircle className="w-4 h-4" />
+                    )}
+                    {tab.key === "pending" && <Clock className="w-4 h-4" />}
+                    {tab.key === "notifications" && (
+                      <Bell className="w-4 h-4" />
+                    )}
+                  </span>
+                  <span>{tab.label}</span>
+                  {tab.count > 0 && (
+                    <span
+                      className={`inline-flex items-center justify-center w-5 h-5 rounded-full text-xs font-bold ${
+                        activeTab === tab.key
+                          ? "bg-white text-brand-primary"
+                          : `${tab.badgeBg} ${tab.badgeText}`
+                      }`}
+                    >
+                      {tab.count}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
       {/* Redeemable Bonds Tab */}
-      {activeTab === 'redeemable' && (
-        <div>
-          <Card className="card-professional">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle className="text-xl font-semibold">💰 Bonds Ready for Redemption</CardTitle>
-                  <CardDescription>Redeem your matured bonds to receive principal + yield</CardDescription>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    onClick={loadBondData}
-                    disabled={loading}
-                    variant="outline"
-                    size="sm"
-                    className="gap-2"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                    Refresh
-                  </Button>
-                  {redeemableBonds.length > 0 && (
-                    <Button
-                      onClick={handleRedeemAllBonds}
-                      disabled={loading}
-                      className="btn-primary"
-                      size="sm"
-                    >
-                      💰 Redeem All ({bondRedemptionService.formatCurrency(totalRedeemableValue)})
-                    </Button>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary mr-3" />
-                  <span>🔍 Loading redeemable bonds...</span>
-                </div>
-              ) : redeemableBonds.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mb-6 mx-auto w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
-                    <DollarSign className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">No bonds ready for redemption</h3>
-                  <p className="text-muted-foreground mb-6">
-                    Your bonds will appear here when they mature
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {redeemableBonds.map((bond) => (
-                    <BondRedemptionCard
-                      key={bond.bondID}
-                      bond={bond}
-                      onRedeem={handleRedeemBond}
-                      isRedeeming={redeeming[bond.bondID] || false}
-                    />
-                  ))}
-                </div>
+      {activeTab === "redeemable" && (
+        <div className="tab-content space-y-6">
+          {/* Modern Bond List Header */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                💰 Ready for Redemption
+              </h2>
+              <p className="text-white/70">
+                Redeem your matured bonds to receive principal + yield
+              </p>
+            </div>
+            <div className="flex flex-col gap-2 w-full sm:w-64">
+              <Button
+                onClick={loadBondData}
+                disabled={loading}
+                variant="outline"
+                size="sm"
+                className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10 w-full"
+              >
+                <RefreshCw
+                  className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+                />
+                Refresh
+              </Button>
+              {redeemableBonds.length > 0 && (
+                <Button
+                  onClick={handleRedeemAllBonds}
+                  disabled={loading}
+                  className="bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg w-full"
+                  size="sm"
+                >
+                  💰 Redeem All (
+                  {bondRedemptionService.formatCurrency(totalRedeemableValue)})
+                </Button>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
+
+          {/* Modern Bond List */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                <p className="text-white/70">Loading redeemable bonds...</p>
+              </div>
+            </div>
+          ) : redeemableBonds.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 flex items-center justify-center mx-auto mb-6">
+                <DollarSign className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No bonds ready for redemption
+              </h3>
+              <p className="text-brand-neutral mb-6">
+                Your bonds will appear here when they mature
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {redeemableBonds.map((bond) => (
+                <ModernBondRedemptionCard
+                  key={bond.bondID}
+                  bond={bond}
+                  onRedeem={handleRedeemBond}
+                  isRedeeming={redeeming[bond.bondID] || false}
+                />
+              ))}
+            </div>
+          )}
+
+          {/* Mobile Sticky Footer */}
+          {redeemableBonds.length > 0 && (
+            <div className="sm:hidden fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-xl border-t border-white/10">
+              <div className="flex gap-3">
+                <Button
+                  onClick={loadBondData}
+                  disabled={loading}
+                  variant="outline"
+                  size="sm"
+                  className="flex-1 bg-background/20 border-white/20 text-white"
+                >
+                  <RefreshCw
+                    className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+                  />
+                  Refresh
+                </Button>
+                <Button
+                  onClick={handleRedeemAllBonds}
+                  disabled={loading}
+                  className="flex-1 bg-brand-accent text-white hover:bg-brand-accent/90"
+                  size="sm"
+                >
+                  💰 Redeem All
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* Pending Bonds Tab */}
-      {activeTab === 'pending' && (
-        <div>
-          <Card className="card-professional">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle className="text-xl font-semibold">⏳ Bonds Pending Maturity</CardTitle>
-                  <CardDescription>Track your bonds that haven&apos;t matured yet</CardDescription>
-                </div>
-                <Button
-                  onClick={loadBondData}
-                  disabled={loading}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
+      {activeTab === "pending" && (
+        <div className="tab-content space-y-6">
+          {/* Modern Pending Bonds Header */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                ⏳ Pending Maturity
+              </h2>
+              <p className="text-white/70">
+                Track your bonds that haven&apos;t matured yet
+              </p>
+            </div>
+            <Button
+              onClick={loadBondData}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
+
+          {/* Modern Pending Bonds List */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                <p className="text-white/70">Loading pending bonds...</p>
               </div>
-            </CardHeader>
-            
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary mr-3" />
-                  <span>🔍 Loading pending bonds...</span>
-                </div>
-              ) : pendingBonds.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mb-6 mx-auto w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
-                    <Clock className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">No pending bonds</h3>
-                  <p className="text-muted-foreground">
-                    Mint some bonds to see them here while they mature
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {pendingBonds.map((bond) => (
-                    <BondPendingCard key={bond.bondID} bond={bond} />
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+            </div>
+          ) : pendingBonds.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 flex items-center justify-center mx-auto mb-6">
+                <Clock className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No pending bonds
+              </h3>
+              <p className="text-brand-neutral mb-6">
+                Mint some bonds to see them here while they mature
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {pendingBonds.map((bond) => (
+                <ModernBondPendingCard key={bond.bondID} bond={bond} />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {/* Notifications Tab */}
-      {activeTab === 'notifications' && (
-        <div>
-          <Card className="card-professional">
-            <CardHeader>
-              <div className="flex justify-between items-center">
-                <div>
-                  <CardTitle className="text-xl font-semibold">🔔 Maturity Notifications</CardTitle>
-                  <CardDescription>Bonds maturing within the next 24 hours</CardDescription>
-                </div>
-                <Button
-                  onClick={loadBondData}
-                  disabled={loading}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                >
-                  <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
-                  Refresh
-                </Button>
+      {activeTab === "notifications" && (
+        <div className="tab-content space-y-6">
+          {/* Modern Notifications Header */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                🔔 Maturity Notifications
+              </h2>
+              <p className="text-white/70">
+                Bonds maturing within the next 24 hours
+              </p>
+            </div>
+            <Button
+              onClick={loadBondData}
+              disabled={loading}
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10"
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
+
+          {/* Modern Notifications List */}
+          {nearingMaturity.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 flex items-center justify-center mx-auto mb-6">
+                <Bell className="w-10 h-10 text-muted-foreground" />
               </div>
-            </CardHeader>
-            
-            <CardContent>
-              {nearingMaturity.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mb-6 mx-auto w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
-                    <Bell className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                                     <h3 className="text-lg font-semibold mb-2">No bonds nearing maturity</h3>
-                   <p className="text-muted-foreground">
-                     You&apos;ll be notified when bonds are close to maturity
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {nearingMaturity.map((bond) => (
-                    <div
-                      key={bond.bondID}
-                      className="border border-warning/20 bg-warning/10 rounded-lg p-4"
-                    >
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <h3 className="font-semibold text-warning">🔔 Bond #{bond.bondID} Maturing Soon</h3>
-                          <p className="text-sm text-warning/80">
-                            Matures in {bondRedemptionService.formatTimeRemaining(bond.timeUntilMaturity)}
-                          </p>
-                          <p className="text-sm text-warning/80">
-                            Expected return: {bondRedemptionService.formatCurrency(bond.expectedTotal)}
-                          </p>
-                        </div>
-                        <div className="text-warning text-2xl">⏰</div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No bonds nearing maturity
+              </h3>
+              <p className="text-brand-neutral mb-6">
+                You&apos;ll be notified when bonds are close to maturity
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {nearingMaturity.map((bond) => (
+                <ModernBondNotificationCard key={bond.bondID} bond={bond} />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -504,16 +729,21 @@ const RedeemMain = () => {
 export default RedeemMain;
 
 // Summary Card Component
-const SummaryCard = ({ title, value, count, color }: {
+const SummaryCard = ({
+  title,
+  value,
+  count,
+  color,
+}: {
   title: string;
   value: string;
   count: string;
-  color: 'green' | 'blue' | 'orange';
+  color: "green" | "blue" | "orange";
 }) => {
   const colorClasses = {
-    green: 'border-success/20 bg-success/5 text-success',
-    blue: 'border-info/20 bg-info/5 text-info',
-    orange: 'border-warning/20 bg-warning/5 text-warning'
+    green: "border-success/20 bg-success/5 text-success",
+    blue: "border-info/20 bg-info/5 text-info",
+    orange: "border-warning/20 bg-warning/5 text-warning",
   };
 
   return (
@@ -525,22 +755,127 @@ const SummaryCard = ({ title, value, count, color }: {
   );
 };
 
-// Bond Redemption Card Component
-const BondRedemptionCard = ({ bond, onRedeem, isRedeeming }: {
+// Modern Bond Redemption Card Component
+const ModernBondRedemptionCard = ({
+  bond,
+  onRedeem,
+  isRedeeming,
+}: {
+  bond: BondMaturityInfo;
+  onRedeem: (bond: BondMaturityInfo) => void;
+  isRedeeming: boolean;
+}) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-accent/40 hover:border-brand-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-accent/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-primary/10" />
+      <div className="relative z-10 p-6">
+        <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-accent to-brand-primary flex items-center justify-center shadow-lg">
+                <LinkIcon className="w-5 h-5 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">
+                  Bond #{bond.bondID}
+                </h3>
+                <div className="flex items-center gap-2">
+                  <Badge className="bg-brand-accent/20 text-brand-accent border-brand-accent/40 text-xs px-2 py-1 inline-flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" /> Ready for Redemption
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+                <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+                <div className="text-lg font-bold text-white">
+                  {bondRedemptionService.formatCurrency(bond.principal)}
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+                <div className="text-xs text-white/70 mb-1">📈 Yield</div>
+                <div className="text-lg font-bold text-brand-accent">
+                  {bondRedemptionService.formatCurrency(bond.expectedYield)}
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+                <div className="text-xs text-white/70 mb-1">💎 Total</div>
+                <div className="text-lg font-bold text-brand-accent">
+                  {bondRedemptionService.formatCurrency(bond.expectedTotal)}
+                </div>
+              </div>
+              <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+                <div className="text-xs text-white/70 mb-1">⚡ Strategy</div>
+                <div className="text-sm font-medium text-white">
+                  {bond.strategyID}
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3 lg:ml-6">
+            <Button
+              onClick={() => onRedeem(bond)}
+              disabled={isRedeeming}
+              className="bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg hover:shadow-xl transition-all duration-300 w-full sm:w-auto"
+              size="lg"
+            >
+              {isRedeeming ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  Redeeming...
+                </>
+              ) : (
+                <>
+                  <span className="mr-2">💰</span>
+                  Redeem{" "}
+                  {bondRedemptionService.formatCurrency(bond.expectedTotal)}
+                </>
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Legacy Bond Redemption Card Component (for backward compatibility)
+const BondRedemptionCard = ({
+  bond,
+  onRedeem,
+  isRedeeming,
+}: {
   bond: BondMaturityInfo;
   onRedeem: (bond: BondMaturityInfo) => void;
   isRedeeming: boolean;
 }) => {
   return (
     <div className="border border-success/20 bg-success/5 rounded-lg p-4">
-      <div className="flex justify-between items-center">
-        <div className="flex-1">
-          <h3 className="font-semibold text-lg text-success">🔗 Bond #{bond.bondID}</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-success/80 mt-2">
-            <p><span className="font-medium">💰 Principal:</span> {bondRedemptionService.formatCurrency(bond.principal)}</p>
-            <p><span className="font-medium">📈 Yield:</span> {bondRedemptionService.formatCurrency(bond.expectedYield)}</p>
-            <p><span className="font-medium">💎 Total:</span> {bondRedemptionService.formatCurrency(bond.expectedTotal)}</p>
-            <p><span className="font-medium">⚡ Strategy:</span> {bond.strategyID}</p>
+      <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="font-semibold text-lg text-success">
+            🔗 Bond #{bond.bondID}
+          </h3>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-sm text-success/80 mt-2">
+            <p>
+              <span className="font-medium">💰 Principal:</span>{" "}
+              {bondRedemptionService.formatCurrency(bond.principal)}
+            </p>
+            <p>
+              <span className="font-medium">📈 Yield:</span>{" "}
+              {bondRedemptionService.formatCurrency(bond.expectedYield)}
+            </p>
+            <p>
+              <span className="font-medium">💎 Total:</span>{" "}
+              {bondRedemptionService.formatCurrency(bond.expectedTotal)}
+            </p>
+            <p>
+              <span className="font-medium">⚡ Strategy:</span>{" "}
+              {bond.strategyID}
+            </p>
           </div>
           <div className="mt-2">
             <Badge variant="success" className="text-xs">
@@ -551,7 +886,7 @@ const BondRedemptionCard = ({ bond, onRedeem, isRedeeming }: {
         <Button
           onClick={() => onRedeem(bond)}
           disabled={isRedeeming}
-          className="bg-success hover:bg-success/90 text-success-foreground"
+          className="bg-success hover:bg-success/90 text-success-foreground w-full md:w-auto"
           size="lg"
         >
           {isRedeeming ? (
@@ -560,7 +895,9 @@ const BondRedemptionCard = ({ bond, onRedeem, isRedeeming }: {
               Redeeming...
             </>
           ) : (
-            `💰 Redeem ${bondRedemptionService.formatCurrency(bond.expectedTotal)}`
+            `💰 Redeem ${bondRedemptionService.formatCurrency(
+              bond.expectedTotal
+            )}`
           )}
         </Button>
       </div>
@@ -568,20 +905,140 @@ const BondRedemptionCard = ({ bond, onRedeem, isRedeeming }: {
   );
 };
 
-// Bond Pending Card Component
-const BondPendingCard = ({ bond }: {
-  bond: BondMaturityInfo;
-}) => {
+// Modern Bond Pending Card Component
+const ModernBondPendingCard = ({ bond }: { bond: BondMaturityInfo }) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-primary/40 hover:border-brand-primary/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-primary/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 via-transparent to-brand-accent/10" />
+      <div className="relative z-10 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+            <Clock className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">
+              Bond #{bond.bondID}
+            </h3>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-brand-primary/20 text-brand-primary border-brand-primary/40 text-xs px-2 py-1">
+                ⏳ Maturing{" "}
+                {bondRedemptionService.formatDate(bond.maturityDate)}
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+            <div className="text-lg font-bold text-white">
+              {bondRedemptionService.formatCurrency(bond.principal)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">📈 Expected Yield</div>
+            <div className="text-lg font-bold text-brand-primary">
+              {bondRedemptionService.formatCurrency(bond.expectedYield)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💎 Expected Total</div>
+            <div className="text-lg font-bold text-brand-primary">
+              {bondRedemptionService.formatCurrency(bond.expectedTotal)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">⏰ Time Left</div>
+            <div className="text-sm font-medium text-brand-warning">
+              {bondRedemptionService.formatTimeRemaining(
+                bond.timeUntilMaturity
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Modern Bond Notification Card Component
+const ModernBondNotificationCard = ({ bond }: { bond: BondMaturityInfo }) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-warning/40 hover:border-brand-warning/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-warning/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-warning/10 via-transparent to-brand-primary/10" />
+      <div className="relative z-10 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-warning to-brand-primary flex items-center justify-center shadow-lg animate-pulse">
+            <span className="text-lg">🔔</span>
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">
+              Bond #{bond.bondID} Maturing Soon
+            </h3>
+            <div className="flex items-center gap-2">
+              <Badge className="bg-brand-warning/20 text-brand-warning border-brand-warning/40 text-xs px-2 py-1 animate-pulse">
+                ⚠️ Maturing in{" "}
+                {bondRedemptionService.formatTimeRemaining(
+                  bond.timeUntilMaturity
+                )}
+              </Badge>
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+            <div className="text-lg font-bold text-white">
+              {bondRedemptionService.formatCurrency(bond.principal)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">📈 Expected Yield</div>
+            <div className="text-lg font-bold text-brand-warning">
+              {bondRedemptionService.formatCurrency(bond.expectedYield)}
+            </div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💎 Expected Total</div>
+            <div className="text-lg font-bold text-brand-warning">
+              {bondRedemptionService.formatCurrency(bond.expectedTotal)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Legacy Bond Pending Card Component (for backward compatibility)
+const BondPendingCard = ({ bond }: { bond: BondMaturityInfo }) => {
   return (
     <div className="border border-info/20 bg-info/5 rounded-lg p-4">
       <div className="flex justify-between items-center">
         <div className="flex-1">
-          <h3 className="font-semibold text-lg text-info">🔗 Bond #{bond.bondID}</h3>
+          <h3 className="font-semibold text-lg text-info">
+            🔗 Bond #{bond.bondID}
+          </h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-info/80 mt-2">
-            <p><span className="font-medium">💰 Principal:</span> {bondRedemptionService.formatCurrency(bond.principal)}</p>
-            <p><span className="font-medium">📈 Expected Yield:</span> {bondRedemptionService.formatCurrency(bond.expectedYield)}</p>
-            <p><span className="font-medium">💎 Expected Total:</span> {bondRedemptionService.formatCurrency(bond.expectedTotal)}</p>
-            <p><span className="font-medium">⏰ Time Left:</span> {bondRedemptionService.formatTimeRemaining(bond.timeUntilMaturity)}</p>
+            <p>
+              <span className="font-medium">💰 Principal:</span>{" "}
+              {bondRedemptionService.formatCurrency(bond.principal)}
+            </p>
+            <p>
+              <span className="font-medium">📈 Expected Yield:</span>{" "}
+              {bondRedemptionService.formatCurrency(bond.expectedYield)}
+            </p>
+            <p>
+              <span className="font-medium">💎 Expected Total:</span>{" "}
+              {bondRedemptionService.formatCurrency(bond.expectedTotal)}
+            </p>
+            <p>
+              <span className="font-medium">⏰ Time Left:</span>{" "}
+              {bondRedemptionService.formatTimeRemaining(
+                bond.timeUntilMaturity
+              )}
+            </p>
           </div>
           <div className="mt-2">
             <Badge variant="info" className="text-xs">

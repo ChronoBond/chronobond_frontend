@@ -22,6 +22,11 @@ import {
   RefreshCw,
   Tag,
   Trash2,
+  Link as LinkIcon,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  Bell,
 } from "lucide-react";
 import {
   marketplaceService,
@@ -356,70 +361,124 @@ const MarketplaceMain = () => {
 
   return (
     <div className="app-container space-y-8">
-      {/* Marketplace Header */}
-      <div
-      >
-        <Card className="card-professional">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/80 flex items-center justify-center">
-                <ShoppingCart className="w-5 h-5 text-primary-foreground" />
+      {/* Modern Marketplace Header */}
+      <div>
+        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10 p-8">
+          <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-accent/5" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+                <ShoppingCart className="w-6 h-6 text-white" />
               </div>
               <div>
-                <CardTitle className="text-2xl font-bold gradient-text">
+                <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent">
                   Bond Marketplace
-                </CardTitle>
-                <CardDescription>
+                </h1>
+                <p className="text-brand-neutral text-lg">
                   List your bonds for sale or purchase bonds from other users
-                </CardDescription>
+                </p>
               </div>
             </div>
+            
             <div className="flex items-center gap-4">
-              <div className="text-sm text-muted-foreground">
+              <div className="text-sm text-brand-neutral">
                 Connected:{" "}
-                <span className="font-mono">
+                <span className="font-mono text-white">
                   {formatAddress(user.addr || "")}
                 </span>
               </div>
             </div>
-          </CardHeader>
-        </Card>
+          </div>
+        </div>
       </div>
 
-      {/* Tab Navigation */}
-      <div
-      >
-        <div className="flex space-x-1 bg-muted/30 p-1 rounded-lg">
-          {[
-            {
-              key: "buy",
-              label: "🛒 Buy Bonds",
-              desc: "Browse available bonds",
-            },
-            {
-              key: "sell",
-              label: "💰 Sell Bonds",
-              desc: "List your bonds for sale",
-            },
-            {
-              key: "manage",
-              label: "📊 Manage Listings",
-              desc: "Manage your active listings",
-            },
-          ].map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveTab(tab.key as "buy" | "sell" | "manage")}
-              className={`flex-1 py-3 px-4 rounded-md text-sm font-medium transition-colors ${
-                activeTab === tab.key
-                  ? "bg-card text-primary shadow-sm border border-border"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
-            >
-              <div className="font-semibold">{tab.label}</div>
-              <div className="text-xs opacity-80">{tab.desc}</div>
-            </button>
-          ))}
+      {/* Modern Tab Navigation */}
+      <div>
+        <div className="relative">
+          {/* Desktop: Horizontal Pills */}
+          <div className="hidden sm:flex items-center gap-2 p-2 bg-background/20 backdrop-blur-xl rounded-2xl border border-white/10">
+            {[
+              {
+                key: "buy",
+                label: "Buy Bonds",
+                desc: "Browse available bonds",
+                icon: <ShoppingCart className="w-4 h-4" />,
+                color: "brand-primary"
+              },
+              {
+                key: "sell",
+                label: "Sell Bonds",
+                desc: "List your bonds for sale",
+                icon: <Tag className="w-4 h-4" />,
+                color: "brand-accent"
+              },
+              {
+                key: "manage",
+                label: "Manage Listings",
+                desc: "Manage your active listings",
+                icon: <Users className="w-4 h-4" />,
+                color: "brand-warning"
+              },
+            ].map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => setActiveTab(tab.key as "buy" | "sell" | "manage")}
+                className={`relative flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                  activeTab === tab.key
+                    ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
+                    : "text-white/70 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                {activeTab === tab.key && (
+                  <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 animate-pulse" />
+                )}
+                <span className="relative z-10">{tab.icon}</span>
+                <div className="relative z-10 text-left">
+                  <div className="font-semibold">{tab.label}</div>
+                  <div className="text-xs opacity-80">{tab.desc}</div>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {/* Mobile: Scrollable Pills */}
+          <div className="sm:hidden">
+            <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+              {[
+                {
+                  key: "buy",
+                  label: "Buy",
+                  icon: <ShoppingCart className="w-4 h-4" />,
+                  color: "brand-primary"
+                },
+                {
+                  key: "sell",
+                  label: "Sell",
+                  icon: <Tag className="w-4 h-4" />,
+                  color: "brand-accent"
+                },
+                {
+                  key: "manage",
+                  label: "Manage",
+                  icon: <Users className="w-4 h-4" />,
+                  color: "brand-warning"
+                },
+              ].map((tab) => (
+                <button
+                  key={tab.key}
+                  onClick={() => setActiveTab(tab.key as "buy" | "sell" | "manage")}
+                  className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
+                    activeTab === tab.key
+                      ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
+                      : "bg-background/20 text-white/70 hover:text-white hover:bg-white/5 border border-white/10"
+                  }`}
+                >
+                  <span>{tab.icon}</span>
+                  <span>{tab.label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -452,347 +511,197 @@ const MarketplaceMain = () => {
 
       {/* Buy Tab - Real Marketplace Listings */}
       {activeTab === "buy" && (
-        <div
-        >
-          <Card className="card-professional">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-xl font-semibold">
-                    🛒 Available Bonds
-                  </CardTitle>
-                  <CardDescription>
-                    Browse and purchase bonds listed by other users
-                  </CardDescription>
-                </div>
-                <Button
-                  onClick={loadData}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={loading}
-                >
-                  <RefreshCw
-                    className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-                  />
-                  Refresh
-                </Button>
-              </div>
-            </CardHeader>
+        <div className="space-y-6">
+          {/* Modern Buy Bonds Header */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                🛒 Available Bonds
+              </h2>
+              <p className="text-white/70">
+                Browse and purchase bonds listed by other users
+              </p>
+            </div>
+            <Button
+              onClick={loadData}
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10"
+              disabled={loading}
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
 
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary mr-3" />
-                  <span>🔍 Querying blockchain for listings...</span>
-                </div>
-              ) : marketplaceListings.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mb-6 mx-auto w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
-                    <ShoppingCart className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    No bonds available
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Be the first to list a bond for sale in the Sell tab!
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {marketplaceListings.map((listing) => (
-                    <div
-                      key={`${listing.seller}-${listing.bondID}`}
-                      className="border border-border rounded-lg p-4"
-                    >
-                      <h3 className="font-semibold text-lg mb-2">
-                        🔗 Bond #{listing.bondID}
-                      </h3>
-                      <div className="space-y-1 text-sm text-muted-foreground mb-3">
-                        <p>
-                          <span className="font-medium">💰 Price:</span>{" "}
-                          {listing.price} FLOW
-                        </p>
-                        <p>
-                          <span className="font-medium">👤 Seller:</span>
-                          <span className="font-mono text-xs ml-1">
-                            {formatAddress(listing.seller)}
-                          </span>
-                        </p>
-                        <p
-                          className={`font-medium ${
-                            listing.isAvailable ? "text-success" : "text-error"
-                          }`}
-                        >
-                          {listing.isAvailable ? "✅ Available" : "❌ Sold"}
-                        </p>
-                      </div>
-                      <Button
-                        onClick={() => handlePurchaseBond(listing)}
-                        disabled={
-                          txStatus.state === "purchasing" ||
-                          !listing.isAvailable
-                        }
-                        className="w-full btn-primary"
-                        size="sm"
-                      >
-                        <ShoppingCart className="w-3 h-3 mr-1" />
-                        {txStatus.state === "purchasing"
-                          ? "Processing..."
-                          : `Buy for ${listing.price} FLOW`}
-                      </Button>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Modern Bond Listings */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                <p className="text-white/70">Querying blockchain for listings...</p>
+              </div>
+            </div>
+          ) : marketplaceListings.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 flex items-center justify-center mx-auto mb-6">
+                <ShoppingCart className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No bonds available
+              </h3>
+              <p className="text-brand-neutral mb-6">
+                Be the first to list a bond for sale in the Sell tab!
+              </p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {marketplaceListings.map((listing) => (
+                <ModernMarketplaceCard
+                  key={`${listing.seller}-${listing.bondID}`}
+                  listing={listing}
+                  onPurchase={handlePurchaseBond}
+                  isPurchasing={txStatus.state === "purchasing"}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {/* Sell Tab - User's Bonds */}
       {activeTab === "sell" && (
-        <div
-        >
-          <Card className="card-professional">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-xl font-semibold">
-                    💰 List Your Bonds for Sale
-                  </CardTitle>
-                  <CardDescription>
-                    List your bonds for sale on the marketplace
-                  </CardDescription>
-                </div>
-                <Button
-                  onClick={loadData}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={loading}
-                >
-                  <RefreshCw
-                    className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-                  />
-                  Refresh
-                </Button>
-              </div>
-            </CardHeader>
+        <div className="space-y-6">
+          {/* Modern Sell Bonds Header */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                💰 List Your Bonds for Sale
+              </h2>
+              <p className="text-white/70">
+                List your bonds for sale on the marketplace
+              </p>
+            </div>
+            <Button
+              onClick={loadData}
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10"
+              disabled={loading}
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
 
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary mr-3" />
-                  <span>🔍 Loading your bonds...</span>
-                </div>
-              ) : userBonds.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mb-6 mx-auto w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
-                    <Tag className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    No bonds to list
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    Mint some bonds first to list them for sale!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {userBonds.map((bond, index) => (
-                    <div
-                      key={bond.id}
-                      className="border border-border rounded-lg p-4"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg mb-2">
-                            🔗 Bond #{bond.id}
-                          </h3>
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-sm text-muted-foreground">
-                            <p>
-                              <span className="font-medium">💰 Principal:</span>{" "}
-                              {bond.principal} FLOW
-                            </p>
-                            <p>
-                              <span className="font-medium">📈 Yield:</span>{" "}
-                              {(bond.yieldRate * 100).toFixed(1)}%
-                            </p>
-                            <p>
-                              <span className="font-medium">⚡ Strategy:</span>{" "}
-                              {bond.strategyID}
-                            </p>
-                            <div className="flex items-center">
-                              <span className="font-medium">📅 Status:</span>
-                              <Badge
-                                variant={
-                                  isMatured(bond.maturityDate)
-                                    ? "success"
-                                    : "warning"
-                                }
-                                className="ml-1 text-xs"
-                              >
-                                {isMatured(bond.maturityDate)
-                                  ? "Matured"
-                                  : "Active"}
-                              </Badge>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="ml-4 flex items-center space-x-2">
-                          <div className="flex items-center gap-2">
-                            <DollarSign className="w-4 h-4 text-muted-foreground" />
-                            <Input
-                              type="number"
-                              step="0.1"
-                              placeholder="Price"
-                              value={listingPrices[bond.id] || ""}
-                              onChange={(e) =>
-                                setListingPrices((prev) => ({
-                                  ...prev,
-                                  [bond.id]: e.target.value,
-                                }))
-                              }
-                              className="w-24 h-8 text-sm"
-                            />
-                            <span className="text-sm text-muted-foreground">
-                              FLOW
-                            </span>
-                          </div>
-                          <Button
-                            onClick={() =>
-                              handleListBond(bond.id, listingPrices[bond.id])
-                            }
-                            disabled={
-                              txStatus.state === "listing" ||
-                              !listingPrices[bond.id] ||
-                              isMatured(bond.maturityDate)
-                            }
-                            variant="default"
-                            size="sm"
-                            className="h-8 btn-primary"
-                          >
-                            <Tag className="w-3 h-3 mr-1" />
-                            {isMatured(bond.maturityDate)
-                              ? "Matured"
-                              : "List for Sale"}
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Modern User Bonds List */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                <p className="text-white/70">Loading your bonds...</p>
+              </div>
+            </div>
+          ) : userBonds.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 flex items-center justify-center mx-auto mb-6">
+                <Tag className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No bonds to list
+              </h3>
+              <p className="text-brand-neutral mb-6">
+                Mint some bonds first to list them for sale!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {userBonds.map((bond, index) => (
+                <ModernSellBondCard
+                  key={bond.id}
+                  bond={bond}
+                  listingPrice={listingPrices[bond.id] || ""}
+                  onPriceChange={(price) =>
+                    setListingPrices((prev) => ({
+                      ...prev,
+                      [bond.id]: price,
+                    }))
+                  }
+                  onListBond={() =>
+                    handleListBond(bond.id, listingPrices[bond.id])
+                  }
+                  isListing={txStatus.state === "listing"}
+                  isMatured={isMatured(bond.maturityDate)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 
       {/* Manage Tab - User's Listings */}
       {activeTab === "manage" && (
-        <div
-        >
-          <Card className="card-professional">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-xl font-semibold">
-                    📊 Your Active Listings
-                  </CardTitle>
-                  <CardDescription>
-                    Manage your bonds listed for sale
-                  </CardDescription>
-                </div>
-                <Button
-                  onClick={loadData}
-                  variant="outline"
-                  size="sm"
-                  className="gap-2"
-                  disabled={loading}
-                >
-                  <RefreshCw
-                    className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
-                  />
-                  Refresh
-                </Button>
-              </div>
-            </CardHeader>
+        <div className="space-y-6">
+          {/* Modern Manage Listings Header */}
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                📊 Your Active Listings
+              </h2>
+              <p className="text-white/70">
+                Manage your bonds listed for sale
+              </p>
+            </div>
+            <Button
+              onClick={loadData}
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10"
+              disabled={loading}
+            >
+              <RefreshCw
+                className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
+              />
+              Refresh
+            </Button>
+          </div>
 
-            <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-12">
-                  <Loader2 className="w-6 h-6 animate-spin text-primary mr-3" />
-                  <span>🔍 Loading your listings...</span>
-                </div>
-              ) : userListings.length === 0 ? (
-                <div className="text-center py-12">
-                  <div className="mb-6 mx-auto w-16 h-16 rounded-full bg-muted/20 flex items-center justify-center">
-                    <Users className="w-8 h-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    No active listings
-                  </h3>
-                  <p className="text-muted-foreground mb-6">
-                    List some bonds for sale to see them here!
-                  </p>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {userListings.map((listing, index) => (
-                    <div
-                      key={listing.bondID}
-                      className="border border-border rounded-lg p-4"
-                    >
-                      <div className="flex justify-between items-center">
-                        <div>
-                          <h3 className="font-semibold text-lg mb-2">
-                            🔗 Bond #{listing.bondID}
-                          </h3>
-                          <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm text-muted-foreground">
-                            <p>
-                              <span className="font-medium">
-                                💰 Listed Price:
-                              </span>
-                              <span className="text-primary font-bold ml-1">
-                                {listing.price} FLOW
-                              </span>
-                            </p>
-                            <p>
-                              <span className="font-medium">📈 Status:</span>
-                              <span
-                                className={
-                                  listing.isAvailable
-                                    ? "text-success"
-                                    : "text-error"
-                                }
-                              >
-                                {listing.isAvailable
-                                  ? " ✅ Available"
-                                  : " ❌ Sold"}
-                              </span>
-                            </p>
-                          </div>
-                        </div>
-                        {listing.isAvailable && (
-                          <Button
-                            onClick={() => handleWithdrawBond(listing.bondID)}
-                            disabled={txStatus.state === "withdrawing"}
-                            variant="outline"
-                            size="sm"
-                            className="h-8 text-red-600 hover:text-red-700 hover:bg-red-50"
-                          >
-                            <Trash2 className="w-3 h-3 mr-1" />
-                            Remove from Sale
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Modern User Listings */}
+          {loading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="text-center">
+                <Loader2 className="w-8 h-8 animate-spin text-primary mx-auto mb-4" />
+                <p className="text-white/70">Loading your listings...</p>
+              </div>
+            </div>
+          ) : userListings.length === 0 ? (
+            <div className="text-center py-16">
+              <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-brand-primary/10 to-brand-accent/10 flex items-center justify-center mx-auto mb-6">
+                <Users className="w-10 h-10 text-muted-foreground" />
+              </div>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                No active listings
+              </h3>
+              <p className="text-brand-neutral mb-6">
+                List some bonds for sale to see them here!
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {userListings.map((listing, index) => (
+                <ModernManageListingCard
+                  key={listing.bondID}
+                  listing={listing}
+                  onWithdraw={() => handleWithdrawBond(listing.bondID)}
+                  isWithdrawing={txStatus.state === "withdrawing"}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -800,3 +709,272 @@ const MarketplaceMain = () => {
 };
 
 export default MarketplaceMain;
+
+// Helper function for formatting addresses
+const formatAddress = (address: string): string => {
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
+};
+
+// Modern Marketplace Card Component
+const ModernMarketplaceCard = ({ 
+  listing, 
+  onPurchase, 
+  isPurchasing 
+}: {
+  listing: MarketplaceListing;
+  onPurchase: (listing: MarketplaceListing) => void;
+  isPurchasing: boolean;
+}) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-primary/40 hover:border-brand-primary/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-primary/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/10 via-transparent to-brand-accent/10" />
+      <div className="relative z-10 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+            <LinkIcon className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">Bond #{listing.bondID}</h3>
+            <div className="flex items-center gap-2">
+              <Badge className={`text-xs px-2 py-1 ${
+                listing.isAvailable 
+                  ? 'bg-brand-accent/20 text-brand-accent border-brand-accent/40' 
+                  : 'bg-brand-error/20 text-brand-error border-brand-error/40'
+              }`}>
+                {listing.isAvailable ? (
+                  <>
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Available
+                  </>
+                ) : (
+                  <>
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Sold
+                  </>
+                )}
+              </Badge>
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 gap-4 mb-4">
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💰 Price</div>
+            <div className="text-lg font-bold text-brand-accent">{listing.price} FLOW</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">👤 Seller</div>
+            <div className="text-sm font-mono text-white">{formatAddress(listing.seller)}</div>
+          </div>
+        </div>
+        
+        <Button
+          onClick={() => onPurchase(listing)}
+          disabled={isPurchasing || !listing.isAvailable}
+          className="w-full bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg hover:shadow-xl transition-all duration-300"
+          size="lg"
+        >
+          {isPurchasing ? (
+            <>
+              <Loader2 className="w-4 h-4 animate-spin mr-2" />
+              Processing...
+            </>
+          ) : (
+            <>
+              <ShoppingCart className="w-4 h-4 mr-2" />
+              Buy for {listing.price} FLOW
+            </>
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+// Modern Sell Bond Card Component
+const ModernSellBondCard = ({
+  bond,
+  listingPrice,
+  onPriceChange,
+  onListBond,
+  isListing,
+  isMatured
+}: {
+  bond: BondData;
+  listingPrice: string;
+  onPriceChange: (price: string) => void;
+  onListBond: () => void;
+  isListing: boolean;
+  isMatured: boolean;
+}) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-accent/40 hover:border-brand-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-accent/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-primary/10" />
+      <div className="relative z-10 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-accent to-brand-primary flex items-center justify-center shadow-lg">
+            <LinkIcon className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">Bond #{bond.id}</h3>
+            <div className="flex items-center gap-2">
+              <Badge className={`text-xs px-2 py-1 ${
+                isMatured 
+                  ? 'bg-brand-warning/20 text-brand-warning border-brand-warning/40' 
+                  : 'bg-brand-accent/20 text-brand-accent border-brand-accent/40'
+              }`}>
+                {isMatured ? (
+                  <>
+                    <Clock className="w-3 h-3 mr-1" />
+                    Matured
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Active
+                  </>
+                )}
+              </Badge>
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+            <div className="text-lg font-bold text-white">{bond.principal} FLOW</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">📈 Yield</div>
+            <div className="text-lg font-bold text-brand-accent">{(bond.yieldRate * 100).toFixed(1)}%</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">⚡ Strategy</div>
+            <div className="text-sm font-medium text-white">{bond.strategyID}</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">📅 Status</div>
+            <div className="text-sm font-medium text-brand-warning">
+              {isMatured ? "Matured" : "Active"}
+            </div>
+          </div>
+        </div>
+        
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex items-center gap-2 flex-1">
+            <DollarSign className="w-4 h-4 text-white/70" />
+            <Input
+              type="number"
+              step="0.1"
+              placeholder="Price"
+              value={listingPrice}
+              onChange={(e) => onPriceChange(e.target.value)}
+              className="flex-1 h-10 text-sm bg-white/5 border-white/20 text-white placeholder:text-white/50"
+            />
+            <span className="text-sm text-white/70">FLOW</span>
+          </div>
+          <Button
+            onClick={onListBond}
+            disabled={isListing || !listingPrice || isMatured}
+            className="bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg w-full sm:w-auto"
+            size="lg"
+          >
+            {isListing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Listing...
+              </>
+            ) : (
+              <>
+                <Tag className="w-4 h-4 mr-2" />
+                {isMatured ? "Matured" : "List for Sale"}
+              </>
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Modern Manage Listing Card Component
+const ModernManageListingCard = ({
+  listing,
+  onWithdraw,
+  isWithdrawing
+}: {
+  listing: MarketplaceListing;
+  onWithdraw: () => void;
+  isWithdrawing: boolean;
+}) => {
+  return (
+    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-warning/40 hover:border-brand-warning/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-warning/10">
+      <div className="absolute inset-0 bg-gradient-to-br from-brand-warning/10 via-transparent to-brand-primary/10" />
+      <div className="relative z-10 p-6">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-warning to-brand-primary flex items-center justify-center shadow-lg">
+            <LinkIcon className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h3 className="text-xl font-bold text-white">Bond #{listing.bondID}</h3>
+            <div className="flex items-center gap-2">
+              <Badge className={`text-xs px-2 py-1 ${
+                listing.isAvailable 
+                  ? 'bg-brand-accent/20 text-brand-accent border-brand-accent/40' 
+                  : 'bg-brand-error/20 text-brand-error border-brand-error/40'
+              }`}>
+                {listing.isAvailable ? (
+                  <>
+                    <CheckCircle className="w-3 h-3 mr-1" />
+                    Available
+                  </>
+                ) : (
+                  <>
+                    <AlertTriangle className="w-3 h-3 mr-1" />
+                    Sold
+                  </>
+                )}
+              </Badge>
+            </div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">💰 Listed Price</div>
+            <div className="text-lg font-bold text-brand-accent">{listing.price} FLOW</div>
+          </div>
+          <div className="bg-white/5 rounded-xl p-3 border border-white/10">
+            <div className="text-xs text-white/70 mb-1">📈 Status</div>
+            <div className={`text-sm font-medium ${
+              listing.isAvailable ? 'text-brand-accent' : 'text-brand-error'
+            }`}>
+              {listing.isAvailable ? "✅ Available" : "❌ Sold"}
+            </div>
+          </div>
+        </div>
+        
+        {listing.isAvailable && (
+          <Button
+            onClick={onWithdraw}
+            disabled={isWithdrawing}
+            className="w-full bg-brand-error text-white hover:bg-brand-error/90 shadow-lg"
+            size="lg"
+          >
+            {isWithdrawing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                Removing...
+              </>
+            ) : (
+              <>
+                <Trash2 className="w-4 h-4 mr-2" />
+                Remove from Sale
+              </>
+            )}
+          </Button>
+        )}
+      </div>
+    </div>
+  );
+};

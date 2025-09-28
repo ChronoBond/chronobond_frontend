@@ -85,13 +85,13 @@ export function StepperItem({
       {!isLast && (
         <div
           ref={lineRef}
-          className="absolute left-8 top-20 w-0.5 h-32 bg-gradient-to-b from-cyan-400/50 via-blue-500/30 to-violet-500/20"
+          className="hidden sm:block absolute left-8 top-20 w-0.5 h-32 bg-gradient-to-b from-cyan-400/50 via-blue-500/30 to-violet-500/20"
         />
       )}
 
-      <div className="flex items-start gap-8">
+      <div className="flex flex-col sm:flex-row items-start gap-6 sm:gap-8">
         {/* Icon and step number */}
-        <div className="flex-shrink-0 relative">
+        <div className="flex-shrink-0 relative mb-4 sm:mb-0">
           <div
             ref={iconRef}
             className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-500 flex items-center justify-center shadow-2xl relative z-10"

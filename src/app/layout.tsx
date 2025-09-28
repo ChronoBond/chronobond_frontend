@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body className={`${inter.variable} font-inter antialiased bg-background text-foreground`}>
+      <body suppressHydrationWarning className={`${inter.variable} font-inter antialiased bg-background text-foreground`}>
         <FlowConfigProvider>
           <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
             <main className="relative">
