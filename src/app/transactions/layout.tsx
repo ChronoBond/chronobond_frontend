@@ -1,6 +1,7 @@
-import { metadata as transactionsMetadata } from "@/lib/metadata";
+import { getMetadata } from "@/lib/metadata";
 
-export const metadata = transactionsMetadata;
+// Generate fresh metadata for each request - KISS principle
+export const metadata = getMetadata('transactions');
 
 export default function TransactionsLayout({
   children,

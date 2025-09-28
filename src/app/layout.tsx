@@ -1,15 +1,21 @@
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { metadata as homeMetadata } from "@/lib/metadata";
+import { getMetadata, debugMetadata } from "@/lib/metadata";
 import { FlowConfigProvider } from "@/components/flow-config-provider";
 import { Toaster } from "@/components/ui/toaster";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter"
 });
 
-export const metadata = homeMetadata;
+// Generate fresh metadata for each request - KISS principle
+export const metadata = getMetadata('home');
+
+// Debug metadata in development
+if (process.env.NODE_ENV === 'development') {
+  debugMetadata();
+}
 
 export default function RootLayout({
   children,

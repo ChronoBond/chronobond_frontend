@@ -1,6 +1,7 @@
-import { metadata as splitMetadata } from "@/lib/metadata";
+import { getMetadata } from "@/lib/metadata";
 
-export const metadata = splitMetadata;
+// Generate fresh metadata for each request - KISS principle
+export const metadata = getMetadata('split');
 
 export default function SplitLayout({
   children,
