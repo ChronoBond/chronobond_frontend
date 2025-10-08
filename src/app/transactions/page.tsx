@@ -18,10 +18,10 @@ import {
 import { Coins, ShoppingCart, Clock, Shield, Menu, X } from "lucide-react";
 
 // Import the main components
-import MintMain from "@/app/transactions/(components)/mint/MintMain";
-import HoldingsMain from "@/app/transactions/(components)/holdings/HoldingsMain";
-import MarketplaceMain from "@/app/transactions/(components)/marketplace/MarketplaceMain";
-import RedeemMain from "@/app/transactions/(components)/redeem/RedeemMain";
+import MintMain from "@/app/transactions/_components/mint/MintMain";
+import HoldingsMain from "@/app/transactions/_components/holdings/HoldingsMain";
+import MarketplaceMain from "@/app/transactions/_components/marketplace/MarketplaceMain";
+import RedeemMain from "@/app/transactions/_components/redeem/RedeemMain";
 
 type TransactionTabType = "mint" | "holdings" | "marketplace" | "redeem";
 

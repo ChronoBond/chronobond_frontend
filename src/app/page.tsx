@@ -6,7 +6,7 @@ import {
   BackgroundDots,
 } from "@/components/ui/background-grid";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
-import PageMain from "@/app/(components)/PageMain";
+import PageMain from "@/app/_components/PageMain";
 
 export default function Home() {
   return (

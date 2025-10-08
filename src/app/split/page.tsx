@@ -4,7 +4,7 @@ import {
   BackgroundDots,
 } from "@/components/ui/background-grid";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
-import ChronoSplitMain from "@/app/split/(components)/ChronoSplitMain";
+import ChronoSplitMain from "@/app/split/_components/ChronoSplitMain";
 
 export default function SplitPage() {
   return (
