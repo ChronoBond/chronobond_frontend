@@ -130,39 +130,11 @@ export const generateSecurityHeaders = () => {
 
 // Generate SEO-friendly redirects
 export const generateRedirects = () => {
+  // KISS/YAGNI: keep only safe, app-internal redirect
   return [
-    // Redirect www to non-www
-    {
-      source: "/(.*)",
-      has: [
-        {
-          type: "host",
-          key: "host",
-          value: "www.chronobond.com",
-        },
-      ],
-      destination: "https://chronobond.com/:path*",
-      permanent: true,
-    },
-    
-    // Redirect trailing slash
-    {
-      source: "/(.*)/",
-      destination: "/$1",
-      permanent: true,
-    },
-    
-    // Redirect old URLs
     {
       source: "/old-bonds",
       destination: "/transactions/holdings",
-      permanent: true,
-    },
-    
-    // Redirect API endpoints
-    {
-      source: "/api/bonds",
-      destination: "/api/v1/bonds",
       permanent: true,
     },
   ];
@@ -170,19 +142,8 @@ export const generateRedirects = () => {
 
 // Generate rewrites for SEO
 export const generateRewrites = () => {
-  return [
-    // Rewrite for clean URLs
-    {
-      source: "/bonds/:path*",
-      destination: "/transactions/holdings/:path*",
-    },
-    
-    // Rewrite for API versioning
-    {
-      source: "/api/:path*",
-      destination: "/api/v1/:path*",
-    },
-  ];
+  // KISS/YAGNI: avoid rewrites to prevent routing conflicts on Vercel
+  return [];
 };
 
 // Generate robots.txt content
