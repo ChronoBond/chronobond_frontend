@@ -28,14 +28,14 @@ export const generatePerformanceHints = () => {
       "//cdnjs.cloudflare.com",
       "//unpkg.com",
     ],
-    
+
     // Preconnect to important origins
     preconnect: [
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com",
       "https://cdnjs.cloudflare.com",
     ],
-    
+
     // Preload critical resources
     preload: [
       {
@@ -50,11 +50,11 @@ export const generatePerformanceHints = () => {
         type: "image/png",
       },
     ],
-    
+
     // Prefetch important pages
     prefetch: [
       "/transactions/mint",
-      "/transactions/redeem", 
+      "/transactions/redeem",
       "/transactions/marketplace",
       "/transactions/holdings",
     ],
@@ -62,28 +62,30 @@ export const generatePerformanceHints = () => {
 };
 
 // Generate cache headers for different resource types
-export const generateCacheHeaders = (config: PerformanceConfig = defaultPerformanceConfig) => {
+export const generateCacheHeaders = (
+  config: PerformanceConfig = defaultPerformanceConfig
+) => {
   const maxAge = config.cacheMaxAge;
-  
+
   return {
     // Static assets (images, fonts, etc.)
     static: {
       "Cache-Control": `public, max-age=${maxAge}, immutable`,
-      "Expires": new Date(Date.now() + maxAge * 1000).toUTCString(),
+      Expires: new Date(Date.now() + maxAge * 1000).toUTCString(),
     },
-    
+
     // HTML pages
     html: {
       "Cache-Control": "public, max-age=0, must-revalidate",
-      "ETag": `"${Date.now()}"`,
+      ETag: `"${Date.now()}"`,
     },
-    
+
     // API responses
     api: {
       "Cache-Control": "public, max-age=300, s-maxage=600", // 5 min browser, 10 min CDN
-      "Vary": "Accept-Encoding",
+      Vary: "Accept-Encoding",
     },
-    
+
     // JSON data
     json: {
       "Cache-Control": "public, max-age=60, s-maxage=300", // 1 min browser, 5 min CDN
@@ -93,17 +95,19 @@ export const generateCacheHeaders = (config: PerformanceConfig = defaultPerforma
 };
 
 // Generate compression headers
-export const generateCompressionHeaders = (config: PerformanceConfig = defaultPerformanceConfig) => {
+export const generateCompressionHeaders = (
+  config: PerformanceConfig = defaultPerformanceConfig
+) => {
   const headers: Record<string, string> = {};
-  
+
   if (config.enableGzip) {
     headers["Content-Encoding"] = "gzip";
   }
-  
+
   if (config.enableBrotli) {
     headers["Content-Encoding"] = "br";
   }
-  
+
   return headers;
 };
 
@@ -130,7 +134,6 @@ export const generateSecurityHeaders = () => {
 
 // Generate SEO-friendly redirects
 export const generateRedirects = () => {
-  // KISS/YAGNI: keep only safe, app-internal redirect
   return [
     {
       source: "/old-bonds",
@@ -140,9 +143,7 @@ export const generateRedirects = () => {
   ];
 };
 
-// Generate rewrites for SEO
 export const generateRewrites = () => {
-  // KISS/YAGNI: avoid rewrites to prevent routing conflicts on Vercel
   return [];
 };
 
@@ -162,16 +163,27 @@ Host: https://chronobond.com
 };
 
 // Generate sitemap.xml content
-export const generateSitemapXml = (pages: Array<{ url: string; lastmod: string; changefreq: string; priority: number }>) => {
+export const generateSitemapXml = (
+  pages: Array<{
+    url: string;
+    lastmod: string;
+    changefreq: string;
+    priority: number;
+  }>
+) => {
   const xmlHeader = '<?xml version="1.0" encoding="UTF-8"?>';
-  const urlset = pages.map(page => `
+  const urlset = pages
+    .map(
+      (page) => `
   <url>
     <loc>${page.url}</loc>
     <lastmod>${page.lastmod}</lastmod>
     <changefreq>${page.changefreq}</changefreq>
     <priority>${page.priority}</priority>
-  </url>`).join('');
-  
+  </url>`
+    )
+    .join("");
+
   return `${xmlHeader}
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urlset}
@@ -183,7 +195,8 @@ export const generateManifest = () => {
   return {
     name: "ChronoBond - DeFi Time-Locked Bonds",
     short_name: "ChronoBond",
-    description: "Mint, trade, and redeem time-locked bonds with guaranteed yields on Flow blockchain",
+    description:
+      "Mint, trade, and redeem time-locked bonds with guaranteed yields on Flow blockchain",
     start_url: "/",
     display: "standalone",
     background_color: "#000000",
