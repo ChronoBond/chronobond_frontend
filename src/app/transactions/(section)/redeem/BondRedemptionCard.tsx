@@ -37,25 +37,25 @@ export const BondRedemptionCard = ({
         
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+            <div className="text-xs text-white/70 mb-1 flex items-center gap-1"><DollarSign className="w-3 h-3" /> Principal</div>
             <div className="text-lg font-bold text-white">
               {bondRedemptionService.formatCurrency(bond.principal)}
             </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📈 Expected Yield</div>
+            <div className="text-xs text-white/70 mb-1">Expected Yield</div>
             <div className="text-lg font-bold text-brand-primary">
               {bondRedemptionService.formatCurrency(bond.expectedYield)}
             </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📅 Maturity Date</div>
+            <div className="text-xs text-white/70 mb-1">Maturity Date</div>
             <div className="text-sm font-medium text-white">
               {bondRedemptionService.formatDate(bond.maturityDate)}
             </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">💎 Expected Total</div>
+            <div className="text-xs text-white/70 mb-1">Expected Total</div>
             <div className="text-lg font-bold text-brand-warning">
               {bondRedemptionService.formatCurrency(bond.expectedTotal)}
             </div>

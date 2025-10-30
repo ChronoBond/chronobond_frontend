@@ -13,11 +13,11 @@ export const PendingBonds = ({
 }: PendingBondsProps) => {
   return (
     <div className="tab-content space-y-6">
-      {/* Modern Bond List Header */}
+      {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">
-            ⏳ Pending Bonds
+            Pending Bonds
           </h2>
           <p className="text-white/70">
             Bonds that are still maturing and not yet ready for redemption
@@ -37,7 +37,7 @@ export const PendingBonds = ({
         </Button>
       </div>
 
-      {/* Modern Bond List */}
+      {/* List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
@@ -83,25 +83,25 @@ export const PendingBonds = ({
                 
                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                   <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                    <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+                    <div className="text-xs text-white/70 mb-1">Principal</div>
                     <div className="text-lg font-bold text-white">
                       {bondRedemptionService.formatCurrency(bond.principal)}
                     </div>
                   </div>
                   <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                    <div className="text-xs text-white/70 mb-1">📈 Expected Yield</div>
+                    <div className="text-xs text-white/70 mb-1">Expected Yield</div>
                     <div className="text-lg font-bold text-brand-primary">
                       {bondRedemptionService.formatCurrency(bond.expectedYield)}
                     </div>
                   </div>
                   <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                    <div className="text-xs text-white/70 mb-1">⏰ Time Left</div>
+                    <div className="text-xs text-white/70 mb-1">Time Left</div>
                     <div className="text-sm font-medium text-white">
                       {bondRedemptionService.formatTimeRemaining(bond.timeUntilMaturity)}
                     </div>
                   </div>
                   <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                    <div className="text-xs text-white/70 mb-1">📅 Maturity Date</div>
+                    <div className="text-xs text-white/70 mb-1">Maturity Date</div>
                     <div className="text-sm font-medium text-white">
                       {bondRedemptionService.formatDate(bond.maturityDate)}
                     </div>
@@ -109,7 +109,7 @@ export const PendingBonds = ({
                 </div>
                 
                 <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-                  <div className="text-xs text-white/70 mb-1">💎 Expected Total</div>
+                  <div className="text-xs text-white/70 mb-1">Expected Total</div>
                   <div className="text-lg font-bold text-brand-warning">
                     {bondRedemptionService.formatCurrency(bond.expectedTotal)}
                   </div>
