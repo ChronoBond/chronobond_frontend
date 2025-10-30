@@ -12,7 +12,7 @@ export const HoldingsPortfolioHeader = ({ onRefresh }: HoldingsPortfolioHeaderPr
     <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
       <div>
         <h2 className="text-2xl font-bold text-white mb-2">
-          📊 Bond Portfolio
+          Bond Portfolio
         </h2>
         <p className="text-white/70">
           Manage your time-locked bonds and list them for sale on the marketplace
