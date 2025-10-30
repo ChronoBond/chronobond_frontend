@@ -9,17 +9,17 @@ export const MarketplaceHeader = ({ activeTab, onRefresh, loading }: Marketplace
     switch (activeTab) {
       case "buy":
         return {
-          title: "🛒 Available Bonds",
+          title: "Available Bonds",
           description: "Browse and purchase bonds listed by other users"
         };
       case "sell":
         return {
-          title: "💰 List Your Bonds for Sale",
+          title: "List Your Bonds for Sale",
           description: "List your bonds for sale on the marketplace"
         };
       case "manage":
         return {
-          title: "📊 Manage Your Listings",
+          title: "Manage Your Listings",
           description: "Manage your active bond listings"
         };
       default:

@@ -12,6 +12,7 @@ import {
   DollarSign
 } from "lucide-react";
 import { type MarketplaceBondCardProps } from "@/types/marketplace.types";
+import { useEffect, useState } from "react";
 
 export const MarketplaceBondCard = ({ 
   bond, 
@@ -23,11 +24,15 @@ export const MarketplaceBondCard = ({
   formatDate, 
   calculateCurrentYield 
 }: MarketplaceBondCardProps) => {
-  const isMatured = (maturityDate: number) => {
-    return Date.now() / 1000 >= maturityDate;
-  };
+  const [now, setNow] = useState<number>(() => Date.now());
 
-  const bondIsMatured = isMatured(bond.maturityDate);
+  useEffect(() => {
+    // update once a minute
+    const id = setInterval(() => setNow(Date.now()), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const bondIsMatured = now / 1000 >= bond.maturityDate;
 
   return (
     <div className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border transition-all duration-300 hover:shadow-lg ${
@@ -75,30 +80,30 @@ export const MarketplaceBondCard = ({
         
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">💰 Principal</div>
+            <div className="text-xs text-white/70 mb-1">Principal</div>
             <div className="text-lg font-bold text-white">{formatFlow(bond.principal)}</div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📈 Yield Rate</div>
+            <div className="text-xs text-white/70 mb-1">Yield Rate</div>
             <div className="text-lg font-bold text-brand-primary">{(bond.yieldRate * 100).toFixed(1)}%</div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">⚡ Strategy</div>
+            <div className="text-xs text-white/70 mb-1">Strategy</div>
             <div className="text-sm font-medium text-white">{bond.strategyID}</div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📅 Maturity</div>
+            <div className="text-xs text-white/70 mb-1">Maturity</div>
             <div className="text-sm font-medium text-white">{formatDate(bond.maturityDate)}</div>
           </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📊 Expected Yield</div>
+            <div className="text-xs text-white/70 mb-1">Expected Yield</div>
             <div className="text-lg font-bold text-brand-accent">{formatFlow(calculateCurrentYield(bond))}</div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">💎 Total Value</div>
+            <div className="text-xs text-white/70 mb-1">Total Value</div>
             <div className="text-lg font-bold text-brand-accent">{formatFlow(bond.principal + calculateCurrentYield(bond))}</div>
           </div>
         </div>
