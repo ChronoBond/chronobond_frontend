@@ -3,22 +3,25 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select } from "@/components/ui/select";
-import { 
-  Coins, 
-  Loader2, 
-  CheckCircle, 
-  AlertCircle, 
-  DollarSign 
+import {
+  Coins,
+  Loader2,
+  CheckCircle,
+  AlertCircle,
+  DollarSign,
 } from "lucide-react";
 import { type MintFormProps } from "@/types/mint.types";
 
-export const MintForm = ({ 
-  formData, 
-  txStatus, 
-  onInputChange, 
-  onMintBond, 
-  yieldStrategies, 
-  durationOptions 
+export const MintForm = ({
+  formData,
+  txStatus,
+  onInputChange,
+  onMintBond,
+  yieldStrategies,
+  durationOptions,
+  paymentToken = "FLOW",
+  onPaymentTokenChange,
+  usdcQuote = null,
 }: MintFormProps) => {
   return (
     <div className="space-y-6">
@@ -44,6 +47,36 @@ export const MintForm = ({
           </div>
         </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm font-semibold mb-2">Pay with</label>
+            <Select
+              value={paymentToken}
+              onValueChange={(value) =>
+                onPaymentTokenChange?.(value as "FLOW" | "USDC")
+              }
+            >
+              <option value="FLOW">FLOW (default)</option>
+              <option value="USDC">USDC</option>
+            </Select>
+          </div>
+
+          {paymentToken === "USDC" && (
+            <div className="flex items-end">
+              <div className="text-sm text-white/80">
+                {usdcQuote ? (
+                  <span>
+                    You will pay: {usdcQuote} for a {formData.amount || "0"}{" "}
+                    FLOW Bond
+                  </span>
+                ) : (
+                  <span>Fetching quote...</span>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
         <div>
           <label className="block text-sm font-semibold mb-2">
             Yield Strategy
@@ -66,13 +99,12 @@ export const MintForm = ({
           </label>
           <Select
             value={formData.lockupPeriod.toString()}
-            onValueChange={(value) => onInputChange("lockupPeriod", parseInt(value))}
+            onValueChange={(value) =>
+              onInputChange("lockupPeriod", parseInt(value))
+            }
           >
             {durationOptions.map((option) => (
-              <option
-                key={option.value}
-                value={option.value.toString()}
-              >
+              <option key={option.value} value={option.value.toString()}>
                 {option.label}
               </option>
             ))}
@@ -86,7 +118,9 @@ export const MintForm = ({
           disabled={
             !formData.amount ||
             parseFloat(formData.amount) <= 0 ||
-            ["checking", "setup", "minting"].includes(txStatus.state)
+            ["checking", "setup", "minting", "success", "error"].includes(
+              txStatus.state
+            )
           }
           className="w-full btn-primary h-12 text-lg"
           size="lg"
@@ -112,7 +146,7 @@ export const MintForm = ({
           {txStatus.state === "idle" && (
             <>
               <Coins className="w-5 h-5 mr-2" />
-              Mint Bond
+              {paymentToken === "USDC" ? "Mint with USDC" : "Mint Bond"}
             </>
           )}
           {txStatus.state === "success" && (
