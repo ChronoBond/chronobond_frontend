@@ -90,6 +90,12 @@ export interface MarketplaceHooksReturn {
   knownSellers: string[];
   loading: boolean;
   txStatus: TransactionStatus;
+  buyModalOpen?: boolean;
+  selectedListing?: MarketplaceListing | null;
+  payToken?: "FLOW" | "USDC";
+  payQuote?: string | null;
+  quoteLoading?: boolean;
+  flowBalance?: number;
   
   // Actions
   setActiveTab: (tab: ActiveTab) => void;
@@ -98,6 +104,9 @@ export interface MarketplaceHooksReturn {
   handlePurchaseBond: (listing: MarketplaceListing) => Promise<void>;
   handleWithdrawListing: (listing: MarketplaceListing) => Promise<void>;
   handlePriceChange: (bondId: number, price: string) => void;
+  setBuyModalOpen?: (open: boolean) => void;
+  setPayToken?: (token: "FLOW" | "USDC") => void;
+  confirmPurchase?: () => Promise<void>;
   
   // Utilities
   formatFlow: (amount: number) => string;

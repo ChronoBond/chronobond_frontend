@@ -87,6 +87,12 @@ export interface RedeemHooksReturn {
   error: string | null;
   success: string | null;
   redeeming: { [key: number]: boolean };
+  // Modal state (optional)
+  redeemModalOpen?: boolean;
+  selectedBond?: BondMaturityInfo | null;
+  receiveToken?: "FLOW" | "USDC";
+  receiveQuote?: string | null;
+  quoteLoading?: boolean;
   
   // Actions
   setActiveTab: (tab: ActiveTab) => void;
@@ -94,4 +100,8 @@ export interface RedeemHooksReturn {
   handleRedeemBond: (bond: BondMaturityInfo) => Promise<void>;
   handleRedeemAllBonds: () => Promise<void>;
   clearMessages: () => void;
+  // Modal actions (optional)
+  setRedeemModalOpen?: (open: boolean) => void;
+  setReceiveToken?: (token: "FLOW" | "USDC") => void;
+  confirmRedeem?: () => Promise<void>;
 }

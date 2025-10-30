@@ -33,6 +33,10 @@ export interface MintFormProps {
   onMintBond: () => void;
   yieldStrategies: YieldStrategy[];
   durationOptions: DurationOption[];
+  // New for cross-asset mint
+  paymentToken?: "FLOW" | "USDC";
+  onPaymentTokenChange?: (token: "FLOW" | "USDC") => void;
+  usdcQuote?: string | null; // formatted text like "~150.50 USDC"
 }
 
 export interface MintSummaryProps {
@@ -59,10 +63,14 @@ export interface MintHooksReturn {
   selectedStrategy: YieldStrategy | undefined;
   selectedDuration: DurationOption | undefined;
   estimatedYield: string;
+  paymentToken?: "FLOW" | "USDC";
+  usdcQuote?: string | null;
+  quoteLoading?: boolean;
   
   // Actions
   handleInputChange: (field: keyof MintBondParams, value: string | number) => void;
   handleMintBond: () => Promise<void>;
+  setPaymentToken?: (token: "FLOW" | "USDC") => void;
   
   // Constants
   yieldStrategies: YieldStrategy[];
