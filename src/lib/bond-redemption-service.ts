@@ -201,6 +201,41 @@ export class BondRedemptionService {
     }
   }
 
+  // ✅ REDEEM AND SWAP to another token (e.g., USDC) - atomic
+  async redeemAndSwap(bondID: string, receiveAsToken: string): Promise<RedemptionResult> {
+    const transaction = `
+      // cadence to be provided by backend team
+      transaction(bondID: UInt64, outToken: String) {
+        prepare(signer: auth(Storage, Capabilities) &Account) {}
+        execute {}
+      }
+    `;
+
+    try {
+      const transactionId = await fcl.mutate({
+        cadence: transaction,
+        args: (arg: any, t: any) => [arg(bondID, t.UInt64), arg(receiveAsToken, t.String)],
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
+        limit: 9999,
+      });
+
+      const result = await fcl.tx(transactionId).onceSealed();
+      if (result.status === 4) {
+        return { success: true, transactionId };
+      }
+      throw new Error(result.errorMessage || "Transaction failed");
+    } catch (error: any) {
+      toast({
+        title: "Redemption (Swap) Failed",
+        description: error.message || "Failed to redeem to selected token",
+        variant: "destructive",
+      });
+      return { success: false, error: error.message };
+    }
+  }
+
   // ✅ 3. GET REDEEMABLE BONDS - Filter matured bonds
   async getRedeemableBonds(userAddress: string): Promise<BondMaturityInfo[]> {
     try {

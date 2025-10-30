@@ -233,6 +233,52 @@ export class MarketplaceService {
     }
   }
 
+  // ✅ PURCHASE WITH SWAP: pay in alternate token (e.g., USDC) while listing is in FLOW
+  async buyWithSwap(
+    sellerAddress: string,
+    bondID: string,
+    flowPrice: string,
+    payWithToken: string
+  ): Promise<TransactionResult> {
+    const transaction = `
+      // cadence to be provided by backend team
+      transaction(sellerAddress: Address, bondID: UInt64, flowAmount: UFix64, inToken: String) {
+        prepare(signer: auth(Storage, Capabilities) &Account) {}
+        execute {}
+      }
+    `;
+
+    try {
+      const transactionId = await fcl.mutate({
+        cadence: transaction,
+        args: (arg: any, t: any) => [
+          arg(sellerAddress, t.Address),
+          arg(bondID, t.UInt64),
+          arg(flowPrice, t.UFix64),
+          arg(payWithToken, t.String),
+        ],
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
+        limit: 9999,
+      });
+
+      const result = await fcl.tx(transactionId).onceSealed();
+      return {
+        status: result.status,
+        transactionId,
+        errorMessage: result.errorMessage,
+      };
+    } catch (error: any) {
+      toast({
+        title: "Purchase (Swap) Failed",
+        description: error.message || "Failed to purchase with alternate token",
+        variant: "destructive",
+      });
+      return { status: 0, errorMessage: error.message || "Failed to purchase with alternate token" };
+    }
+  }
+
   // ✅ 5. WITHDRAW BOND FROM SALE - WORKING
   async withdrawBondFromSale(bondID: string): Promise<TransactionResult> {
     const transaction = `

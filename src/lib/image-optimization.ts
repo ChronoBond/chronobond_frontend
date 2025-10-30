@@ -1,5 +1,3 @@
-// Image optimization utilities for SEO
-
 export interface ImageSEOProps {
   src: string;
   alt: string;
@@ -10,7 +8,6 @@ export interface ImageSEOProps {
   priority?: boolean;
 }
 
-// Generate SEO-friendly alt text for different image types
 export const generateAltText = (
   imageType: string,
   context: string,
@@ -36,7 +33,6 @@ export const generateAltText = (
   }
 };
 
-// Generate title attributes for images
 export const generateImageTitle = (
   imageType: string,
   context: string
@@ -44,7 +40,6 @@ export const generateImageTitle = (
   return `ChronoBond ${imageType} - ${context}`;
 };
 
-// Common image configurations for SEO
 export const imageConfigs = {
   logo: {
     width: 200,
@@ -78,7 +73,6 @@ export const imageConfigs = {
   },
 };
 
-// Generate responsive image sizes
 export const generateImageSizes = (breakpoints: number[] = [640, 768, 1024, 1280]) => {
   return breakpoints.map((bp, index) => {
     const nextBp = breakpoints[index + 1];
@@ -89,7 +83,6 @@ export const generateImageSizes = (breakpoints: number[] = [640, 768, 1024, 1280
   }).join(", ");
 };
 
-// SEO-friendly image component props
 export const createSEOImageProps = (
   src: string,
   imageType: string,
