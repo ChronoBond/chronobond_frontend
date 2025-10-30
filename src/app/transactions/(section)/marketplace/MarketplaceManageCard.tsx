@@ -51,15 +51,15 @@ export const MarketplaceManageCard = ({
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">💰 Listed Price</div>
+            <div className="text-xs text-white/70 mb-1">Listed Price</div>
             <div className="text-lg font-bold text-brand-accent">{listing.price} FLOW</div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📈 Status</div>
+            <div className="text-xs text-white/70 mb-1">Status</div>
             <div className={`text-sm font-medium ${
               listing.isAvailable ? 'text-brand-accent' : 'text-brand-error'
             }`}>
-              {listing.isAvailable ? "✅ Available" : "❌ Sold"}
+              {listing.isAvailable ? "Available" : "Sold"}
             </div>
           </div>
         </div>

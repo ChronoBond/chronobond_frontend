@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 
-// Base metadata configuration
 const baseMetadata = {
   siteName: "ChronoBond",
   url: "https://chronobond.com",
@@ -10,7 +9,6 @@ const baseMetadata = {
   type: "website" as const,
 };
 
-// Common keywords for all pages
 const commonKeywords = [
   "ChronoBond",
   "DeFi",
@@ -26,7 +24,6 @@ const commonKeywords = [
   "blockchain bonds"
 ];
 
-// Generate metadata for specific pages
 export const generatePageMetadata = (
   title: string,
   description: string,
@@ -44,7 +41,6 @@ export const generatePageMetadata = (
     description: fullDescription,
     keywords: fullKeywords,
     
-    // Open Graph
     openGraph: {
       title: fullTitle,
       description: fullDescription,
@@ -62,7 +58,6 @@ export const generatePageMetadata = (
       type: baseMetadata.type,
     },
     
-    // Twitter Card
     twitter: {
       card: "summary_large_image",
       title: fullTitle,
@@ -72,12 +67,10 @@ export const generatePageMetadata = (
       site: baseMetadata.creator,
     },
     
-    // Canonical URL
     alternates: {
       canonical: fullUrl,
     },
     
-    // Robots
     robots: {
       index: true,
       follow: true,
@@ -92,7 +85,6 @@ export const generatePageMetadata = (
   };
 };
 
-// Predefined metadata for common pages
 export const pageMetadata = {
   home: generatePageMetadata(
     "ChronoBond - DeFi Time-Locked Bonds on Flow Blockchain",
@@ -137,7 +129,6 @@ export const pageMetadata = {
   ),
 };
 
-// Generate structured data for SEO
 export const generateStructuredData = (page: string) => {
   const baseStructuredData = {
     "@context": "https://schema.org",
@@ -159,7 +150,6 @@ export const generateStructuredData = (page: string) => {
     }
   };
 
-  // Add page-specific structured data
   switch (page) {
     case "mint":
       return {

@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ShoppingCart, 
-  Loader2, 
+import {
+  ShoppingCart,
+  Loader2,
   Link as LinkIcon,
   CheckCircle,
-  Clock,
+  DollarSign,
   AlertTriangle
 } from "lucide-react";
 import { type MarketplaceListingCardProps } from "@/types/marketplace.types";
@@ -52,15 +52,15 @@ export const MarketplaceListingCard = ({
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">💰 Listed Price</div>
+            <div className="text-xs text-white/70 mb-1 flex items-center gap-1"><DollarSign className="w-3 h-3" /> Listed Price</div>
             <div className="text-lg font-bold text-brand-accent">{listing.price} FLOW</div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
-            <div className="text-xs text-white/70 mb-1">📈 Status</div>
+            <div className="text-xs text-white/70 mb-1">Status</div>
             <div className={`text-sm font-medium ${
               listing.isAvailable ? 'text-brand-accent' : 'text-brand-error'
             }`}>
-              {listing.isAvailable ? "✅ Available" : "❌ Sold"}
+              {listing.isAvailable ? "Available" : "Sold"}
             </div>
           </div>
         </div>

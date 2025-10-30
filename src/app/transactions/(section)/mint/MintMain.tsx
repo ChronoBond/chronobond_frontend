@@ -7,7 +7,7 @@ import { useMint } from "./useMint";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Coins } from "lucide-react";
 
-// Lazy load components for better performance
+// Lazy load heavy parts to keep initial render fast
 const MintWalletPrompt = lazy(() => import("./MintWalletPrompt").then(module => ({ default: module.MintWalletPrompt })));
 const MintForm = lazy(() => import("./MintForm").then(module => ({ default: module.MintForm })));
 const MintSummary = lazy(() => import("./MintSummary").then(module => ({ default: module.MintSummary })));
@@ -29,7 +29,10 @@ const MintMain = () => {
     handleInputChange,
     handleMintBond,
     yieldStrategies,
-    durationOptions
+    durationOptions,
+    paymentToken,
+    usdcQuote,
+    setPaymentToken
   } = useMint();
 
   useEffect(() => {
@@ -123,6 +126,9 @@ const MintMain = () => {
                   onMintBond={handleMintBond}
                   yieldStrategies={yieldStrategies}
                   durationOptions={durationOptions}
+                  paymentToken={paymentToken}
+                  usdcQuote={usdcQuote}
+                  onPaymentTokenChange={setPaymentToken}
                 />
               </Suspense>
             </div>

@@ -6,15 +6,21 @@ export const initializeFlowTestnet = () => {
     process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID !== "your_walletconnect_project_id_here" &&
     process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID.length > 10;
 
+  // Default to POP/RPC to avoid iframe blocking on some browsers/environments
+  const discoveryMethod = process.env.NEXT_PUBLIC_FCL_DISCOVERY_METHOD || "POP/RPC";
+
   const config: any = {
     "accessNode.api": process.env.NEXT_PUBLIC_ACCESS_NODE_URL || "https://rest-testnet.onflow.org",
     "discovery.wallet": process.env.NEXT_PUBLIC_DISCOVERY_WALLET || "https://fcl-discovery.onflow.org/testnet/authn",
     "app.detail.title": process.env.NEXT_PUBLIC_APP_TITLE || "ChronoBond",
-    "app.detail.icon": process.env.NEXT_PUBLIC_APP_ICON || "https://your-app-icon.com/icon.png",
+    // Use absolute HTTPS icon to avoid cross-origin/iframe issues in discovery
+    "app.detail.icon": process.env.NEXT_PUBLIC_APP_ICON || "https://fcl-discovery.onflow.org/images/flow-logo.png",
+    // Ensure network is set explicitly
+    "flow.network": "testnet",
     
-    // Alternative wallet discovery for better compatibility
-    "discovery.wallet.method": "POP/RPC",
-    "discovery.wallet.method.default": "POP/RPC",
+    // Discovery method (configurable). Options: POP/RPC or IFRAME/RPC
+    "discovery.wallet.method": discoveryMethod,
+    "discovery.wallet.method.default": discoveryMethod,
     
     // Additional configuration for better error handling
     "fcl.limit": 1000,
@@ -24,8 +30,8 @@ export const initializeFlowTestnet = () => {
     "fcl.maxEventPollRate": 5000,
     "fcl.warn": false,
     
-    // Disable WalletConnect warnings if no valid project ID
-    "fcl.walletConnect.enabled": hasValidWalletConnectId,
+    // Explicitly disable WalletConnect unless project ID is provided
+    "fcl.walletConnect.enabled": hasValidWalletConnectId ? true : false,
     
     // Standard contracts on testnet
     "0xNonFungibleToken": "0x631e88ae7f1d7c20",

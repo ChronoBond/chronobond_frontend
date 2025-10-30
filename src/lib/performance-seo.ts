@@ -1,5 +1,3 @@
-// Performance and SEO optimization utilities
-
 export interface PerformanceConfig {
   enableGzip: boolean;
   enableBrotli: boolean;
@@ -13,15 +11,13 @@ export const defaultPerformanceConfig: PerformanceConfig = {
   enableGzip: true,
   enableBrotli: true,
   enableCaching: true,
-  cacheMaxAge: 31536000, // 1 year
+  cacheMaxAge: 31536000,
   enablePrefetch: true,
   enablePreload: true,
 };
 
-// Generate performance hints for Next.js
 export const generatePerformanceHints = () => {
   return {
-    // DNS prefetch for external domains
     dnsPrefetch: [
       "//fonts.googleapis.com",
       "//fonts.gstatic.com",
@@ -29,14 +25,12 @@ export const generatePerformanceHints = () => {
       "//unpkg.com",
     ],
 
-    // Preconnect to important origins
     preconnect: [
       "https://fonts.googleapis.com",
       "https://fonts.gstatic.com",
       "https://cdnjs.cloudflare.com",
     ],
 
-    // Preload critical resources
     preload: [
       {
         href: "/fonts/inter-var.woff2",
@@ -51,7 +45,6 @@ export const generatePerformanceHints = () => {
       },
     ],
 
-    // Prefetch important pages
     prefetch: [
       "/transactions/mint",
       "/transactions/redeem",
@@ -61,40 +54,34 @@ export const generatePerformanceHints = () => {
   };
 };
 
-// Generate cache headers for different resource types
 export const generateCacheHeaders = (
   config: PerformanceConfig = defaultPerformanceConfig
 ) => {
   const maxAge = config.cacheMaxAge;
 
   return {
-    // Static assets (images, fonts, etc.)
     static: {
       "Cache-Control": `public, max-age=${maxAge}, immutable`,
       Expires: new Date(Date.now() + maxAge * 1000).toUTCString(),
     },
 
-    // HTML pages
     html: {
       "Cache-Control": "public, max-age=0, must-revalidate",
       ETag: `"${Date.now()}"`,
     },
 
-    // API responses
     api: {
-      "Cache-Control": "public, max-age=300, s-maxage=600", // 5 min browser, 10 min CDN
+      "Cache-Control": "public, max-age=300, s-maxage=600",
       Vary: "Accept-Encoding",
     },
 
-    // JSON data
     json: {
-      "Cache-Control": "public, max-age=60, s-maxage=300", // 1 min browser, 5 min CDN
+      "Cache-Control": "public, max-age=60, s-maxage=300",
       "Content-Type": "application/json",
     },
   };
 };
 
-// Generate compression headers
 export const generateCompressionHeaders = (
   config: PerformanceConfig = defaultPerformanceConfig
 ) => {
@@ -111,28 +98,25 @@ export const generateCompressionHeaders = (
   return headers;
 };
 
-// Generate security headers for SEO and security
 export const generateSecurityHeaders = () => {
   return {
     "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
     "X-XSS-Protection": "1; mode=block",
     "Referrer-Policy": "strict-origin-when-cross-origin",
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
     "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
     "Content-Security-Policy": [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com https://fcl-discovery.onflow.org",
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self' https:",
-      "frame-src 'none'",
+      "connect-src 'self' https: wss:",
+      "frame-src 'self' https://fcl-discovery.onflow.org https://*.onflow.org https://wallet-v2.blocto.app https://wallet-v2-dev.blocto.app",
     ].join("; "),
   };
 };
 
-// Generate SEO-friendly redirects
 export const generateRedirects = () => {
   return [
     {
@@ -147,7 +131,6 @@ export const generateRewrites = () => {
   return [];
 };
 
-// Generate robots.txt content
 export const generateRobotsTxt = () => {
   return `
 User-agent: *
@@ -162,7 +145,6 @@ Host: https://chronobond.com
 `.trim();
 };
 
-// Generate sitemap.xml content
 export const generateSitemapXml = (
   pages: Array<{
     url: string;
@@ -190,7 +172,6 @@ ${urlset}
 </urlset>`;
 };
 
-// Generate manifest.json for PWA
 export const generateManifest = () => {
   return {
     name: "ChronoBond - DeFi Time-Locked Bonds",

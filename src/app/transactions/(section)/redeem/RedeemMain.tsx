@@ -5,7 +5,7 @@ import { useFlowCurrentUser } from "@onflow/kit";
 import { useRedeem } from "./useRedeem";
 import { LoadingState } from "@/components/ui/loading-state";
 
-// Lazy load components for better performance
+// Lazy load heavy sections to reduce initial bundle
 const RedeemWalletPrompt = lazy(() => import("./RedeemWalletPrompt").then(module => ({ default: module.RedeemWalletPrompt })));
 const RedeemHeader = lazy(() => import("./RedeemHeader").then(module => ({ default: module.RedeemHeader })));
 const RedeemMessages = lazy(() => import("./RedeemMessages").then(module => ({ default: module.RedeemMessages })));
@@ -13,6 +13,7 @@ const RedeemTabNavigation = lazy(() => import("./RedeemTabNavigation").then(modu
 const RedeemableBonds = lazy(() => import("./RedeemableBonds").then(module => ({ default: module.RedeemableBonds })));
 const PendingBonds = lazy(() => import("./PendingBonds").then(module => ({ default: module.PendingBonds })));
 const Notifications = lazy(() => import("./Notifications").then(module => ({ default: module.Notifications })));
+const RedeemModal = lazy(() => import("./RedeemModal").then(module => ({ default: module.RedeemModal })));
 
 const RedeemMain = () => {
   const { user } = useFlowCurrentUser();
@@ -27,11 +28,19 @@ const RedeemMain = () => {
     error,
     success,
     redeeming,
+    redeemModalOpen,
+    selectedBond,
+    receiveToken,
+    receiveQuote,
+    quoteLoading,
     setActiveTab,
     loadBondData,
     handleRedeemBond,
     handleRedeemAllBonds,
-    clearMessages
+    clearMessages,
+    setRedeemModalOpen,
+    setReceiveToken,
+    confirmRedeem
   } = useRedeem();
 
   if (!user?.loggedIn) {
@@ -92,6 +101,21 @@ const RedeemMain = () => {
           />
         </Suspense>
       )}
+
+      {/* Redeem Modal */}
+      <Suspense fallback={null}>
+        <RedeemModal
+          open={Boolean(redeemModalOpen)}
+          onClose={() => (setRedeemModalOpen ? setRedeemModalOpen(false) : undefined)}
+          bond={selectedBond ?? null}
+          receiveToken={(receiveToken ?? "FLOW") as "FLOW" | "USDC"}
+          onReceiveTokenChange={setReceiveToken || (() => {})}
+          receiveQuote={receiveQuote ?? null}
+          quoteLoading={Boolean(quoteLoading)}
+          isRedeeming={selectedBond ? redeeming[selectedBond.bondID] : false}
+          onConfirm={confirmRedeem || (() => {})}
+        />
+      </Suspense>
 
       {activeTab === "pending" && (
         <Suspense fallback={<LoadingState message="Loading pending bonds..." />}>

@@ -124,6 +124,50 @@ export class ChronoBondService {
   }
 
   /**
+   * Mint a new bond paying with an alternate token via on-chain swap
+   * Backend team provides cadence for atomic Source -> Swapper -> Sink
+   */
+  async mintWithSwap(
+    strategyID: string,
+    toFlowAmount: string,
+    lockupPeriod: string,
+    payWithToken: string // e.g., "USDC"
+  ): Promise<TransactionResult> {
+    try {
+      const TRANSACTION_CODE = `
+        // cadence to be provided by backend team
+        transaction(strategyID: String, toFlowAmount: UFix64, lockupSeconds: UInt64, payWith: String) {
+          prepare(signer: auth(Storage, Capabilities) &Account) {}
+          execute {}
+        }
+      `;
+      const transactionId = await fcl.mutate({
+        cadence: TRANSACTION_CODE,
+        args: (arg: any, t: any) => [
+          arg(strategyID, t.String),
+          arg(formatForUFix64(toFlowAmount), t.UFix64),
+          arg(lockupPeriod, t.UInt64),
+          arg(payWithToken, t.String),
+        ],
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
+        limit: 9999,
+      });
+
+      await fcl.tx(transactionId).onceSealed();
+      return { success: true, transactionId };
+    } catch (error: any) {
+      toast({
+        title: "Mint (Swap) Failed",
+        description: error.message || "Failed to mint bond with swap",
+        variant: "destructive",
+      });
+      return { success: false, error: error.message || "Failed to mint bond with swap" };
+    }
+  }
+
+  /**
    * Get all bonds for a user
    */
   async getUserBonds(address: string): Promise<BondData[]> {

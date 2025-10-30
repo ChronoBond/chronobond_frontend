@@ -17,11 +17,11 @@ export const RedeemableBonds = ({
 }: RedeemableBondsProps) => {
   return (
     <div className="tab-content space-y-6">
-      {/* Modern Bond List Header */}
+      {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">
-            💰 Ready for Redemption
+            Ready for Redemption
           </h2>
           <p className="text-white/70">
             Redeem your matured bonds to receive principal + yield
@@ -47,14 +47,14 @@ export const RedeemableBonds = ({
               className="bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg w-full"
               size="sm"
             >
-              💰 Redeem All (
+              Redeem All (
               {bondRedemptionService.formatCurrency(totalRedeemableValue)})
             </Button>
           )}
         </div>
       </div>
 
-      {/* Modern Bond List */}
+      {/* List */}
       {loading ? (
         <div className="flex items-center justify-center py-16">
           <div className="text-center">
@@ -87,7 +87,7 @@ export const RedeemableBonds = ({
         </div>
       )}
 
-      {/* Mobile Sticky Footer */}
+      {/* Mobile quick actions */}
       {redeemableBonds.length > 0 && (
         <div className="sm:hidden fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-xl border-t border-white/10">
           <div className="flex gap-3">

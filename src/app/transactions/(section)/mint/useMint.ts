@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { chronoBondService } from "@/lib/chronobond-service";
+import { swapService } from "@/lib/swap-service";
 import { type MintHooksReturn, type TransactionStatus, type DurationOption } from "@/types/mint.types";
 import { type YieldStrategy } from "@/types/chronobond";
 
@@ -50,6 +51,11 @@ export const useMint = (): MintHooksReturn => {
     txId: null,
   });
 
+  // Cross-asset mint state
+  const [paymentToken, setPaymentToken] = useState<"FLOW" | "USDC">("FLOW");
+  const [usdcQuote, setUsdcQuote] = useState<string | null>(null);
+  const [quoteLoading, setQuoteLoading] = useState(false);
+
   const selectedStrategy = YIELD_STRATEGIES.find(
     (s) => s.name === formData.strategyID
   );
@@ -75,7 +81,33 @@ export const useMint = (): MintHooksReturn => {
     }));
   };
 
-  // Complete mint bond flow using the service
+  useEffect(() => {
+    const fetchQuote = async () => {
+      if (paymentToken !== "USDC") {
+        setUsdcQuote(null);
+        return;
+      }
+      if (!formData.amount || parseFloat(formData.amount) <= 0) {
+        setUsdcQuote(null);
+        return;
+      }
+      setQuoteLoading(true);
+      const quote = await swapService.quoteIn({
+        fromToken: "USDC",
+        toToken: "FLOW",
+        toTokenAmount: formData.amount,
+      });
+      setQuoteLoading(false);
+      if (quote?.inputAmount) {
+        setUsdcQuote(`~${parseFloat(quote.inputAmount).toFixed(2)} USDC`);
+      } else {
+        setUsdcQuote(null);
+      }
+    };
+    fetchQuote();
+  }, [paymentToken, formData.amount]);
+
+  // Execute mint flow
   const handleMintBond = async () => {
     if (!user?.loggedIn) {
       alert("Please connect your wallet first");
@@ -116,12 +148,20 @@ export const useMint = (): MintHooksReturn => {
       // Step 3: Mint the bond
       setTxStatus({
         state: "minting",
-        statusString: "Minting bond...",
+        statusString: paymentToken === "USDC" ? "Minting with USDC..." : "Minting bond...",
         txId: null,
       });
 
       const lockupSeconds = (formData.lockupPeriod * 24 * 60 * 60).toString();
-      const mintResult = await chronoBondService.mintBond(
+      const mintResult =
+        paymentToken === "USDC"
+          ? await chronoBondService.mintWithSwap(
+              formData.strategyID,
+              formData.amount || "0",
+              lockupSeconds,
+              "USDC"
+            )
+          : await chronoBondService.mintBond(
         formData.strategyID,
         formData.amount || "0",
         lockupSeconds
@@ -145,6 +185,8 @@ export const useMint = (): MintHooksReturn => {
           amount: "",
           lockupPeriod: 30,
         });
+        setPaymentToken("FLOW");
+        setUsdcQuote(null);
         setTxStatus({
           state: "idle",
           statusString: "",
@@ -181,8 +223,13 @@ export const useMint = (): MintHooksReturn => {
     // Actions
     handleInputChange,
     handleMintBond,
-    
+    setPaymentToken,
+    // expose for UI
+    paymentToken,
+    usdcQuote,
+    quoteLoading,
     // Constants
+    
     yieldStrategies: YIELD_STRATEGIES,
     durationOptions: DURATION_OPTIONS
   };
