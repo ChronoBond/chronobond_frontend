@@ -30,6 +30,7 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
   const { user, authenticate, unauthenticate } = useFlowCurrentUser();
   const [isScrolled, setIsScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const navbarRef = useRef<HTMLDivElement>(null);
   const connectedRef = useRef<HTMLDivElement>(null);
   const disconnectedRef = useRef<HTMLDivElement>(null);
@@ -58,6 +59,21 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    // Monitor for modal-open class on documentElement
+    const observer = new MutationObserver(() => {
+      const hasModalOpen = document.documentElement.classList.contains("modal-open");
+      setIsModalOpen(hasModalOpen);
+    });
+
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ["class"],
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   useEffect(() => {
@@ -109,7 +125,8 @@ export function FloatingNavbar({ className }: FloatingNavbarProps) {
   return (
     <div ref={navbarRef} className={cn("nav-container", className)}>
       <nav className={cn(
-        "nav-bar",
+        "nav-bar transition-all duration-300",
+        isModalOpen && "blur-state",
         isScrolled ? "py-2 sm:py-3 shadow-2xl" : "py-3 sm:py-4"
       )}>
         {/* Logo */}

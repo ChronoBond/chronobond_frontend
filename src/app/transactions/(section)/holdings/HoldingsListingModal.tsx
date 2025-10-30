@@ -1,14 +1,10 @@
 "use client";
 
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  X, 
-  DollarSign, 
-  Loader2, 
-  CheckCircle
-} from "lucide-react";
+import { X, DollarSign, Loader2, CheckCircle, Tag } from "lucide-react";
 import { chronoBondService } from "@/lib/chronobond-service";
 import { type ListingModalProps } from "@/types/holding.types";
 
@@ -21,43 +17,60 @@ export const HoldingsListingModal = ({
   onClose,
   onPriceChange,
   onConfirmListing,
-  formatFlow
+  formatFlow,
 }: ListingModalProps) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen]);
+
   if (!isOpen || !selectedBond) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 modal-mobile">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10 p-6 max-w-md w-full shadow-2xl modal-content-mobile">
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-lg flex items-center justify-center z-50 p-4">
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/95 via-background/85 to-background/80 border border-white/20 p-6 max-w-md w-full shadow-2xl max-h-[calc(100vh-2rem)] overflow-y-auto">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-accent/5" />
         <div className="relative z-10">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-white">List Bond for Sale</h3>
-            <Button 
-              variant="ghost" 
+          {/* Header */}
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-brand-primary/20 to-brand-accent/20 border border-white/20 flex items-center justify-center">
+              <Tag className="w-5 h-5 text-brand-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-lg font-bold text-white">
+                List Bond for Sale
+              </h3>
+              <p className="text-xs text-white/60">Bond #{selectedBond.id}</p>
+            </div>
+            <Button
+              variant="ghost"
               size="sm"
               onClick={onClose}
-              className="h-8 w-8 p-0 text-white/70 hover:text-white hover:bg-white/10"
+              className="h-8 w-8 p-0 text-white/70 hover:text-white hover:bg-white/10 flex-shrink-0"
             >
               <X className="h-4 w-4" />
             </Button>
           </div>
-        
+
           <div className="space-y-4">
-            <div className="bg-brand-accent/10 border border-brand-accent/20 rounded-lg p-3 text-center">
-              <span className="text-brand-accent text-sm font-medium">
-                🚀 Real Transaction - Will execute on Flow blockchain
-              </span>
-            </div>
-            
+            {/* Bond Details */}
             <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+              <p className="text-xs font-semibold text-white/70 mb-3 uppercase tracking-wide">
+                Bond Details
+              </p>
               <div className="space-y-3">
                 <div className="flex justify-between text-sm">
-                  <span className="text-white/70">Bond ID:</span>
-                  <span className="font-medium text-white">#{selectedBond.id}</span>
-                </div>
-                <div className="flex justify-between text-sm">
                   <span className="text-white/70">Principal:</span>
-                  <span className="font-medium text-white">{formatFlow(selectedBond.principal)}</span>
+                  <span className="font-semibold text-white">
+                    {formatFlow(selectedBond.principal)}
+                  </span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-white/70">Yield Rate:</span>
@@ -67,53 +80,97 @@ export const HoldingsListingModal = ({
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-white/70">Strategy:</span>
-                  <span className="font-medium text-white">{selectedBond.strategyID}</span>
+                  <span className="font-medium text-white text-xs">
+                    {selectedBond.strategyID}
+                  </span>
                 </div>
                 {selectedBondDetails && (
                   <>
                     <div className="flex justify-between text-sm">
                       <span className="text-white/70">Expected Total:</span>
-                      <span className="font-medium text-brand-accent">{formatFlow(selectedBondDetails.expectedTotal)}</span>
+                      <span className="font-semibold text-brand-accent">
+                        {formatFlow(selectedBondDetails.expectedTotal)}
+                      </span>
                     </div>
                     <div className="flex justify-between text-sm">
                       <span className="text-white/70">Time to Maturity:</span>
-                      <span className="font-medium text-white">
-                        {selectedBondDetails.isMatured ? "Matured" : chronoBondService.formatTimeUntilMaturity(selectedBondDetails.timeUntilMaturity)}
+                      <span className="font-medium text-white flex items-center gap-2">
+                        {selectedBondDetails.isMatured ? (
+                          <>
+                            <CheckCircle className="h-4 w-4 text-emerald-400" />
+                            Matured
+                          </>
+                        ) : (
+                          chronoBondService.formatTimeUntilMaturity(
+                            selectedBondDetails.timeUntilMaturity
+                          )
+                        )}
                       </span>
                     </div>
                   </>
                 )}
               </div>
             </div>
-          
+
+            {/* Listing Price Input */}
             <div>
-              <label className="block text-sm font-semibold mb-2 text-white">
-                Listing Price
+              <label className="block text-xs font-semibold text-white/70 mb-3 uppercase tracking-wide">
+                <div className="flex items-center gap-2">
+                  <DollarSign className="w-3 h-3" />
+                  Set Your Price
+                </div>
               </label>
               <div className="relative">
-                <DollarSign className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/70" />
                 <Input
                   type="number"
-                  placeholder="Enter price"
+                  placeholder="Enter listing price"
                   value={listingPrice}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => onPriceChange(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    onPriceChange(e.target.value)
+                  }
                   min="0"
                   step="0.01"
-                  className="pl-10 pr-16 bg-white/5 border-white/20 text-white placeholder:text-white/50"
+                  className="pr-16 text-lg bg-white/5 border-white/20 text-white placeholder:text-white/50"
                 />
-                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-medium text-white/70 bg-white/10 px-2 py-1 rounded">
+                <div className="absolute right-3 top-1/2 -translate-y-1/2 font-semibold text-white/70">
                   FLOW
                 </div>
               </div>
+              <p className="text-xs text-white/60 mt-2">
+                Suggested: {formatFlow(selectedBond.principal * 1.2)} (20%
+                markup)
+              </p>
             </div>
-            
-            <div className="flex gap-3 pt-4">
+
+            {/* Info Banner */}
+            <div className="bg-brand-primary/10 border border-brand-primary/30 rounded-lg p-3 text-center">
+              <span className="text-brand-primary text-xs font-medium">
+                ⛓️ Real Transaction - Will execute on Flow blockchain
+              </span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="ghost"
+                onClick={onClose}
+                disabled={listingState.state === "pending"}
+                className="flex-1"
+              >
+                Cancel
+              </Button>
               <Button
                 onClick={onConfirmListing}
-                disabled={listingState.state === 'pending' || !listingPrice || parseFloat(listingPrice) <= 0 || isNaN(parseFloat(listingPrice))}
-                className="flex-1 bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg"
+                variant="primary"
+                disabled={
+                  listingState.state === "pending" ||
+                  !listingPrice ||
+                  parseFloat(listingPrice) <= 0 ||
+                  isNaN(parseFloat(listingPrice))
+                }
+                className="flex-1"
               >
-                {listingState.state === 'pending' ? (
+                {listingState.state === "pending" ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     Processing...
@@ -122,29 +179,31 @@ export const HoldingsListingModal = ({
                   "Confirm Listing"
                 )}
               </Button>
-              <Button
-                onClick={onClose}
-                variant="outline"
-                className="flex-1 bg-background/20 border-white/20 text-white hover:bg-white/10"
-              >
-                Cancel
-              </Button>
             </div>
-          
+
+            {/* Status Message */}
             {listingState.statusString && (
-              <div className={`p-3 rounded-lg text-sm border ${
-                listingState.state === 'success' ? 'bg-brand-accent/10 text-brand-accent border-brand-accent/20' :
-                listingState.state === 'error' ? 'bg-brand-error/10 text-brand-error border-brand-error/20' :
-                'bg-brand-primary/10 text-brand-primary border-brand-primary/20'
-              }`}>
+              <div
+                className={`p-3 rounded-lg text-sm border ${
+                  listingState.state === "success"
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                    : listingState.state === "error"
+                    ? "bg-red-500/10 text-red-400 border-red-500/30"
+                    : "bg-brand-primary/10 text-brand-primary border-brand-primary/20"
+                }`}
+              >
                 <div className="flex items-center gap-2">
-                  {listingState.state === 'pending' && <Loader2 className="w-4 h-4 animate-spin" />}
-                  {listingState.state === 'success' && <CheckCircle className="w-4 h-4" />}
+                  {listingState.state === "pending" && (
+                    <Loader2 className="w-4 h-4 animate-spin flex-shrink-0" />
+                  )}
+                  {listingState.state === "success" && (
+                    <CheckCircle className="w-4 h-4 flex-shrink-0" />
+                  )}
                   <span>{listingState.statusString}</span>
                 </div>
                 {listingState.txId && (
-                  <div className="text-xs mt-1 opacity-70">
-                    TX ID: {listingState.txId}
+                  <div className="text-xs mt-1 opacity-70 break-all">
+                    TX: {listingState.txId.substring(0, 16)}...
                   </div>
                 )}
               </div>

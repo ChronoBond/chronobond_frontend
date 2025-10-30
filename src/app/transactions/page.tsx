@@ -33,12 +33,15 @@ export default function TransactionsPage() {
   useEffect(() => {
     if (showMobileMenu) {
       document.body.style.overflow = "hidden";
+      document.documentElement.classList.add("modal-open");
     } else {
       document.body.style.overflow = "unset";
+      document.documentElement.classList.remove("modal-open");
     }
 
     return () => {
       document.body.style.overflow = "unset";
+      document.documentElement.classList.remove("modal-open");
     };
   }, [showMobileMenu]);
 
@@ -74,7 +77,8 @@ export default function TransactionsPage() {
     const qs = params.toString();
     router.replace(`${pathname}${qs ? `?${qs}` : ""}`);
   };
-  const activeTab: TransactionTabType = ((searchParams?.get("tab") as TransactionTabType) || "mint");
+  const activeTab: TransactionTabType =
+    (searchParams?.get("tab") as TransactionTabType) || "mint";
 
   const openMobileMenu = () => {
     setShowMobileMenu(true);
@@ -185,14 +189,14 @@ export default function TransactionsPage() {
             {showMobileMenu && (
               <>
                 <div
-                  className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden mobile-menu-backdrop"
+                  className="fixed inset-0 bg-black/70 backdrop-blur-lg z-50 md:hidden mobile-menu-backdrop"
                   onClick={() => setShowMobileMenu(false)}
                 />
 
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:hidden">
                   <div className="w-full max-w-sm">
-                    <GlassCard className="mobile-menu-card overflow-hidden frosted-glass">
-                      <GlassCardHeader className="pb-3">
+                    <GlassCard className="mobile-menu-card overflow-hidden frosted-glass border border-white/20 bg-gradient-to-br from-background/95 via-background/85 to-background/80 backdrop-blur-md shadow-2xl">
+                      <GlassCardHeader className="pb-3 border-b border-white/10">
                         <div className="flex items-center justify-between">
                           <div>
                             <GlassCardTitle className="text-base font-semibold">

@@ -34,6 +34,7 @@ import {
   Clock,
   Shield,
   Rocket,
+  Check,
 } from "lucide-react";
 
 // Register GSAP plugins
@@ -324,12 +325,18 @@ const ChronoSplitMain = () => {
               <ScrollReveal
                 baseOpacity={0}
                 enableBlur={true}
-                baseRotation={1}
+                baseRotation={2}
                 blurStrength={2}
                 stagger={0.02}
                 className="text-caption-lg text-white/70"
               >
-                ✓ Instant liquidity for future yields • ✓ Lock in current yield rates • ✓ Diversify your portfolio
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Instant liquidity for future yields</div>
+                  <span className="text-white/50">•</span>
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Lock in current yield rates</div>
+                  <span className="text-white/50">•</span>
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Diversify your portfolio</div>
+                </div>
               </ScrollReveal>
                     </div>
                   </div>
@@ -368,7 +375,13 @@ const ChronoSplitMain = () => {
                 stagger={0.02}
                 className="text-caption-lg text-white/70"
               >
-                ✓ Guaranteed principal return • ✓ No yield risk exposure • ✓ Predictable returns
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Guaranteed principal return</div>
+                  <span className="text-white/50">•</span>
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> No yield risk exposure</div>
+                  <span className="text-white/50">•</span>
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Predictable returns</div>
+                </div>
               </ScrollReveal>
                     </div>
                   </div>
@@ -407,7 +420,13 @@ const ChronoSplitMain = () => {
                 stagger={0.02}
                 className="text-caption-lg text-white/70"
               >
-                ✓ Leverage yield expectations • ✓ Hedge against rate changes • ✓ Active trading strategies
+                <div className="flex flex-wrap gap-2">
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Leverage yield expectations</div>
+                  <span className="text-white/50">•</span>
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Hedge against rate changes</div>
+                  <span className="text-white/50">•</span>
+                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Active trading strategies</div>
+                </div>
               </ScrollReveal>
                   </div>
                 </div>

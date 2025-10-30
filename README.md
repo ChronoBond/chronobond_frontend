@@ -8,7 +8,10 @@ A revolutionary decentralized finance (DeFi) application built on the Flow block
 - **🔥 Bond Minting**: Create time-locked bonds with customizable durations and yield strategies
 - **📊 Portfolio Management**: View and manage your bond holdings with real-time data
 - **🛒 Marketplace**: Buy and sell bonds before maturity in a decentralized marketplace
-- **💰 Bond Redemption**: Redeem matured bonds and track upcoming maturities
+- **💰 Bond Redemption**: Redeem matured bonds and track upcoming maturities with persistent tab state
+  - ✨ Persistent tab navigation - tab selection saves via URL query parameters
+  - 🔒 Protected redemption - loading states prevent duplicate submissions
+  - 🎯 Optimized state management - single useReducer for cleaner logic
 - **🔄 ChronoSplit (Coming Soon)**: Split bonds into Principal Tokens (cPT) and Yield Tokens (cYT)
 
 ### Yield Strategies
@@ -34,7 +37,81 @@ A revolutionary decentralized finance (DeFi) application built on the Flow block
 - **Smooth Scrolling**: Lenis
 - **UI Components**: Custom glassmorphism components
 - **Flow Integration**: @onflow/fcl, @onflow/kit
-- **State Management**: React Hooks
+- **State Management**: React Hooks + useReducer for consolidated state
+- **Linting**: ESLint with core-web-vitals configuration
+
+## � Flow Actions Integration Features
+
+### 1. **One-Click Multi-Asset Minting**
+Mint FLOW bonds while paying with alternative tokens like USDC for maximum flexibility.
+
+**Location**: Minting Page / Component
+
+**UI Features**:
+- **Dual Input System**: Enter the amount of FLOW you want to bond (e.g., "1000 FLOW")
+- **"Pay with" Dropdown**: Select between FLOW (default) and other supported tokens (USDC, etc.)
+- **Real-time Quote Fetching**: When selecting USDC, the UI fetches a quote from the backend using `Swapper`'s `quoteIn` function
+- **Clear Conversion Display**: Shows exact rate - `"You will pay: ~150.50 USDC for a 1000 FLOW Bond"`
+- **Dynamic Button Text**: Button updates to `"Mint with USDC"` when alternative token selected
+
+**Technical Integration**:
+- Calls new `mintWithSwap` Flow transaction
+- Transaction handles atomic `Source -> Swapper -> Sink` logic
+- Integrates with Flow Actions for seamless user experience
+
+---
+
+### 2. **Redeem-to-Any-Token**
+Redeem mature FLOW bonds and receive payment in USDC or other supported tokens directly to your wallet.
+
+**Location**: Portfolio Page / "Redeem" Modal
+
+**UI Features**:
+- **Redemption Confirmation Modal**: Displays total redemption amount `"You will receive: 1080 FLOW (Principal + Yield)"`
+- **"Receive as" Dropdown**: Default FLOW, with options for USDC and other tokens
+- **Real-time Quote Fetching**: When selecting USDC, fetches quote using `Swapper`'s `quoteOut` function
+- **Final Amount Display**: Shows exact conversion - `"You will receive: ~162.75 USDC"`
+- **Smart Button Text**: Updates to `"Redeem to USDC"` based on selected token
+- **Loading Protection**: Previous implementation with spinner and disabled buttons prevents double-submission
+
+**Technical Integration**:
+- Calls new `redeemAndSwap` Flow transaction
+- Supports all mature bonds across different yield strategies
+- Atomic swap execution on Flow blockchain
+
+---
+
+### 3. **Cross-Asset Marketplace Trading**
+Purchase bonds listed in FLOW by paying with USDC or other supported tokens.
+
+**Location**: Marketplace / "Buy" Modal
+
+**UI Features**:
+- **Listing View**: Shows seller's price (e.g., `"Price: 950 FLOW"`) with standard marketplace layout
+- **"Buy Now" Confirmation Modal**: Opens when user initiates purchase
+- **"Pay with" Dropdown**: Displays user's available token balances (FLOW, USDC, etc.)
+- **Exact Quote Calculation**: When selecting USDC, fetches quote using `Swapper`'s `quoteIn` for the *exact* FLOW amount listed
+- **Final Cost Display**: Shows conversion - `"You will pay: ~142.00 USDC"`
+- **Contextual Button**: Updates to `"Buy with USDC"` when alternative token selected
+
+**Technical Integration**:
+- Calls new `buyWithSwap` Flow transaction
+- Atomically handles payment, swap, and NFT transfer
+- Maintains marketplace integrity with proper escrow and settlement
+
+---
+
+## 🎯 Unified UX Patterns
+
+All three features share consistent design patterns:
+- **Real-time Quote Fetching**: All features fetch live quotes from the backend Swapper service
+- **Dynamic UI Updates**: Button text and display values update based on selected token
+- **Clear User Feedback**: Conversion rates always displayed to prevent surprises
+- **Loading States**: Spinner animations and disabled buttons prevent duplicate submissions
+- **Token Flexibility**: Users can choose between FLOW and alternative tokens (USDC, etc.)
+- **Flow Actions Integration**: All transactions use new Flow Actions-based implementations for atomic operations
+
+---
 
 ## 🚀 Getting Started
 
@@ -146,6 +223,17 @@ src/
 - **BackgroundGrid**: Animated squares with diagonal movement
 - **FloatingNavbar**: Responsive navigation with wallet integration
 
+### Transaction Components (Recently Updated)
+- **RedeemModal**: Enhanced redemption interface with loading states and spinner animations
+  - Prevents duplicate submissions with disabled buttons during processing
+  - Shows "Processing..." feedback during async operations
+  - Supports token selection (FLOW/USDC) with real-time quote fetching
+- **RedeemableBonds**: Lists bonds available for redemption with real-time status
+- **Transactions Page**: Tab-based layout with persistent state via URL query parameters
+  - Tabs: Mint, Redeem, Marketplace, Holdings
+  - State persists across page refreshes using `?tab=` query parameter
+  - Smooth navigation with GSAP animations
+
 ## 🔧 Configuration
 
 ### Flow Network Configuration
@@ -202,10 +290,12 @@ The next major feature will allow users to split their bonds into:
 
 ### Code Style
 - TypeScript with strict type checking
-- ESLint and Prettier for code formatting
+- ESLint with core-web-vitals and react-hooks rules
+- Prettier for code formatting
 - Modular component architecture with reusable animations
 - Consistent naming conventions
 - Editorial-first design approach
+- React 19 best practices with functional components
 
 ### Animation Development
 - **GSAP**: ScrollTrigger for scroll-based animations
@@ -229,12 +319,36 @@ npm install gsap lenis
 npm install -D @types/node
 ```
 
-## 🤝 Contributing
+## � Development Best Practices
+
+### State Management
+- Use `useReducer` for complex state logic in transaction flows
+- Prefer URL query parameters for UI state that should persist
+- Keep component state minimal and focused
+
+### Component Loading States
+- Always provide loading/disabled states for async operations
+- Show visual feedback (spinners, disabled buttons) during operations
+- Prevent duplicate submissions with proper state management
+
+### Code Organization
+- Keep comments essential and meaningful
+- Use descriptive function and variable names instead of relying on comments
+- Group related functionality into custom hooks
+- Separate business logic from presentation components
+
+### Performance Considerations
+- Avoid impure functions in render paths
+- Use lazy loading for heavy sections with Suspense
+- Optimize metadata and SEO utilities
+- Monitor bundle size with tree-shaking optimization
+
+## �🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
+3. Make your changes following the development best practices
+4. Run `npm run lint` and `npm run build` to validate
 5. Submit a pull request
 
 ## 🔗 Links
