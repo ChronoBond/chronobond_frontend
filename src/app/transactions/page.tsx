@@ -11,11 +11,8 @@ import {
   GlassCardHeader,
   GlassCardTitle,
 } from "@/components/ui/glass-card";
-import {
-  BackgroundGrid,
-  BackgroundDots,
-} from "@/components/ui/background-grid";
 import { Coins, ShoppingCart, Clock, Shield, Menu, X } from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 // Import the main components
 import MintMain from "@/app/transactions/(section)/mint/MintMain";
@@ -26,12 +23,13 @@ import RedeemMain from "@/app/transactions/(section)/redeem/RedeemMain";
 type TransactionTabType = "mint" | "holdings" | "marketplace" | "redeem";
 
 export default function TransactionsPage() {
-  const [activeTab, setActiveTab] = useState<TransactionTabType>("mint");
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const tabContentRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     if (showMobileMenu) {
       document.body.style.overflow = "hidden";
@@ -44,10 +42,8 @@ export default function TransactionsPage() {
     };
   }, [showMobileMenu]);
 
-  // Tab transition animations
   useEffect(() => {
     if (tabContentRef.current) {
-      // Reset and animate in
       gsap.set(tabContentRef.current, { opacity: 0, y: 20 });
       gsap.to(tabContentRef.current, {
         opacity: 1,
@@ -56,7 +52,7 @@ export default function TransactionsPage() {
         ease: "power2.out",
       });
     }
-  }, [activeTab]);
+  }, []);
 
   const tabs = [
     { id: "mint" as TransactionTabType, label: "Mint Bonds", icon: Coins },
@@ -70,13 +66,31 @@ export default function TransactionsPage() {
   ];
 
   const handleTabChange = (tab: TransactionTabType) => {
-    setActiveTab(tab);
     setShowMobileMenu(false);
+
+    // preserve other params while updating `tab`
+    const params = new URLSearchParams(searchParams?.toString() || "");
+    params.set("tab", tab);
+    const qs = params.toString();
+    router.replace(`${pathname}${qs ? `?${qs}` : ""}`);
   };
+  const activeTab: TransactionTabType = ((searchParams?.get("tab") as TransactionTabType) || "mint");
 
   const openMobileMenu = () => {
     setShowMobileMenu(true);
   };
+
+  useEffect(() => {
+    if (tabContentRef.current) {
+      gsap.set(tabContentRef.current, { opacity: 0, y: 20 });
+      gsap.to(tabContentRef.current, {
+        opacity: 1,
+        y: 0,
+        duration: 0.4,
+        ease: "power2.out",
+      });
+    }
+  }, [activeTab]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -95,22 +109,32 @@ export default function TransactionsPage() {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Floating Navbar */}
       <FloatingNavbar />
 
-      {/* Main Content */}
       <div className="relative pt-16 sm:pt-20 min-h-screen">
-        <BackgroundDots className="absolute inset-0 dot-bg">
-          <div className="absolute inset-0" />
-        </BackgroundDots>
-        <BackgroundGrid className="absolute inset-0 grid-bg">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/10 via-transparent to-purple-900/10 backdrop-blur-sm" />
-        </BackgroundGrid>
+        {/* Subtle grid lines background (no gradient clipping) */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            opacity: 0.34,
+            backgroundImage:
+              "repeating-linear-gradient(to right, rgba(255,255,255,0.16) 0, rgba(255,255,255,0.16) 1px, transparent 1px, transparent 20px), repeating-linear-gradient(to bottom, rgba(255,255,255,0.16) 0, rgba(255,255,255,0.16) 1px, transparent 1px, transparent 20px)",
+          }}
+        />
+        {/* Coarse grid overlay to strengthen visibility */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 z-0"
+          style={{
+            opacity: 0.15,
+            backgroundImage:
+              "repeating-linear-gradient(to right, rgba(255,255,255,0.18) 0, rgba(255,255,255,0.18) 1px, transparent 1px, transparent 80px), repeating-linear-gradient(to bottom, rgba(255,255,255,0.18) 0, rgba(255,255,255,0.18) 1px, transparent 1px, transparent 80px)",
+          }}
+        />
 
         <div className="transactions-content relative z-10 mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
-          {/* Navigation Tabs */}
           <div className="mb-12 relative">
-            {/* Mobile Menu Button */}
             <div className="md:hidden flex items-center justify-center mb-4">
               <Button
                 ref={menuButtonRef}
@@ -126,7 +150,6 @@ export default function TransactionsPage() {
               </Button>
             </div>
 
-            {/* Desktop Navigation Tabs */}
             <nav className="hidden md:flex items-center justify-center">
               <div className="flex space-x-1 rounded-full frosted-glass p-1">
                 {tabs.map((tab) => {
@@ -159,16 +182,13 @@ export default function TransactionsPage() {
               </div>
             </nav>
 
-            {/* Mobile Menu Modal */}
             {showMobileMenu && (
               <>
-                {/* Backdrop */}
                 <div
                   className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden mobile-menu-backdrop"
                   onClick={() => setShowMobileMenu(false)}
                 />
 
-                {/* Mobile Menu */}
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:hidden">
                   <div className="w-full max-w-sm">
                     <GlassCard className="mobile-menu-card overflow-hidden frosted-glass">
@@ -227,7 +247,6 @@ export default function TransactionsPage() {
             )}
           </div>
 
-          {/* Tab Content */}
           <div ref={tabContentRef}>{renderTabContent()}</div>
         </div>
       </div>
