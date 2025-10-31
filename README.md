@@ -543,7 +543,7 @@ NEXT_PUBLIC_FLOW_WALLET_DISCOVERY=https://fcl-discovery.onflow.org/testnet/authn
 - **Gradient Overlays**: Layered visual effects for depth
 - **Scroll Snap**: Section-based navigation for immersive experience
 
-## 🔄 ChronoSplit (Coming Q2 2025)
+## 🔄 ChronoSplit (Coming Q4 2025)
 
 The next major feature will allow users to split their bonds into:
 - **Principal Tokens (cPT)**: Zero-coupon bond equivalent

@@ -96,7 +96,7 @@ const ChronoSplitMain = () => {
         <div className="flex flex-col items-center justify-center gap-6 lg:gap-8 max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-semantic-overlay border border-semantic-border text-sm font-medium text-semantic-text mb-4">
             <Sparkles className="w-4 h-4 text-semantic-accent" />
-            <span>Coming Soon Q2 2025</span>
+            <span>Coming Soon Q4 2025</span>
           </div>
 
           <div className="card-hero-icon mb-6">
@@ -140,7 +140,7 @@ const ChronoSplitMain = () => {
               disabled
             >
               <Timer className="mr-2 w-5 h-5" />
-              Launch Q2 2025
+              Launch Q4 2025
             </Button>
           </div>
 
