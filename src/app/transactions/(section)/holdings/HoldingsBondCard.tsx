@@ -21,23 +21,14 @@ export const HoldingsBondCard = ({
   calculateCurrentYield
 }: BondCardProps) => {
   return (
-    <div className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border transition-all duration-300 hover:shadow-lg ${
+    <div className={`group relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border transition-all duration-300 hover:shadow-lg ${
       isMatured 
-        ? 'border-brand-accent/40 hover:border-brand-accent/60 hover:shadow-brand-accent/10' 
-        : 'border-brand-primary/40 hover:border-brand-primary/60 hover:shadow-brand-primary/10'
+        ? 'hover:border-brand-accent' 
+        : 'hover:border-brand-primary'
     }`}>
-      <div className={`absolute inset-0 ${
-        isMatured 
-          ? 'bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-primary/10' 
-          : 'bg-gradient-to-br from-brand-primary/10 via-transparent to-brand-accent/10'
-      }`} />
       <div className="relative z-10 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg ${
-            isMatured 
-              ? 'from-brand-accent to-brand-primary' 
-              : 'from-brand-primary to-brand-accent'
-          }`}>
+          <div className={`w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center shadow-lg`}>
             <LinkIcon className="w-5 h-5 text-white" />
           </div>
           <div>

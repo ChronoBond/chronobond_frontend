@@ -112,14 +112,14 @@ export default function TransactionsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)]">
       <FloatingNavbar />
 
       <div className="relative pt-16 sm:pt-20 min-h-screen">
         {/* Subtle grid lines background (no gradient clipping) */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-0"
+          className="pointer-events-none fixed inset-0 z-0"
           style={{
             opacity: 0.34,
             backgroundImage:
@@ -129,7 +129,7 @@ export default function TransactionsPage() {
         {/* Coarse grid overlay to strengthen visibility */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-0 z-0"
+          className="pointer-events-none fixed inset-0 z-0"
           style={{
             opacity: 0.15,
             backgroundImage:
@@ -137,7 +137,8 @@ export default function TransactionsPage() {
           }}
         />
 
-        <div className="transactions-content relative z-10 mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8">
+        <div className="transactions-content-wrapper relative z-10 min-h-screen">
+          <div className="transactions-content relative mx-auto max-w-7xl px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 pointer-events-auto">
           <div className="mb-12 relative">
             <div className="md:hidden flex items-center justify-center mb-4">
               <Button
@@ -162,7 +163,7 @@ export default function TransactionsPage() {
                     <Button
                       key={tab.id}
                       onClick={() => handleTabChange(tab.id)}
-                      variant={activeTab === tab.id ? "gradient" : "ghost"}
+                      variant={activeTab === tab.id ? "primary" : "ghost"}
                       className={`
                         relative flex items-center gap-2 rounded-full px-6 py-2 text-sm font-medium transition-all duration-200 whitespace-nowrap
                         ${
@@ -226,7 +227,7 @@ export default function TransactionsPage() {
                                 key={tab.id}
                                 onClick={() => handleTabChange(tab.id)}
                                 variant={
-                                  activeTab === tab.id ? "gradient" : "ghost"
+                                  activeTab === tab.id ? "primary" : "ghost"
                                 }
                                 className={`
                                   w-full justify-start gap-3 rounded-lg px-4 py-3 text-left transition-all duration-200
@@ -252,6 +253,7 @@ export default function TransactionsPage() {
           </div>
 
           <div ref={tabContentRef}>{renderTabContent()}</div>
+        </div>
         </div>
       </div>
     </div>

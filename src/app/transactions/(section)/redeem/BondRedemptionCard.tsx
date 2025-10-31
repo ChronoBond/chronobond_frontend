@@ -17,11 +17,10 @@ export const BondRedemptionCard = ({
   isRedeeming 
 }: BondRedemptionCardProps) => {
   return (
-    <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-brand-accent/40 hover:border-brand-accent/60 transition-all duration-300 hover:shadow-lg hover:shadow-brand-accent/10">
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-primary/10" />
+    <div className="group relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border hover:border-brand-accent transition-all duration-300 hover:shadow-lg">
       <div className="relative z-10 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-accent to-brand-primary flex items-center justify-center shadow-lg">
+          <div className="w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center shadow-lg">
             <LinkIcon className="w-5 h-5 text-white" />
           </div>
           <div>

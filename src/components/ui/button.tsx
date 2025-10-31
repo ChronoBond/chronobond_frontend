@@ -5,22 +5,21 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-semantic-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-[var(--btn-bg)] hover:bg-[var(--btn-bg-hover)] text-[var(--btn-fg)] shadow ring-1 ring-semantic-ring disabled:opacity-60 disabled:cursor-not-allowed",
         destructive:
           "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "border border-semantic-border bg-semantic-surface shadow-sm hover:bg-semantic-overlay hover:text-semantic-text",
+        ghost: "hover:bg-semantic-overlay hover:text-semantic-text",
+        link: "text-semantic-primary underline-offset-4 hover:underline",
         glass: "glass-button",
-        gradient: "bg-gradient-to-r from-cyan-400 via-blue-500 to-violet-500 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105",
-        primary: "bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 hover:from-cyan-400 hover:to-blue-500",
-        secondary: "border border-cyan-400/30 bg-transparent text-cyan-400 hover:bg-cyan-400/10 hover:border-cyan-400/50 transition-all duration-300",
+        primary: "bg-brand-500 hover:bg-brand-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105",
+        secondary: "border border-semantic-border bg-transparent text-semantic-primary hover:bg-semantic-overlay hover:border-semantic-border transition-all duration-300",
       },
       size: {
         default: "h-9 px-4 py-2",

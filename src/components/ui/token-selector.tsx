@@ -16,11 +16,9 @@ const TOKEN_ICONS = {
 const TOKEN_INFO = {
   FLOW: {
     symbol: "FLOW",
-    color: "from-blue-400 to-cyan-400",
   },
   USDC: {
     symbol: "USDC",
-    color: "from-yellow-400 to-yellow-300",
   },
 }
 

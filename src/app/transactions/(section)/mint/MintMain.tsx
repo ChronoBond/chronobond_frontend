@@ -97,14 +97,14 @@ const MintMain = () => {
 
   return (
     <div ref={containerRef} className="app-container max-w-6xl mx-auto">
-      <Card className="reveal-item relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10">
+      <Card className="reveal-item relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border">
         <CardHeader className="text-center">
           <div ref={headerRef} className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg">
               <Coins className="w-6 h-6 text-white" />
             </div>
             <div>
-              <CardTitle className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent">
+              <CardTitle className="text-3xl font-bold text-semantic-text">
                 Mint ChronoBond
               </CardTitle>
               <CardDescription className="text-lg text-brand-neutral">

@@ -9,14 +9,12 @@ import ChronoSplitMain from "@/app/split/_components/ChronoSplitMain";
 export default function SplitPage() {
   return (
     <SmoothScrollProvider>
-      <BackgroundDots className="min-h-screen bg-black text-white frosted-glass-bg">
+      <BackgroundDots className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] frosted-glass-bg">
         {/* Floating Navbar */}
         <FloatingNavbar />
 
-        {/* Global Background with Gradients */}
-        <BackgroundGrid className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20" />
-        </BackgroundGrid>
+        {/* Global Background */}
+        <BackgroundGrid className="absolute inset-0" />
 
         {/* Layered Visual Effects - Full Page */}
         <div className="absolute inset-0 pointer-events-none">

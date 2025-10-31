@@ -1,0 +1,3 @@
+bantu aku modifikasi di #file:transactions ini
+
+jadi UI nya secara keseluruhan jadi terlalu gelap seperti pada gambar, buat jadi sedikit lebih terang menjadi biru 

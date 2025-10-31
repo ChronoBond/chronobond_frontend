@@ -8,15 +8,14 @@ export const HoldingsPortfolioSummary = ({ bonds, formatFlow, calculateCurrentYi
   const totalYield = bonds.reduce((sum, bond) => sum + calculateCurrentYield(bond), 0);
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10 p-8">
-      <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/5 via-transparent to-brand-accent/5" />
+    <div className="relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border p-8">
       <div className="relative z-10">
         <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-brand-primary to-brand-accent flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg">
             <TrendingUp className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-bold text-semantic-text">
               My Holdings
             </h1>
             <p className="text-brand-neutral text-lg">

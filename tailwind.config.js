@@ -64,6 +64,38 @@ module.exports = {
         },
   	extend: {
 		colors: {
+			// Brand colors - navygreywhiteseacold theme
+			brand: {
+				50:  "#E7EDF3",
+				100: "#C9D7E5",
+				200: "#A1B7CF",
+				300: "#7996B9",
+				400: "#587BA6",
+				500: "#1A3D64", // primary base
+				600: "#16485A",
+				700: "#133F50",
+				800: "#0C2B4E", // strong/navy
+				900: "#0A233F",
+			},
+			accent: {
+				500: "#1D546C",
+				600: "#18485D",
+				700: "#143C4E",
+			},
+			neutral: { canvas: "#F4F4F4" },
+			// Semantic tokens via CSS variables
+			semantic: {
+				bg: "var(--color-bg)",
+				surface: "var(--color-surface)",
+				text: "var(--color-text)",
+				muted: "var(--color-muted)",
+				border: "var(--color-border)",
+				primary: "var(--color-primary)",
+				accent: "var(--color-accent)",
+				overlay: "var(--color-overlay)",
+				ring: "var(--color-ring)",
+			},
+			// Legacy shadcn/ui colors (kept for compatibility)
 			border: 'hsl(var(--border))',
 			input: 'hsl(var(--input))',
 			ring: 'hsl(var(--ring))',
@@ -116,7 +148,7 @@ module.exports = {
 				'4': 'hsl(var(--chart-4))',
 				'5': 'hsl(var(--chart-5))'
 			},
-			// Glassmorphism colors
+			// Glassmorphism colors (preserved)
 			glass: {
 				50: 'rgba(255, 255, 255, 0.05)',
 				100: 'rgba(255, 255, 255, 0.1)',
@@ -131,13 +163,9 @@ module.exports = {
 				200: 'rgba(255, 255, 255, 0.15)',
 				300: 'rgba(255, 255, 255, 0.2)',
 			},
-			// Gradient colors for DeFi theme
-			gradient: {
-				primary: 'from-cyan-400 via-blue-500 to-violet-500',
-				secondary: 'from-blue-400 via-purple-500 to-pink-500',
-				success: 'from-green-400 via-emerald-500 to-teal-500',
-				warning: 'from-yellow-400 via-orange-500 to-red-500',
-			}
+		},
+		ringColor: { 
+			DEFAULT: "var(--color-ring)" 
 		},
   		borderRadius: {
   			lg: 'var(--radius)',

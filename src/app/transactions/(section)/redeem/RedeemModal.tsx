@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { Modal } from "@/components/ui/modal";
 import { TokenSelector } from "@/components/ui/token-selector";
 import { QuoteDisplay } from "@/components/ui/quote-display";
 import { type BondMaturityInfo } from "@/lib/bond-redemption-service";
@@ -30,18 +30,6 @@ export const RedeemModal = ({
   isRedeeming,
   onConfirm,
 }: RedeemModalProps) => {
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
-
-    return () => {
-      document.body.style.overflow = "unset";
-    };
-  }, [open]);
-
   if (!open || !bond) return null;
 
   // Parse the quote to extract numeric value
@@ -52,13 +40,15 @@ export const RedeemModal = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-lg p-4">
-      <div className="w-full max-w-sm rounded-2xl bg-gradient-to-br from-background/95 via-background/85 to-background/80 p-6 border border-white/20 shadow-2xl max-h-[calc(100vh-2rem)] overflow-y-auto">
+    <Modal isOpen={open} onClose={onClose} isDisabled={isRedeeming}>
+      <div 
+        className="rounded-2xl bg-semantic-surface p-6 border border-semantic-border shadow-2xl max-w-sm w-full max-h-[calc(100vh-2rem)] overflow-y-auto"
+      >
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-white/20 flex items-center justify-center">
-              <Clock className="w-5 h-5 text-purple-400" />
+            <div className="w-10 h-10 rounded-lg bg-brand-500 border border-semantic-border flex items-center justify-center">
+              <Clock className="w-5 h-5 text-white" />
             </div>
             <div>
               <h3 className="text-lg font-bold text-white">Redeem Bond</h3>
@@ -73,7 +63,7 @@ export const RedeemModal = ({
             Redemption Amount
           </p>
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-bold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+            <span className="text-3xl font-bold text-semantic-accent">
               {bond.expectedTotal.toFixed(2)}
             </span>
             <span className="text-lg font-semibold text-white/80">FLOW</span>
@@ -141,7 +131,7 @@ export const RedeemModal = ({
           </Button>
         </div>
       </div>
-    </div>
+    </Modal>
   );
 };
 

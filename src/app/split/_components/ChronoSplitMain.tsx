@@ -4,40 +4,21 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Button } from "@/components/ui/button";
-import {
-  GlassCard,
-  GlassCardContent,
-  GlassCardDescription,
-  GlassCardHeader,
-  GlassCardTitle,
-} from "@/components/ui/glass-card";
-import { ScrollReveal } from "@/components/ui/scroll-reveal";
 import { TextType } from "@/components/ui/text-type";
-import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 import { StepperItem } from "@/components/ui/stepper-item";
 import {
   Sparkles,
   ArrowRight,
   TrendingUp,
   Zap,
-  BarChart3,
   Split,
   DollarSign,
-  PieChart,
-  Activity,
   Timer,
   Target,
-  Shuffle,
-  LineChart,
   Layers,
-  Clock,
-  Shield,
-  Rocket,
   Check,
 } from "lucide-react";
 
-// Register GSAP plugins
 if (typeof window !== "undefined") {
   gsap.registerPlugin(ScrollTrigger);
 }
@@ -49,20 +30,23 @@ const ChronoSplitMain = () => {
   const ctaRef = useRef<HTMLDivElement>(null);
   const stepperRef = useRef<HTMLDivElement>(null);
 
-  // GSAP Hero Animation
   useEffect(() => {
-    if (!heroRef.current || !titleRef.current || !subtitleRef.current || !ctaRef.current) return;
+    if (
+      !heroRef.current ||
+      !titleRef.current ||
+      !subtitleRef.current ||
+      !ctaRef.current
+    )
+      return;
 
     const tl = gsap.timeline({ delay: 0.5 });
 
-    // Animate title with scale and fade
     tl.fromTo(
       titleRef.current,
       { scale: 0.8, opacity: 0, y: 50 },
       { scale: 1, opacity: 1, y: 0, duration: 1, ease: "power3.out" }
     );
 
-    // Animate subtitle
     tl.fromTo(
       subtitleRef.current,
       { y: 30, opacity: 0 },
@@ -70,7 +54,6 @@ const ChronoSplitMain = () => {
       "-=0.6"
     );
 
-    // Animate CTA buttons
     tl.fromTo(
       ctaRef.current,
       { y: 20, opacity: 0 },
@@ -83,7 +66,6 @@ const ChronoSplitMain = () => {
     };
   }, []);
 
-  // GSAP Stepper Animation
   useEffect(() => {
     if (!stepperRef.current) return;
 
@@ -107,75 +89,100 @@ const ChronoSplitMain = () => {
 
   return (
     <div className="mx-auto max-w-6xl px-6">
-      {/* Typography-Led Hero Section */}
-      <section ref={heroRef} className="scroll-snap-section min-h-screen flex items-center justify-center text-center">
-        <div className="flex flex-col items-center justify-center gap-8">
-          <div className="flex items-center justify-center gap-6">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-2xl">
-              <Split className="w-10 h-10 text-white" />
-            </div>
-            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center shadow-2xl">
-              <Sparkles className="w-10 h-10 text-white animate-pulse" />
-            </div>
+      <section
+        ref={heroRef}
+        className="scroll-snap-section min-h-screen flex items-center justify-center text-center py-20 lg:py-32"
+      >
+        <div className="flex flex-col items-center justify-center gap-6 lg:gap-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-semantic-overlay border border-semantic-border text-sm font-medium text-semantic-text mb-4">
+            <Sparkles className="w-4 h-4 text-semantic-accent" />
+            <span>Coming Soon Q2 2025</span>
           </div>
 
-        <h1 className="text-hero-lg sm:text-hero-xl lg:text-hero-2xl font-bold mb-8 bg-gradient-to-r from-white via-cyan-100 to-blue-200 bg-clip-text text-transparent tracking-tight">
-          <TextType
-            text={["ChronoSplit is Coming Soon", "Revolutionary DeFi Innovation", "Split Your Bonds"]}
-            typingSpeed={80}
-            pauseDuration={2500}
-            loop={true}
-            showCursor={true}
-            className="inline-block"
-          />
-        </h1>
+          <div className="card-hero-icon mb-6">
+            <Split className="w-12 h-12 text-white" />
+          </div>
 
-        <div className="max-w-4xl mx-auto mb-12">
-          <ScrollReveal
-            baseOpacity={0}
-            enableBlur={true}
-            baseRotation={3}
-            blurStrength={8}
-            stagger={0.1}
-            className="text-body-lg sm:text-body-xl lg:text-subheading-xl text-white/80 leading-relaxed"
+          <h1 className="text-hero-title text-center max-w-5xl">
+            <TextType
+              text={[
+                "ChronoSplit is Coming Soon",
+                "Revolutionary DeFi Innovation",
+                "Split Your Bonds",
+              ]}
+              typingSpeed={80}
+              pauseDuration={2500}
+              loop={true}
+              showCursor={true}
+              className="inline-block"
+            />
+          </h1>
+
+          <div className="max-w-3xl mx-auto mb-8">
+            <p className="text-hero-subtitle text-center text-lg sm:text-xl lg:text-2xl leading-relaxed">
+              Revolutionary DeFi innovation that splits your ChronoBond NFTs
+              into{" "}
+              <span className="font-semibold text-semantic-accent">
+                tradeable Principal and Yield tokens
+              </span>
+              , unlocking unprecedented liquidity and yield optimization
+              strategies.
+            </p>
+          </div>
+
+          <div
+            ref={ctaRef}
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
-            Revolutionary DeFi innovation that splits your ChronoBond NFTs into tradeable Principal and Yield tokens, unlocking unprecedented liquidity and yield optimization strategies.
-          </ScrollReveal>
-        </div>
-
-          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-            <Button variant="primary" size="lg" className="rounded-full px-12 py-4 text-body-lg font-semibold shadow-2xl hover:scale-105 transition-transform">
-              <Timer className="w-5 h-5 mr-2" />
+            <Button
+              variant="default"
+              className="!h-12 sm:!h-14 !text-base sm:!text-lg !font-semibold !px-8 sm:!px-12 !py-0 !rounded-lg !shadow-lg hover:!shadow-xl !transition-all !duration-300 !bg-brand-500 hover:!bg-brand-600 !text-white !border-0 !ring-0 focus-visible:!ring-0"
+              disabled
+            >
+              <Timer className="mr-2 w-5 h-5" />
               Launch Q2 2025
             </Button>
+          </div>
+
+          <div className="grid grid-cols-3 gap-6 sm:gap-8 lg:gap-12 w-full max-w-4xl mt-8">
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text mb-1">
+                Split
+              </div>
+              <div className="text-xs sm:text-sm text-semantic-muted">
+                Principal & Yield
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text mb-1">
+                Trade
+              </div>
+              <div className="text-xs sm:text-sm text-semantic-muted">
+                On AMM
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text mb-1">
+                Optimize
+              </div>
+              <div className="text-xs sm:text-sm text-semantic-muted">
+                Your Strategy
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Typography-Led How ChronoSplit Works */}
-      <section className="scroll-snap-section py-8">
-        <div className="text-center mb-12">
-          <ScrollReveal
-            baseOpacity={0}
-            enableBlur={true}
-            baseRotation={5}
-            blurStrength={10}
-            stagger={0.15}
-            className="text-section-lg sm:text-section-xl lg:text-section-2xl font-bold text-white mb-6 tracking-tight"
-          >
-              How ChronoSplit Works
-          </ScrollReveal>
-          <ScrollReveal
-            baseOpacity={0}
-            enableBlur={true}
-            baseRotation={2}
-            blurStrength={6}
-            stagger={0.08}
-            className="text-body-lg sm:text-body-xl lg:text-body-xl text-white/80 max-w-3xl mx-auto leading-relaxed"
-          >
-            Transform your single ChronoBond into two powerful financial instruments
-          </ScrollReveal>
-                    </div>
+      <section className="scroll-snap-section py-16 lg:py-24">
+        <div className="text-center mb-12 lg:mb-16">
+          <h2 className="text-section-2xl font-bold text-semantic-text mb-4">
+            How ChronoSplit Works
+          </h2>
+          <p className="text-body-lg text-semantic-muted max-w-3xl mx-auto leading-relaxed">
+            Transform your single ChronoBond into two powerful financial
+            instruments
+          </p>
+        </div>
 
         <div ref={stepperRef} className="max-w-4xl mx-auto space-y-16">
           <StepperItem
@@ -185,29 +192,49 @@ const ChronoSplitMain = () => {
             description="Your time-locked bond containing both principal and future yield potential."
             stepNumber={1}
           >
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6">
-                      <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">Principal:</span>
-                  <span className="font-semibold text-white break-words">10,000 FLOW</span>
-                      </div>
-                      <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">Expected Yield:</span>
-                  <span className="font-semibold text-green-400 break-words">1,200 FLOW</span>
-                      </div>
-                      <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">Maturity:</span>
-                  <span className="font-semibold text-white break-words">365 days</span>
-                      </div>
-                      <div className="flex justify-between">
-                  <span className="text-sm text-gray-400">Strategy:</span>
-                  <span className="font-semibold text-white break-words">FlowStaking</span>
+            <div className="bg-semantic-overlay rounded-lg p-4 sm:p-6 space-y-4 border border-semantic-border">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                  <span className="text-sm text-semantic-text/85 font-medium">
+                    Principal:
+                  </span>
+                  <span className="font-semibold text-semantic-text break-words">
+                    10,000 FLOW
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                  <span className="text-sm text-semantic-text/85 font-medium">
+                    Expected Yield:
+                  </span>
+                  <span className="font-semibold text-semantic-accent break-words">
+                    1,200 FLOW
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                  <span className="text-sm text-semantic-text/85 font-medium">
+                    Maturity:
+                  </span>
+                  <span className="font-semibold text-semantic-text break-words">
+                    365 days
+                  </span>
+                </div>
+                <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                  <span className="text-sm text-semantic-text/85 font-medium">
+                    Strategy:
+                  </span>
+                  <span className="font-semibold text-semantic-text break-words">
+                    FlowStaking
+                  </span>
                 </div>
               </div>
-              <Button disabled variant="secondary" className="w-full mt-2 sm:mt-0">
+              <Button
+                disabled
+                variant="default"
+                className="w-full mt-4 !bg-semantic-overlay hover:!bg-semantic-overlay !text-semantic-text !border !border-semantic-border"
+              >
                 Select Bond to Split
               </Button>
-                      </div>
+            </div>
           </StepperItem>
 
           <StepperItem
@@ -218,11 +245,15 @@ const ChronoSplitMain = () => {
             stepNumber={2}
           >
             <div className="text-center">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                <ArrowRight className="w-12 h-12 text-white" />
+              <div className="w-20 h-20 rounded-full bg-semantic-accent flex items-center justify-center mx-auto mb-6 shadow-lg">
+                <ArrowRight className="w-10 h-10 text-white" />
               </div>
-              <Button disabled variant="primary" size="lg" className="px-10 sm:px-12 py-4 w-full sm:w-auto">
-                <Split className="w-6 h-6 mr-3" />
+              <Button
+                disabled
+                variant="default"
+                className="!h-12 !text-base !font-semibold !px-8 sm:!px-12 !py-0 !rounded-lg !shadow-lg !transition-all !duration-300 !bg-semantic-surface !text-semantic-text !border-2 !border-semantic-accent/50 hover:!border-semantic-accent !ring-0 focus-visible:!ring-0 w-full sm:w-auto opacity-75"
+              >
+                <Split className="w-5 h-5 mr-2" />
                 Execute Split (Coming Soon)
               </Button>
             </div>
@@ -235,16 +266,24 @@ const ChronoSplitMain = () => {
             description="Represents the principal amount of your bond, redeemable at maturity."
             stepNumber={3}
           >
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6 space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Amount:</span>
-                <span className="font-semibold text-cyan-400 break-words">10,000 cPT</span>
-                </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Redeemable:</span>
-                <span className="font-semibold text-white break-words">10,000 FLOW</span>
-                </div>
-                </div>
+            <div className="bg-semantic-overlay rounded-lg p-4 sm:p-6 space-y-4 border border-semantic-border">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                <span className="text-sm text-semantic-text/85 font-medium">
+                  Amount:
+                </span>
+                <span className="font-semibold text-semantic-accent break-words">
+                  10,000 cPT
+                </span>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                <span className="text-sm text-semantic-text/85 font-medium">
+                  Redeemable:
+                </span>
+                <span className="font-semibold text-semantic-text break-words">
+                  10,000 FLOW
+                </span>
+              </div>
+            </div>
           </StepperItem>
 
           <StepperItem
@@ -255,216 +294,274 @@ const ChronoSplitMain = () => {
             stepNumber={4}
             isLast={true}
           >
-            <div className="bg-white/5 rounded-lg p-4 sm:p-6 space-y-4">
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Amount:</span>
-                <span className="font-semibold text-green-400 break-words">1,200 cYT</span>
+            <div className="bg-semantic-overlay rounded-lg p-4 sm:p-6 space-y-4 border border-semantic-border">
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                <span className="text-sm text-semantic-text/85 font-medium">
+                  Amount:
+                </span>
+                <span className="font-semibold text-semantic-accent break-words">
+                  1,200 cYT
+                </span>
               </div>
-              <div className="flex justify-between">
-                <span className="text-sm text-gray-400">Yield Claim:</span>
-                <span className="font-semibold text-white break-words">1,200 FLOW</span>
-                  </div>
-                </div>
+              <div className="flex flex-col sm:flex-row sm:justify-between gap-1">
+                <span className="text-sm text-semantic-text/85 font-medium">
+                  Yield Claim:
+                </span>
+                <span className="font-semibold text-semantic-text break-words">
+                  1,200 FLOW
+                </span>
+              </div>
+            </div>
           </StepperItem>
-                        </div>
-      </section>
-
-      {/* Typography-Led DeFi Strategies Section */}
-      <section className="scroll-snap-section py-8">
-        <div className="text-center mb-12">
-          <ScrollReveal
-            baseOpacity={0}
-            enableBlur={true}
-            baseRotation={5}
-            blurStrength={10}
-            stagger={0.15}
-            className="text-section-lg sm:text-section-xl lg:text-section-2xl font-bold text-white mb-6 tracking-tight"
-          >
-            Unlock New <span className="text-cyan-400">DeFi Strategies</span>
-          </ScrollReveal>
-          <ScrollReveal
-            baseOpacity={0}
-            enableBlur={true}
-            baseRotation={2}
-            blurStrength={6}
-            stagger={0.08}
-            className="text-body-lg sm:text-body-xl lg:text-body-xl text-white/80 max-w-3xl mx-auto leading-relaxed"
-          >
-            ChronoSplit revolutionizes how you interact with time-locked assets, creating liquid markets for both principal and yield
-          </ScrollReveal>
-              </div>
-
-        {/* Editorial Stepper Flow */}
-        <div className="space-y-8 max-w-4xl mx-auto">
-          {/* Strategy 1 */}
-          <div className="flex items-start gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-lg flex-shrink-0">
-              <TrendingUp className="w-8 h-8 text-white" />
-                  </div>
-            <div className="flex-1">
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={2}
-                blurStrength={6}
-                stagger={0.08}
-                className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-              >
-                Sell Your <span className="text-green-400">Yield</span>
-              </ScrollReveal>
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={1}
-                blurStrength={3}
-                stagger={0.03}
-                className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch] mb-3"
-              >
-                Split your bond and sell the Yield Token (cYT) on our upcoming AMM to lock in profits today.
-              </ScrollReveal>
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={2}
-                blurStrength={2}
-                stagger={0.02}
-                className="text-caption-lg text-white/70"
-              >
-                <div className="flex flex-wrap gap-2">
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Instant liquidity for future yields</div>
-                  <span className="text-white/50">•</span>
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Lock in current yield rates</div>
-                  <span className="text-white/50">•</span>
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Diversify your portfolio</div>
-                </div>
-              </ScrollReveal>
-                    </div>
-                  </div>
-
-          {/* Strategy 2 */}
-          <div className="flex items-start gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg flex-shrink-0">
-              <DollarSign className="w-8 h-8 text-white" />
-                      </div>
-            <div className="flex-1">
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={2}
-                blurStrength={6}
-                stagger={0.08}
-                className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-              >
-                Buy Fixed-Rate <span className="text-blue-400">Principal</span>
-              </ScrollReveal>
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={1}
-                blurStrength={3}
-                stagger={0.03}
-                className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch] mb-3"
-              >
-                Purchase Principal Tokens (cPT) at a discount to create a zero-coupon bond strategy.
-              </ScrollReveal>
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={1}
-                blurStrength={2}
-                stagger={0.02}
-                className="text-caption-lg text-white/70"
-              >
-                <div className="flex flex-wrap gap-2">
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Guaranteed principal return</div>
-                  <span className="text-white/50">•</span>
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> No yield risk exposure</div>
-                  <span className="text-white/50">•</span>
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Predictable returns</div>
-                </div>
-              </ScrollReveal>
-                    </div>
-                  </div>
-
-          {/* Strategy 3 */}
-          <div className="flex items-start gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg flex-shrink-0">
-              <Zap className="w-8 h-8 text-white" />
-                        </div>
-            <div className="flex-1">
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={2}
-                blurStrength={6}
-                stagger={0.08}
-                className="text-subheading-lg sm:text-subheading-xl font-semibold text-white mb-3"
-              >
-                Speculate & <span className="text-purple-400">Hedge</span>
-              </ScrollReveal>
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={1}
-                blurStrength={3}
-                stagger={0.03}
-                className="text-body-md sm:text-body-lg text-white/80 leading-relaxed max-w-[50ch] mb-3"
-              >
-                Trade cYT to speculate on the future of FLOW staking rewards and hedge your positions.
-              </ScrollReveal>
-              <ScrollReveal
-                baseOpacity={0}
-                enableBlur={true}
-                baseRotation={1}
-                blurStrength={2}
-                stagger={0.02}
-                className="text-caption-lg text-white/70"
-              >
-                <div className="flex flex-wrap gap-2">
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Leverage yield expectations</div>
-                  <span className="text-white/50">•</span>
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Hedge against rate changes</div>
-                  <span className="text-white/50">•</span>
-                  <div className="flex items-center gap-1"><Check className="h-3.5 w-3.5 text-emerald-400" /> Active trading strategies</div>
-                </div>
-              </ScrollReveal>
-                  </div>
-                </div>
         </div>
       </section>
 
-      {/* Call to Action */}
-      <section className="py-20">
-        <GlassCard className="frosted-glass">
-          <GlassCardContent className="py-20 text-center">
-            <div className="max-w-4xl mx-auto space-y-8">
-              <div className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center mx-auto shadow-2xl">
-                <Sparkles className="w-12 h-12 text-white animate-pulse" />
+      <section className="scroll-snap-section py-16 lg:py-24 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-5">
+          <div className="absolute top-20 left-10 w-64 h-64 rounded-full bg-semantic-accent blur-3xl" />
+          <div className="absolute bottom-20 right-10 w-64 h-64 rounded-full bg-semantic-primary blur-3xl" />
+        </div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16 lg:mb-20">
+            <h2 className="text-section-2xl font-bold text-semantic-text mb-4">
+              Unlock New{" "}
+              <span className="text-semantic-accent">DeFi Strategies</span>
+            </h2>
+            <p className="text-body-lg text-semantic-muted max-w-3xl mx-auto leading-relaxed">
+              ChronoSplit revolutionizes how you interact with time-locked
+              assets, creating liquid markets for both principal and yield
+            </p>
+          </div>
+
+          <div className="space-y-16 lg:space-y-24 max-w-5xl mx-auto">
+            <div className="relative">
+              <div className="hidden lg:block absolute left-12 top-24 w-0.5 h-16 bg-semantic-border" />
+
+              <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 group">
+                <div className="flex-shrink-0 relative">
+                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl bg-semantic-accent flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <TrendingUp className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center shadow-lg border-2 border-semantic-surface">
+                    <span className="text-xs font-bold text-white">01</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 pt-2">
+                  <div className="mb-4">
+                    <h3 className="text-2xl lg:text-3xl font-bold text-semantic-text mb-2">
+                      Sell Your{" "}
+                      <span className="text-semantic-accent">Yield</span>
+                    </h3>
+                    <p className="text-body-lg text-semantic-muted mb-6 leading-relaxed">
+                      Split your bond and sell the Yield Token (cYT) on our
+                      upcoming AMM to lock in profits today.
+                    </p>
+                  </div>
+
+                  <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-accent/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-accent" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Instant liquidity
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-accent/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-accent" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Lock yield rates
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-accent/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-accent" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Diversify portfolio
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Token Badge */}
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-semantic-overlay border border-semantic-border">
+                    <div className="w-2 h-2 rounded-full bg-semantic-accent animate-pulse" />
+                    <span className="text-sm font-medium text-semantic-text">
+                      cYT Token
+                    </span>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white">
-                Be the First to Experience ChronoSplit
+            </div>
+
+            <div className="relative">
+              <div className="hidden lg:block absolute left-12 top-24 w-0.5 h-16 bg-semantic-border" />
+
+              <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 group">
+                <div className="flex-shrink-0 relative">
+                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl bg-semantic-primary flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <DollarSign className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center shadow-lg border-2 border-semantic-surface">
+                    <span className="text-xs font-bold text-white">02</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 pt-2">
+                  <div className="mb-4">
+                    <h3 className="text-2xl lg:text-3xl font-bold text-semantic-text mb-2">
+                      Buy Fixed-Rate{" "}
+                      <span className="text-semantic-primary">Principal</span>
+                    </h3>
+                    <p className="text-body-lg text-semantic-muted mb-6 leading-relaxed">
+                      Purchase Principal Tokens (cPT) at a discount to create a
+                      zero-coupon bond strategy.
+                    </p>
+                  </div>
+
+                  <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-primary/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-primary" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Guaranteed return
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-primary/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-primary" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        No yield risk
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-primary/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-primary" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Predictable returns
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-semantic-overlay border border-semantic-border">
+                    <div className="w-2 h-2 rounded-full bg-semantic-primary animate-pulse" />
+                    <span className="text-sm font-medium text-semantic-text">
+                      cPT Token
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="relative">
+              <div className="flex flex-col lg:flex-row items-start gap-8 lg:gap-12 group">
+                <div className="flex-shrink-0 relative">
+                  <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-2xl bg-semantic-accent flex items-center justify-center shadow-xl group-hover:scale-110 transition-transform duration-300">
+                    <Zap className="w-10 h-10 lg:w-12 lg:h-12 text-white" />
+                  </div>
+                  <div className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-brand-500 flex items-center justify-center shadow-lg border-2 border-semantic-surface">
+                    <span className="text-xs font-bold text-white">03</span>
+                  </div>
+                </div>
+
+                <div className="flex-1 pt-2">
+                  <div className="mb-4">
+                    <h3 className="text-2xl lg:text-3xl font-bold text-semantic-text mb-2">
+                      Speculate &{" "}
+                      <span className="text-semantic-accent">Hedge</span>
+                    </h3>
+                    <p className="text-body-lg text-semantic-muted mb-6 leading-relaxed">
+                      Trade cYT to speculate on the future of FLOW staking
+                      rewards and hedge your positions.
+                    </p>
+                  </div>
+
+                  <div className="grid sm:grid-cols-3 gap-4 mb-6">
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-accent/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-accent" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Leverage yields
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-accent/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-accent" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Hedge positions
+                      </span>
+                    </div>
+                    <div className="flex items-start gap-3 p-3 rounded-lg bg-semantic-overlay border border-semantic-border">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-semantic-accent/20 flex items-center justify-center mt-0.5">
+                        <Check className="h-4 w-4 text-semantic-accent" />
+                      </div>
+                      <span className="text-sm text-semantic-text font-medium">
+                        Active trading
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-semantic-overlay border border-semantic-border">
+                    <div className="w-2 h-2 rounded-full bg-semantic-accent animate-pulse" />
+                    <span className="text-sm font-medium text-semantic-text">
+                      Advanced Trading
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="py-16 lg:py-24">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="rounded-2xl bg-semantic-surface border-2 border-semantic-border hover:border-semantic-accent transition-all duration-300 shadow-lg hover:shadow-xl p-8 lg:p-12 text-center">
+            <div className="max-w-3xl mx-auto space-y-6 lg:space-y-8">
+              <div className="w-20 h-20 lg:w-24 lg:h-24 rounded-full bg-semantic-accent flex items-center justify-center mx-auto shadow-xl">
+                <Sparkles className="w-10 h-10 lg:w-12 lg:h-12 text-white animate-pulse" />
+              </div>
+
+              <h3 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text">
+                Be the First to Experience{" "}
+                <span className="inline-block px-3 py-1 rounded-lg bg-semantic-accent text-white">
+                  ChronoSplit
+                </span>
               </h3>
-              <p className="text-lg sm:text-xl text-gray-300 max-w-2xl mx-auto">
+
+              <p className="text-body-lg text-semantic-text/90 max-w-2xl mx-auto leading-relaxed">
                 Join our waitlist to get early access to beta testing and be
                 notified when ChronoSplit launches.
               </p>
-              <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <Button variant="primary" size="lg" className="px-12 py-4 text-lg font-semibold">
-                  <Sparkles className="w-6 h-6 mr-3" />
+
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4">
+                <Button
+                  variant="default"
+                  className="!h-12 sm:!h-14 !text-base sm:!text-lg !font-semibold !px-8 sm:!px-12 !py-0 !rounded-lg !shadow-lg hover:!shadow-xl !transition-all !duration-300 !bg-semantic-accent hover:!bg-semantic-accent/90 !text-white !border-0 !ring-0 focus-visible:!ring-0 w-full sm:w-auto"
+                >
+                  <Sparkles className="w-5 h-5 mr-2" />
                   Join Beta Waitlist
                 </Button>
                 <Button
-                  variant="secondary"
-                  size="lg"
-                  className="px-12 py-4 text-lg font-semibold"
+                  variant="default"
+                  className="!h-12 sm:!h-14 !text-base sm:!text-lg !font-semibold !px-8 sm:!px-12 !py-0 !rounded-lg !shadow-lg hover:!shadow-xl !transition-all !duration-300 !bg-semantic-surface hover:!bg-semantic-overlay !text-semantic-text !border-2 !border-semantic-accent/60 hover:!border-semantic-accent !ring-0 focus-visible:!ring-0 w-full sm:w-auto"
                 >
-                  <Target className="w-6 h-6 mr-3" />
+                  <Target className="w-5 h-5 mr-2" />
                   Get Notified
                 </Button>
               </div>
             </div>
-          </GlassCardContent>
-        </GlassCard>
+          </div>
+        </div>
       </section>
     </div>
   );

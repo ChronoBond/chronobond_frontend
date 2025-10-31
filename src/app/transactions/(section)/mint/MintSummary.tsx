@@ -15,7 +15,7 @@ export const MintSummary = ({
     <div className="space-y-6">
       {/* Strategy Details */}
       <div className="reveal-item">
-        <Card className="relative overflow-hidden bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10">
+        <Card className="relative overflow-hidden bg-semantic-surface backdrop-blur-xl border border-semantic-border">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Shield className="w-5 h-5" />
@@ -45,7 +45,7 @@ export const MintSummary = ({
 
       {/* Yield Calculator */}
       <div className="reveal-item">
-        <Card className="relative overflow-hidden bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border border-white/10">
+        <Card className="relative overflow-hidden bg-semantic-surface backdrop-blur-xl border border-semantic-border">
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Clock className="w-5 h-5" />
@@ -71,8 +71,8 @@ export const MintSummary = ({
                 </div>
               </div>
             </div>
-            <div className="text-center p-4 bg-gradient-to-r from-brand-accent/10 to-brand-primary/10 rounded-lg border border-white/10">
-              <div className="text-3xl font-bold bg-gradient-to-r from-white to-brand-primary/70 bg-clip-text text-transparent mb-1">
+            <div className="text-center p-4 bg-semantic-overlay rounded-lg border border-semantic-border">
+              <div className="text-3xl font-bold text-semantic-text mb-1">
                 {(
                   parseFloat(formData.amount || "0") +
                   parseFloat(estimatedYield)

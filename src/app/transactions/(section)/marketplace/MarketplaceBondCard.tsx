@@ -3,26 +3,26 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { 
-  Tag, 
-  Loader2, 
+import {
+  Tag,
+  Loader2,
   Link as LinkIcon,
   CheckCircle,
   Clock,
-  DollarSign
+  DollarSign,
 } from "lucide-react";
 import { type MarketplaceBondCardProps } from "@/types/marketplace.types";
 import { useEffect, useState } from "react";
 
-export const MarketplaceBondCard = ({ 
-  bond, 
-  listingPrice, 
-  onPriceChange, 
-  onListBond, 
-  isListing, 
-  formatFlow, 
-  formatDate, 
-  calculateCurrentYield 
+export const MarketplaceBondCard = ({
+  bond,
+  listingPrice,
+  onPriceChange,
+  onListBond,
+  isListing,
+  formatFlow,
+  formatDate,
+  calculateCurrentYield,
 }: MarketplaceBondCardProps) => {
   const [now, setNow] = useState<number>(() => Date.now());
 
@@ -35,33 +35,30 @@ export const MarketplaceBondCard = ({
   const bondIsMatured = now / 1000 >= bond.maturityDate;
 
   return (
-    <div className={`group relative overflow-hidden rounded-2xl bg-gradient-to-br from-background/40 to-background/20 backdrop-blur-xl border transition-all duration-300 hover:shadow-lg ${
-      bondIsMatured 
-        ? 'border-brand-accent/40 hover:border-brand-accent/60 hover:shadow-brand-accent/10' 
-        : 'border-brand-primary/40 hover:border-brand-primary/60 hover:shadow-brand-primary/10'
-    }`}>
-      <div className={`absolute inset-0 ${
-        bondIsMatured 
-          ? 'bg-gradient-to-br from-brand-accent/10 via-transparent to-brand-primary/10' 
-          : 'bg-gradient-to-br from-brand-primary/10 via-transparent to-brand-accent/10'
-      }`} />
+    <div
+      className={`group relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border transition-all duration-300 hover:shadow-lg ${
+        bondIsMatured
+          ? "hover:border-brand-accent"
+          : "hover:border-brand-primary"
+      }`}
+    >
       <div className="relative z-10 p-6">
         <div className="flex items-center gap-3 mb-4">
-          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br flex items-center justify-center shadow-lg ${
-            bondIsMatured 
-              ? 'from-brand-accent to-brand-primary' 
-              : 'from-brand-primary to-brand-accent'
-          }`}>
+          <div
+            className={`w-10 h-10 rounded-xl bg-brand-500 flex items-center justify-center shadow-lg`}
+          >
             <LinkIcon className="w-5 h-5 text-white" />
           </div>
           <div>
             <h3 className="text-xl font-bold text-white">Bond #{bond.id}</h3>
             <div className="flex items-center gap-2">
-              <Badge className={`text-xs px-2 py-1 ${
-                bondIsMatured 
-                  ? 'bg-brand-accent/20 text-brand-accent border-brand-accent/40' 
-                  : 'bg-brand-primary/20 text-brand-primary border-brand-primary/40'
-              }`}>
+              <Badge
+                className={`text-xs px-2 py-1 ${
+                  bondIsMatured
+                    ? "bg-brand-accent/20 text-brand-accent border-brand-accent/40"
+                    : "bg-brand-primary/20 text-brand-primary border-brand-primary/40"
+                }`}
+              >
                 {bondIsMatured ? (
                   <>
                     <CheckCircle className="w-3 h-3 mr-1" />
@@ -77,37 +74,49 @@ export const MarketplaceBondCard = ({
             </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
             <div className="text-xs text-white/70 mb-1">Principal</div>
-            <div className="text-lg font-bold text-white">{formatFlow(bond.principal)}</div>
+            <div className="text-lg font-bold text-white">
+              {formatFlow(bond.principal)}
+            </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
             <div className="text-xs text-white/70 mb-1">Yield Rate</div>
-            <div className="text-lg font-bold text-brand-primary">{(bond.yieldRate * 100).toFixed(1)}%</div>
+            <div className="text-lg font-bold text-brand-primary">
+              {(bond.yieldRate * 100).toFixed(1)}%
+            </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
             <div className="text-xs text-white/70 mb-1">Strategy</div>
-            <div className="text-sm font-medium text-white">{bond.strategyID}</div>
+            <div className="text-sm font-medium text-white">
+              {bond.strategyID}
+            </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
             <div className="text-xs text-white/70 mb-1">Maturity</div>
-            <div className="text-sm font-medium text-white">{formatDate(bond.maturityDate)}</div>
+            <div className="text-sm font-medium text-white">
+              {formatDate(bond.maturityDate)}
+            </div>
           </div>
         </div>
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-6">
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
             <div className="text-xs text-white/70 mb-1">Expected Yield</div>
-            <div className="text-lg font-bold text-brand-accent">{formatFlow(calculateCurrentYield(bond))}</div>
+            <div className="text-lg font-bold text-brand-accent">
+              {formatFlow(calculateCurrentYield(bond))}
+            </div>
           </div>
           <div className="bg-white/5 rounded-xl p-3 border border-white/10">
             <div className="text-xs text-white/70 mb-1">Total Value</div>
-            <div className="text-lg font-bold text-brand-accent">{formatFlow(bond.principal + calculateCurrentYield(bond))}</div>
+            <div className="text-lg font-bold text-brand-accent">
+              {formatFlow(bond.principal + calculateCurrentYield(bond))}
+            </div>
           </div>
         </div>
-        
+
         <div className="space-y-4">
           <div>
             <label className="block text-sm font-semibold mb-2 text-white">
@@ -129,10 +138,15 @@ export const MarketplaceBondCard = ({
               </div>
             </div>
           </div>
-          
+
           <Button
             onClick={() => onListBond(bond.id, listingPrice)}
-            disabled={isListing || !listingPrice || parseFloat(listingPrice) <= 0 || isNaN(parseFloat(listingPrice))}
+            disabled={
+              isListing ||
+              !listingPrice ||
+              parseFloat(listingPrice) <= 0 ||
+              isNaN(parseFloat(listingPrice))
+            }
             className="w-full bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg"
             size="lg"
           >

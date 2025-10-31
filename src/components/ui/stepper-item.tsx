@@ -4,7 +4,6 @@ import { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { LucideIcon } from "lucide-react";
-import { GlassCard, GlassCardContent, GlassCardDescription, GlassCardHeader, GlassCardTitle } from "./glass-card";
 
 // Register GSAP plugins
 if (typeof window !== "undefined") {
@@ -85,7 +84,7 @@ export function StepperItem({
       {!isLast && (
         <div
           ref={lineRef}
-          className="hidden sm:block absolute left-8 top-20 w-0.5 h-32 bg-gradient-to-b from-cyan-400/50 via-blue-500/30 to-violet-500/20"
+          className="hidden sm:block absolute left-8 top-20 w-0.5 h-32 bg-semantic-border"
         />
       )}
 
@@ -94,37 +93,35 @@ export function StepperItem({
         <div className="flex-shrink-0 relative mb-4 sm:mb-0">
           <div
             ref={iconRef}
-            className="w-16 h-16 rounded-full bg-gradient-to-br from-cyan-400 via-blue-500 to-violet-500 flex items-center justify-center shadow-2xl relative z-10"
+            className="w-16 h-16 rounded-full bg-semantic-accent flex items-center justify-center shadow-lg relative z-10"
           >
             <Icon className="w-8 h-8 text-white" />
           </div>
-          <div className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-sm flex items-center justify-center text-xs font-bold text-white">
+          <div className="absolute -top-2 -right-2 w-7 h-7 rounded-full bg-brand-500 flex items-center justify-center text-xs font-bold text-white shadow-md border-2 border-semantic-surface">
             {stepNumber}
           </div>
         </div>
 
         {/* Content */}
         <div ref={contentRef} className="flex-1 min-w-0">
-          <GlassCard className="frosted-glass">
-            <GlassCardHeader className="pb-4">
-              <GlassCardTitle className="text-3xl font-bold text-white mb-2">
+          <div className="rounded-2xl bg-semantic-surface border-2 border-semantic-border hover:border-semantic-accent transition-all duration-300 shadow-lg hover:shadow-xl p-6 lg:p-8">
+            <div className="mb-4">
+              <h3 className="text-2xl lg:text-3xl font-bold text-semantic-text mb-2">
                 {title}
-              </GlassCardTitle>
+              </h3>
               {subtitle && (
-                <GlassCardDescription className="text-cyan-400 text-lg font-medium">
+                <p className="text-semantic-accent text-lg font-medium">
                   {subtitle}
-                </GlassCardDescription>
-              )}
-            </GlassCardHeader>
-            <GlassCardContent className="pt-0">
-              {description && (
-                <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                  {description}
                 </p>
               )}
-              {children}
-            </GlassCardContent>
-          </GlassCard>
+            </div>
+            {description && (
+              <p className="text-semantic-text/90 text-base lg:text-lg leading-relaxed mb-6">
+                {description}
+              </p>
+            )}
+            {children}
+          </div>
         </div>
       </div>
     </div>

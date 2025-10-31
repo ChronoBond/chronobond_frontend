@@ -20,13 +20,10 @@ export const QuoteDisplay = React.forwardRef<
       ref={ref}
       className={cn(
         "relative rounded-lg overflow-hidden p-4 transition-all duration-300",
-        "bg-gradient-to-br from-white/10 via-white/5 to-transparent",
-        "border border-white/20",
-        "backdrop-blur-md"
+        "bg-semantic-surface",
+        "border border-semantic-border",
       )}
     >
-      {/* Background gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/10 via-transparent to-cyan-500/10 pointer-events-none" />
 
       <div className="relative z-10">
         {label && (
@@ -40,7 +37,7 @@ export const QuoteDisplay = React.forwardRef<
           <div className="flex-1">
             <p className="text-xs text-white/50 mb-1">From</p>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">
+              <span className="text-2xl font-bold text-semantic-text">
                 {fromAmount}
               </span>
               <span className="text-sm font-semibold text-white/70">{fromToken}</span>
@@ -63,7 +60,7 @@ export const QuoteDisplay = React.forwardRef<
                 </div>
               ) : toAmount ? (
                 <>
-                  <span className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-blue-400 bg-clip-text text-transparent">
+                  <span className="text-2xl font-bold text-semantic-accent">
                     {toAmount}
                   </span>
                   <span className="text-sm font-semibold text-white/70">{toToken}</span>

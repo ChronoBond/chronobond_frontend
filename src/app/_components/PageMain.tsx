@@ -149,27 +149,27 @@ const PageMain: React.FC = () => {
       title: "Time-Locked Security",
       description:
         "Bonds are secured by smart contracts with guaranteed time-locked returns",
-      color: "from-green-400 to-emerald-500",
+      color: "",
     },
     {
       icon: BarChart3,
       title: "Predictable Yields",
       description:
         "Fixed interest rates with transparent, auditable return calculations",
-      color: "from-blue-400 to-cyan-500",
+      color: "",
     },
     {
       icon: Globe,
       title: "Flow Blockchain",
       description:
         "Built on Flow's fast, secure, and environmentally friendly blockchain",
-      color: "from-purple-400 to-pink-500",
+      color: "",
     },
     {
       icon: Users,
       title: "Community Driven",
       description: "Decentralized marketplace for peer-to-peer bond trading",
-      color: "from-orange-400 to-red-500",
+      color: "",
     },
   ];
 
@@ -179,39 +179,47 @@ const PageMain: React.FC = () => {
       subtext:
         "Every bond is secured by smart contracts with guaranteed integrity.",
       icon: Shield,
-      color: "from-green-400 to-emerald-500",
+      color: "",
     },
     {
       headline: "Built for People",
       subtext: "Empowering a new generation of investors through open finance.",
       icon: Users,
-      color: "from-blue-400 to-cyan-500",
+      color: "",
     },
     {
       headline: "Liquidity Without Limits",
       subtext:
         "Trade, split, and manage assets seamlessly in a decentralized marketplace.",
       icon: TrendingUp,
-      color: "from-purple-400 to-pink-500",
+      color: "",
     },
     {
       headline: "Transparent Yields",
       subtext: "Predictable, auditable returns designed for long-term growth.",
       icon: BarChart3,
-      color: "from-orange-400 to-red-500",
+      color: "",
     },
   ];
 
   return (
-    <div className="mx-auto max-w-6xl px-6 pb-20">
-      {/* Typography-Led Hero Section */}
-      <section ref={heroRef} className="layout-hero">
-        <div className="flex flex-col items-center justify-center gap-8">
-          <div className="card-hero-icon">
-            <Zap className="w-10 h-10 text-white" />
+    <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-20">
+      {/* Enhanced Hero Section */}
+      <section ref={heroRef} className="layout-hero py-20 lg:py-32">
+        <div className="flex flex-col items-center justify-center gap-6 lg:gap-8">
+          {/* Hero Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-semantic-overlay border border-semantic-border text-sm font-medium text-semantic-text mb-4">
+            <Zap className="w-4 h-4 text-semantic-accent" />
+            <span>Built on Flow Blockchain</span>
           </div>
 
-          <h1 className="text-hero-title">
+          {/* Main Icon */}
+          <div className="card-hero-icon mb-6">
+            <Zap className="w-12 h-12 text-white" />
+          </div>
+
+          {/* Hero Title */}
+          <h1 className="text-hero-title text-center max-w-5xl">
             <TextType
               text={["ChronoBond", "Revolutionary DeFi", "Time-Locked Bonds"]}
               typingSpeed={100}
@@ -222,112 +230,226 @@ const PageMain: React.FC = () => {
             />
           </h1>
 
-          <div className="max-w-4xl mx-auto mb-12">
-            <ScrollReveal
-              baseOpacity={0}
-              enableBlur={true}
-              baseRotation={3}
-              blurStrength={8}
-              stagger={0.1}
-              className="text-hero-subtitle"
-            >
+          {/* Hero Subtitle */}
+          <div className="max-w-3xl mx-auto mb-8">
+            <p className="text-hero-subtitle text-center text-lg sm:text-xl lg:text-2xl leading-relaxed">
               Revolutionary time-locked DeFi bonds on Flow blockchain. Mint,
-              trade, and redeem bonds with guaranteed yields.
-            </ScrollReveal>
+              trade, and redeem bonds with{" "}
+              <span className="font-semibold text-semantic-accent">guaranteed yields</span>.
+            </p>
           </div>
 
+          {/* CTA Buttons */}
           <div
             ref={ctaRef}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center"
+            className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16"
           >
             <Button
-              variant="primary"
-              size="lg"
-              className="btn-primary-cta"
+              variant="default"
+              className="!h-12 sm:!h-14 !text-base sm:!text-lg !font-semibold !px-8 sm:!px-12 !py-0 !rounded-lg !shadow-lg hover:!shadow-xl !transition-all !duration-300 !bg-brand-500 hover:!bg-brand-600 !text-white !border-0 !ring-0 focus-visible:!ring-0"
               onClick={() => router.push("/transactions")}
             >
               Start Trading
               <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
+            <Button
+              variant="default"
+              className="!h-12 sm:!h-14 !text-base sm:!text-lg !font-semibold !px-8 sm:!px-12 !py-0 !rounded-lg !shadow-lg hover:!shadow-xl !transition-all !duration-300 !bg-semantic-surface hover:!bg-semantic-overlay !text-semantic-text !border-2 !border-semantic-border hover:!border-semantic-accent !ring-0 focus-visible:!ring-0"
+              onClick={() => router.push("/transactions?tab=marketplace")}
+            >
+              Explore Marketplace
+            </Button>
+          </div>
+
+          {/* Quick Stats */}
+          <div className="grid grid-cols-3 gap-6 sm:gap-8 lg:gap-12 w-full max-w-4xl mt-8">
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text mb-1">
+                100%
+              </div>
+              <div className="text-xs sm:text-sm text-semantic-muted">
+                Guaranteed Yields
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text mb-1">
+                $0
+              </div>
+              <div className="text-xs sm:text-sm text-semantic-muted">
+                Hidden Fees
+              </div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-semantic-text mb-1">
+                24/7
+              </div>
+              <div className="text-xs sm:text-sm text-semantic-muted">
+                Available
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Value Propositions Section */}
-      <section className="layout-section">
+      {/* Value Propositions Section - Enhanced Grid */}
+      <section className="layout-section py-16 lg:py-24">
         <div className="layout-container">
-          <div ref={statsRef} className="layout-grid-features">
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-section-2xl font-bold text-semantic-text mb-4">
+              Why Choose ChronoBond?
+            </h2>
+            <p className="text-body-lg text-semantic-muted max-w-2xl mx-auto">
+              Built for the future of DeFi with Security, Transparency, and Innovation at its core.
+            </p>
+          </div>
+          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
             {valuePropositions.map((proposition, index) => (
-              <FeatureCard
-                key={index}
-                icon={proposition.icon}
-                title={proposition.headline}
-                description={proposition.subtext}
-                color={proposition.color}
-              />
+              <GlassCard key={index} className="group hover:scale-105 transition-transform duration-300 p-6 lg:p-8">
+                <GlassCardContent className="p-0 text-center">
+                  <div className="card-feature-icon mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <proposition.icon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-subheading-lg font-bold text-semantic-text mb-3">
+                    {proposition.headline}
+                  </h3>
+                  <p className="text-body-md text-semantic-muted leading-relaxed">
+                    {proposition.subtext}
+                  </p>
+                </GlassCardContent>
+              </GlassCard>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Typography-Led Features Section */}
-      <section className="layout-section">
+      {/* Features Section - Enhanced Layout */}
+      <section className="layout-section py-16 lg:py-24 bg-semantic-overlay/30 rounded-3xl my-12">
         <div className="layout-container">
           <SectionHeader
-            title="Why ChronoBond?"
-            subtitle="Built for the future of DeFi with Security, Transparency, and Innovation at its core."
+            title="Powerful Features"
+            subtitle="Everything you need to succeed in decentralized finance."
           />
 
-          {/* Editorial Stepper Flow */}
-          <div className="space-y-8 layout-container-small">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-12 mt-12">
             <FeatureStep
               icon={Lock}
               title="Time-Locked Security"
               description="Bonds are secured by smart contracts with guaranteed time-locked returns and transparent execution."
-              color="from-green-400 to-emerald-500"
+              color=""
             />
 
             <FeatureStep
               icon={BarChart3}
               title="Predictable Yields"
               description="Fixed interest rates with transparent, auditable return calculations and guaranteed payouts."
-              color="from-blue-400 to-cyan-500"
+              color=""
+            />
+
+            <FeatureStep
+              icon={Globe}
+              title="Flow Blockchain"
+              description="Built on Flow's fast, secure, and environmentally friendly blockchain infrastructure."
+              color=""
+            />
+
+            <FeatureStep
+              icon={Users}
+              title="Community Driven"
+              description="Decentralized marketplace for peer-to-peer bond trading with full community governance."
+              color=""
             />
           </div>
         </div>
       </section>
 
-      {/* Typography-Led How It Works Section */}
-      <section className="layout-section-large">
+      {/* How It Works Section - Enhanced */}
+      <section className="layout-section-large py-16 lg:py-24">
         <div className="layout-container">
-          <SectionHeader
-            title="How It Works"
-            subtitle="Three simple steps to start earning with time-locked bonds."
-          />
+          <div className="text-center mb-12 lg:mb-16">
+            <h2 className="text-section-2xl font-bold text-semantic-text mb-4">
+              How It Works
+            </h2>
+            <p className="text-body-lg text-semantic-muted max-w-2xl mx-auto">
+              Three simple steps to start earning with time-locked bonds.
+            </p>
+          </div>
 
-          {/* Editorial Stepper Flow */}
-          <div ref={howItWorksRef} className="space-y-16 layout-container-small">
-            <FeatureStep
-              icon={Coins}
-              title="1. Mint Bonds"
-              description="Create time-locked bonds with your preferred duration and yield parameters using our intuitive interface."
-              color="from-cyan-400 to-blue-500"
-            />
+          <div ref={howItWorksRef} className="space-y-12 lg:space-y-16 max-w-4xl mx-auto">
+            <div className="relative">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 lg:gap-8 p-6 lg:p-8 rounded-2xl bg-semantic-surface border-2 border-semantic-border hover:border-semantic-accent transition-all duration-300 shadow-lg hover:shadow-xl">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-semantic-accent flex items-center justify-center shadow-lg flex-shrink-0">
+                    <Coins className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">1</span>
+                    <h3 className="text-subheading-xl font-bold text-semantic-text">
+                      Mint Bonds
+                    </h3>
+                  </div>
+                  <p className="text-body-lg text-semantic-text/90 leading-relaxed">
+                    Create time-locked bonds with your preferred duration and yield parameters using our intuitive interface.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <FeatureStep
-              icon={ShoppingCart}
-              title="2. Trade on Marketplace"
-              description="Buy and sell bonds on our decentralized marketplace for maximum liquidity and competitive pricing."
-              color="from-purple-400 to-pink-500"
-            />
+            <div className="relative">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 lg:gap-8 p-6 lg:p-8 rounded-2xl bg-semantic-surface border-2 border-semantic-border hover:border-semantic-accent transition-all duration-300 shadow-lg hover:shadow-xl">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-semantic-accent flex items-center justify-center shadow-lg flex-shrink-0">
+                    <ShoppingCart className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">2</span>
+                    <h3 className="text-subheading-xl font-bold text-semantic-text">
+                      Trade on Marketplace
+                    </h3>
+                  </div>
+                  <p className="text-body-lg text-semantic-text/90 leading-relaxed">
+                    Buy and sell bonds on our decentralized marketplace for maximum liquidity and competitive pricing.
+                  </p>
+                </div>
+              </div>
+            </div>
 
-            <FeatureStep
-              icon={Shield}
-              title="3. Redeem & Earn"
-              description="Redeem matured bonds and earn guaranteed yields with full transparency and smart contract security."
-              color="from-green-400 to-emerald-500"
-              className="layout-flex-feature-large"
-            />
+            <div className="relative">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-6 lg:gap-8 p-6 lg:p-8 rounded-2xl bg-semantic-surface border-2 border-semantic-border hover:border-semantic-accent transition-all duration-300 shadow-lg hover:shadow-xl">
+                <div className="flex-shrink-0">
+                  <div className="w-16 h-16 rounded-2xl bg-semantic-accent flex items-center justify-center shadow-lg flex-shrink-0">
+                    <Shield className="w-8 h-8 text-white" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-3 mb-3">
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">3</span>
+                    <h3 className="text-subheading-xl font-bold text-semantic-text">
+                      Redeem & Earn
+                    </h3>
+                  </div>
+                  <p className="text-body-lg text-semantic-text/90 leading-relaxed">
+                    Redeem matured bonds and earn guaranteed yields with full transparency and smart contract security.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Final CTA */}
+          <div className="text-center mt-16 lg:mt-20">
+            <Button
+              variant="primary"
+              size="lg"
+              className="btn-primary-cta text-base sm:text-lg px-8 sm:px-12 py-4 sm:py-5"
+              onClick={() => router.push("/transactions")}
+            >
+              Get Started Now
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </Button>
           </div>
         </div>
       </section>
