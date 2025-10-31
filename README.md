@@ -4,6 +4,27 @@ A revolutionary decentralized finance (DeFi) application built on the Flow block
 
 ## 🌟 Features
 
+### ✨ Reinvestment Status Tracking (Recently Completed) 🎯
+Comprehensive auto-reinvestment system with full frontend integration:
+
+**Core Capabilities**:
+- ✅ **Query Scheduled Bonds** - Real-time blockchain queries via ReinvestmentRegistry contract
+- ✅ **Schedule Auto-Reinvestment** - Enable automatic reinvestment with custom duration & yield strategy
+- ✅ **Cancel Scheduled Reinvestment** - Disable auto-reinvestment anytime before execution
+- ✅ **Track Reinvestment Status** - Display which bonds are scheduled for auto-reinvestment
+- ✅ **Compound Interest Projections** - Calculate multi-period compound returns
+- ✅ **Per-Bond Loading States** - Granular state management to prevent duplicate transactions
+- ✅ **Real-time Countdown Timers** - Show time remaining until reinvestment execution
+- ✅ **Dedicated Dashboard Tab** - "Auto-Reinvesting" tab shows all scheduled bonds with configurations
+- ✅ **Custom Reinvestment Parameters** - Choose new duration, yield rate, and strategy after maturity
+- ✅ **Portfolio Analytics** - Count and filter bonds by reinvestment status
+
+**Technical Implementation**:
+- FCL transaction integration with proper authorization blocks
+- Sequential transaction handling (prevents FCL multiple frames error)
+- Persistent UI state management with useReducer
+- Smart contract integration: `ReinvestmentRegistry` at `0x45722594009505d7` (Flow testnet)
+
 ### Core Functionality
 - **🔥 Bond Minting**: Create time-locked bonds with customizable durations and yield strategies
 - **📊 Portfolio Management**: View and manage your bond holdings with real-time data
@@ -12,6 +33,12 @@ A revolutionary decentralized finance (DeFi) application built on the Flow block
   - ✨ Persistent tab navigation - tab selection saves via URL query parameters
   - 🔒 Protected redemption - loading states prevent duplicate submissions
   - 🎯 Optimized state management - single useReducer for cleaner logic
+- **🔄 Auto-Reinvestment**: Schedule automatic reinvestment of matured bonds with flexible configuration
+  - ✅ Schedule auto-reinvestment on pending bonds
+  - ⏰ Real-time countdown to reinvestment execution
+  - 🔧 Customize duration and yield strategy for reinvestment
+  - ❌ Cancel scheduled reinvestment anytime
+  - 📊 View reinvestment projections and compound returns
 - **🔄 ChronoSplit (Coming Soon)**: Split bonds into Principal Tokens (cPT) and Yield Tokens (cYT)
 
 ### Yield Strategies
@@ -113,6 +140,240 @@ All three features share consistent design patterns:
 
 ---
 
+### 4. **Auto-Reinvestment Status Tracking** (FULLY IMPLEMENTED)
+Complete reinvestment management system with blockchain integration.
+
+**Location**: Transactions Page / Redeem Section / "Auto-Reinvesting" Tab
+
+**Backend Integration (10 FCL Methods)**:
+1. **checkBondMaturity()** - Query bond maturity status from blockchain
+2. **redeemBond()** - Redeem single mature bond
+3. **redeemAndSwap()** - Redeem to alternative tokens (FLOW → USDC)
+4. **reinvestBond()** - Redeem + immediately reinvest in new bond (atomic)
+5. **getRedeemableBonds()** - Query all bonds ready for redemption
+6. **getBondsNearingMaturity()** - Get bonds maturing soon (dashboard notifications)
+7. **getTotalRedeemableValue()** - Calculate total redemption amount
+8. **checkReinvestmentStatus()** - Query ReinvestmentRegistry for scheduled bonds
+9. **scheduleReinvestment()** - Enable auto-reinvestment with custom parameters
+10. **cancelReinvestment()** - Disable auto-reinvestment for a bond
+
+**UI Components Implemented**:
+- **RedeemMain.tsx** - Main container with tab navigation
+- **RedeemHeader.tsx** - Statistics showing redeemable value & auto-reinvesting count
+- **RedeemTabNavigation.tsx** - Tab switcher with conditional "Auto-Reinvesting" tab (only shows when count > 0)
+- **RedeemableBonds.tsx** - Lists bonds ready for redemption with "Redeem" buttons
+- **PendingBonds.tsx** - Lists bonds not yet matured with "Schedule Auto-Reinvest" & "Cancel" buttons
+- **ScheduledBonds.tsx** (NEW) - Dedicated component for scheduled reinvestment display
+- **NotificationsTab.tsx** - Alerts for bonds nearing maturity
+
+**UI Features**:
+- 🟢 Green "🔄 Auto-Reinvest Scheduled" badge on scheduled bonds
+- ⏰ Real-time countdown timers showing time until reinvestment
+- 📊 Configuration display (duration, yield rate, strategy) for scheduled bonds
+- 🎯 One-click schedule/cancel buttons with per-bond loading states
+- 📈 Compound interest projections (e.g., "In 5 years: 156 FLOW")
+- 📱 Mobile responsive with condensed labels
+- 🔔 Notification tab for bonds maturing within 24 hours
+
+**Smart Contract Integration**:
+- Contract: **ReinvestmentRegistry** at `0x45722594009505d7` (Flow testnet)
+- Methods: `getScheduledBondsByOwner()`, `scheduleBond()`, `cancelSchedule()`, `getConfig()`
+- Authorization Pattern: Proper Cadence prepare/execute blocks
+
+**State Management**:
+- Hook: `useRedeem.ts` with comprehensive reducer
+- State properties: `scheduledBonds`, `loadingReinvestStatus`, `schedulingReinvestment`, `cancelingReinvestment`
+- Action types for all state mutations
+- Per-bond granular loading to prevent duplicate transactions
+
+**Key Technical Achievements**:
+- ✅ Sequential transaction handling (solves FCL multiple frames issue)
+- ✅ Proper authorization patterns with `prepare` blocks
+- ✅ Real-time blockchain queries cached appropriately
+- ✅ Error handling with user-friendly toast notifications
+- ✅ Type-safe TypeScript implementation (no `any` types)
+- ✅ Robust data validation and error recovery
+
+---
+
+## 🔧 Implemented Features Deep Dive
+
+### Service Layer Architecture
+
+**bond-redemption-service.ts** - Complete Redemption & Reinvestment Management (710 lines):
+
+#### Core Redemption Methods
+1. **checkBondMaturity(userAddress, bondID)** - Query single bond maturity status
+   - Returns: BondMaturityInfo with maturity date, yield, expected total
+   - Validates blockchain state before operations
+   
+2. **redeemBond(bondID)** - Redeem mature bond for principal + yield
+   - Validates maturity before transaction
+   - Returns transactionId on success
+   - Handles errors with user-friendly toast notifications
+   
+3. **redeemAndSwap(bondID, receiveAsToken)** - Redeem and convert to other tokens
+   - Supports FLOW → USDC conversion
+   - Atomic transaction execution
+   - Real-time quote validation
+   
+4. **getRedeemableBonds(userAddress)** - Query all bonds ready for redemption
+   - Returns: Array of BondMaturityInfo for matured bonds only
+   - Filters by maturity status
+   - Handles empty collections gracefully
+   
+5. **getBondsNearingMaturity(userAddress, hoursThreshold)** - Dashboard notifications
+   - Returns bonds maturing within specified hours (default 24)
+   - Used for alert system
+   - Configurable threshold
+   
+6. **getTotalRedeemableValue(userAddress)** - Portfolio analytics
+   - Calculates sum of all expectedTotal for redeemable bonds
+   - Used in header statistics
+   - Returns 0 on error
+
+#### Reinvestment Management Methods
+7. **checkReinvestmentStatus(userAddress)** - Query ReinvestmentRegistry
+   - Returns: Dictionary of bondID → ReinvestmentConfig
+   - Queries `0x45722594009505d7` contract
+   - Handles registry errors gracefully
+   
+8. **scheduleReinvestment(bondID, duration, yieldRate, strategyID)** - Enable auto-reinvest
+   - FCL transaction with proper authorization
+   - Prepares transaction with bond maturity validation
+   - Supports custom strategy selection (FlowStaking, DeFiYield, HighYield)
+   - Returns transactionId on success
+   
+9. **cancelReinvestment(bondID)** - Disable auto-reinvest
+   - FCL transaction with auth checks
+   - Calls `cancelSchedule()` on registry contract
+   - Prevents transaction errors with prepare block
+   
+10. **calculateCompoundReturns(principal, yieldRate, periods)** - Projections
+    - Projects multi-period compound growth
+    - Returns array of {period, value, gain, percentGain}
+    - Used in UI to show compound interest
+
+#### Utility Methods
+- **formatTimeRemaining(seconds)** - Convert seconds to "2d 5h" format
+- **formatCurrency(amount)** - Format to "XXX.XX FLOW"
+- **formatDate(timestamp)** - Convert Unix timestamp to readable date
+
+**State Management (useRedeem.ts Hook)**:
+- Comprehensive reducer with 20+ action types
+- Per-bond loading states to prevent duplicate transactions
+- Integrated error handling with auto-clear
+- Async actions that update multiple state properties atomically
+
+### State Flow Architecture
+```
+User clicks "Schedule Auto-Reinvest"
+    ↓
+schedulingReinvestment[bondID] = true (UI shows loading)
+    ↓
+FCL transaction sent (proper authorization)
+    ↓
+Blockchain validates and executes
+    ↓
+schedulingReinvestment[bondID] = false
+    ↓
+Refresh reinvestment status
+    ↓
+UI updates with scheduled badge
+```
+
+---
+
+## � Complete Feature Matrix
+
+### Reinvestment Features (Auto-Compound) ✅
+- [x] Schedule auto-reinvestment on pending bonds
+- [x] Query scheduled bonds from blockchain (ReinvestmentRegistry)
+- [x] Cancel scheduled reinvestment anytime
+- [x] Display reinvestment configuration (duration, yield, strategy)
+- [x] Real-time countdown timers to execution
+- [x] Per-bond loading states (prevent duplicate transactions)
+- [x] Compound interest projections (multi-period growth)
+- [x] Dedicated "Auto-Reinvesting" tab in dashboard
+- [x] Auto-reinvesting count in portfolio statistics
+- [x] Filter bonds by reinvestment status
+- [x] Error handling with transaction status checks
+
+### Redemption Features ✅
+- [x] Query bond maturity status from blockchain
+- [x] Redeem single mature bond
+- [x] Redeem all mature bonds (sequential transactions)
+- [x] Redeem to alternative tokens (FLOW → USDC swap)
+- [x] Real-time quote fetching for token swaps
+- [x] Persistent tab state via URL query parameters
+- [x] Total redeemable value calculation
+- [x] Bonds nearing maturity notifications (24h threshold)
+- [x] Protected redemption (loading states prevent duplicate submissions)
+- [x] Yield rate display for each bond
+- [x] Expected yield + principal calculations
+
+### Portfolio Management ✅
+- [x] View all user bonds
+- [x] Filter bonds by maturity status
+- [x] Portfolio value aggregation
+- [x] Bond lifecycle tracking
+- [x] Maturity date display (formatted)
+- [x] Time remaining countdown format
+- [x] Strategy identification per bond
+- [x] Status badges (Redeemable, Pending, Auto-Reinvesting)
+
+### State Management ✅
+- [x] useReducer for centralized state
+- [x] Per-bond granular loading states
+- [x] Error handling and toast notifications
+- [x] Success feedback system
+- [x] Async action handlers
+- [x] Optimistic UI updates
+- [x] State persistence via URL params
+
+### UI/UX Components ✅
+- [x] RedeemMain master container
+- [x] RedeemHeader statistics display
+- [x] RedeemTabNavigation tab switcher
+- [x] RedeemableBonds component
+- [x] PendingBonds component
+- [x] ScheduledBonds dedicated display (NEW)
+- [x] BondRedemptionCard individual card
+- [x] NotificationsTab maturity alerts
+- [x] Loading states and spinners
+- [x] Mobile responsive design
+- [x] Green success state styling
+- [x] Accessible UI patterns
+
+### Backend Service Integration ✅
+- [x] FCL (Flow Client Library) integration
+- [x] Cadence script execution
+- [x] Transaction signing and broadcasting
+- [x] Query script execution for data fetching
+- [x] Error handling with specific messages
+- [x] Proper authorization patterns
+- [x] Transaction status monitoring
+- [x] ReinvestmentRegistry contract (0x45722594009505d7)
+
+### Data Validation & Error Handling ✅
+- [x] Bond maturity validation
+- [x] Balance checks before operations
+- [x] Transaction status verification
+- [x] User authorization checks
+- [x] Error recovery mechanisms
+- [x] Toast notifications for all operations
+- [x] Graceful fallbacks on errors
+- [x] Type-safe error handling
+
+### Performance & Optimization ✅
+- [x] Sequential transaction handling
+- [x] Lazy loading for components
+- [x] Optimized blockchain queries
+- [x] Debounced state updates
+- [x] Efficient re-renders
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites
@@ -163,8 +424,12 @@ src/
 │   │   ├── marketplace/          # Marketplace components
 │   │   ├── mint/                 # Mint components
 │   │   ├── overview/             # Overview components
-│   │   ├── redeem/               # Redeem components
-│   │   └── split/                # Split components
+│   │   ├── redeem/               # Redeem components with auto-reinvestment
+│   │   │   ├── RedeemMain.tsx
+│   │   │   ├── RedeemHeader.tsx  # Shows auto-reinvesting count
+│   │   │   ├── RedeemTabNavigation.tsx # Conditional "Auto-Reinvesting" tab
+│   │   │   ├── PendingBonds.tsx  # Schedule/cancel buttons
+│   │   │   └── ScheduledBonds.tsx # NEW - displays scheduled bonds
 │   ├── split/                    # Split page route
 │   │   └── (components)/         # Split page components
 │   │       └── ChronoSplitMain.tsx
@@ -187,14 +452,22 @@ src/
 ├── lib/                         # Utility libraries
 │   ├── chronobond-service.ts    # Bond operations
 │   ├── marketplace-service.ts   # Marketplace logic
-│   ├── bond-redemption-service.ts # Redemption logic
+│   ├── bond-redemption-service.ts # Redemption + auto-reinvestment
+│   │   │                        # Methods: checkReinvestmentStatus(), 
+│   │   │                        # scheduleReinvestment(), cancelReinvestment(),
+│   │   │                        # calculateCompoundReturns()
 │   ├── flow-config.ts          # Flow blockchain configuration
 │   └── utils.ts                # Utility functions
 ├── scripts/                     # Cadence scripts
 │   ├── transactions/            # Transaction scripts
 │   └── bonds/                   # Bond query scripts
 └── types/                       # TypeScript definitions
-    └── chronobond.ts            # App type definitions
+    ├── chronobond.ts            # App type definitions
+    ├── redeem.types.ts          # Redemption types + ReinvestmentConfig
+    ├── holding.types.ts
+    ├── marketplace.types.ts
+    ├── mint.types.ts
+    ├── swap.types.ts
 ```
 
 ## 🎯 Key Components
