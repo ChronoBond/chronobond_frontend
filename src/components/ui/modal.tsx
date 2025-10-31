@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { modalUtils } from "@/lib/modal-utils";
 
@@ -17,12 +17,6 @@ interface ModalProps {
  * Backdrop is in separate z-layer from modal content
  */
 export const Modal = ({ isOpen, onClose, children, isDisabled = false }: ModalProps) => {
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-
   useEffect(() => {
     if (isOpen) {
       modalUtils.enableModal();
@@ -33,7 +27,8 @@ export const Modal = ({ isOpen, onClose, children, isDisabled = false }: ModalPr
     return modalUtils.createModalCleanup();
   }, [isOpen]);
 
-  if (!isMounted || !isOpen) return null;
+  // Only render on client-side and when isOpen is true
+  if (!isOpen || typeof document === "undefined") return null;
 
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget && !isDisabled) {
@@ -56,7 +51,7 @@ export const Modal = ({ isOpen, onClose, children, isDisabled = false }: ModalPr
         className="fixed inset-0 z-[100] flex items-center justify-center p-4 pointer-events-none"
       >
         <div
-          className="w-full pointer-events-auto"
+          className="w-full max-w-md pointer-events-auto"
           onClick={(e) => e.stopPropagation()}
         >
           {children}

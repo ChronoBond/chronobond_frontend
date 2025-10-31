@@ -22,20 +22,20 @@ html {
 @layer base {
   :root {
     /* navygreywhiteseacold semantic tokens - Light mode */
-    --color-bg: #F4F4F4;
-    --color-surface: #ffffff;
-    --color-text: #0C2B4E;
-    --color-muted: rgba(12, 43, 78, 0.64);
-    --color-border: rgba(12, 43, 78, 0.15);
-    --color-primary: #1A3D64;
-    --color-accent: #1D546C;
-    --color-overlay: rgba(12, 43, 78, 0.08);
-    --color-ring: #1A3D64;
+    --color-bg: #133f50;
+    --color-surface: #1a3d64;
+    --color-text: #f4f4f4;
+    --color-muted: rgba(244, 244, 244, 0.72);
+    --color-border: rgba(244, 244, 244, 0.18);
+    --color-primary: #1a3d64;
+    --color-accent: #0bb0cd;
+    --color-overlay: rgba(244, 244, 244, 0.08);
+    --color-ring: #007387;
 
     /* Button variables */
     --btn-bg: var(--color-primary);
     --btn-fg: #ffffff;
-    --btn-bg-hover: #16485A;
+    --btn-bg-hover: #16485a;
     --input-placeholder: rgba(12, 43, 78, 0.5);
 
     /* Legacy shadcn/ui variables (kept for compatibility) */
@@ -68,20 +68,20 @@ html {
 
   .dark {
     /* navygreywhiteseacold semantic tokens - Dark mode (deeper navy) */
-    --color-bg: #133F50;
-    --color-surface: #1A3D64;
-    --color-text: #F4F4F4;
+    --color-bg: #133f50;
+    --color-surface: #1a3d64;
+    --color-text: #f4f4f4;
     --color-muted: rgba(244, 244, 244, 0.72);
     --color-border: rgba(244, 244, 244, 0.18);
-    --color-primary: #1A3D64;
-    --color-accent: #1D546C;
+    --color-primary: #1a3d64;
+    --color-accent: #0bb0cd;
     --color-overlay: rgba(244, 244, 244, 0.08);
-    --color-ring: #1D546C;
+    --color-ring: #007387;
 
     /* Button variables */
     --btn-bg: var(--color-primary);
-    --btn-fg: #F4F4F4;
-    --btn-bg-hover: #16485A;
+    --btn-fg: #f4f4f4;
+    --btn-bg-hover: #16485a;
     --input-placeholder: rgba(244, 244, 244, 0.6);
 
     /* Legacy shadcn/ui variables (kept for compatibility) */
@@ -272,7 +272,6 @@ html {
     background: var(--color-bg);
   }
 
-
   /* Ensure content area has proper background coverage */
   .transactions-content {
     position: relative;
@@ -287,7 +286,6 @@ html {
     filter: blur(4px);
     pointer-events: none;
   }
-
 }
 
 @layer components {
@@ -548,7 +546,6 @@ html {
       background-position: 0% 50%;
     }
   }
-
 
   /* Enhanced spotlight effect */
   .spotlight {

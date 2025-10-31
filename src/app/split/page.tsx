@@ -1,8 +1,5 @@
 import { FloatingNavbar } from "@/components/floating-navbar";
-import {
-  BackgroundGrid,
-  BackgroundDots,
-} from "@/components/ui/background-grid";
+import { BackgroundDots } from "@/components/ui/background-grid";
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider";
 import ChronoSplitMain from "@/app/split/_components/ChronoSplitMain";
 
@@ -12,9 +9,6 @@ export default function SplitPage() {
       <BackgroundDots className="min-h-screen bg-[var(--color-bg)] text-[var(--color-text)] frosted-glass-bg">
         {/* Floating Navbar */}
         <FloatingNavbar />
-
-        {/* Global Background */}
-        <BackgroundGrid className="absolute inset-0" />
 
         {/* Layered Visual Effects - Full Page */}
         <div className="absolute inset-0 pointer-events-none">

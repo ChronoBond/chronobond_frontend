@@ -22,10 +22,12 @@ export const HoldingsListingModal = ({
   if (!isOpen || !selectedBond) return null;
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isDisabled={listingState.state === "pending"}>
-      <div 
-        className="relative rounded-2xl bg-semantic-surface border-2 border-semantic-border shadow-2xl p-6 max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto"
-      >
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      isDisabled={listingState.state === "pending"}
+    >
+      <div className="relative rounded-2xl bg-semantic-surface border-2 border-semantic-border shadow-2xl p-6 max-w-md w-full max-h-[calc(100vh-2rem)] overflow-y-auto">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-lg bg-semantic-accent flex items-center justify-center shadow-lg">
             <Tag className="w-5 h-5 text-white" />
@@ -34,7 +36,9 @@ export const HoldingsListingModal = ({
             <h3 className="text-lg font-bold text-semantic-text">
               List Bond for Sale
             </h3>
-            <p className="text-xs text-semantic-muted">Bond #{selectedBond.id}</p>
+            <p className="text-xs text-semantic-muted">
+              Bond #{selectedBond.id}
+            </p>
           </div>
           <Button
             variant="ghost"
@@ -48,24 +52,24 @@ export const HoldingsListingModal = ({
 
         <div className="space-y-4">
           <div className="bg-semantic-overlay rounded-xl p-4 border border-semantic-border">
-            <p className="text-xs font-semibold text-semantic-muted mb-3 uppercase tracking-wide">
+            <p className="text-xs font-semibold text-semantic-text mb-3 uppercase tracking-wide">
               Bond Details
             </p>
             <div className="space-y-3">
               <div className="flex justify-between text-sm">
-                <span className="text-semantic-muted">Principal:</span>
+                <span className="text-semantic-text/80">Principal:</span>
                 <span className="font-semibold text-semantic-text">
                   {formatFlow(selectedBond.principal)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-semantic-muted">Yield Rate:</span>
-                <Badge className="bg-semantic-accent/20 text-semantic-accent border-semantic-accent/40 text-xs">
+                <span className="text-semantic-text/80">Yield Rate:</span>
+                <Badge className="bg-semantic-accent/20 text-semantic-accent border-semantic-accent/40 text-xs font-semibold">
                   {(selectedBond.yieldRate * 100).toFixed(1)}%
                 </Badge>
               </div>
               <div className="flex justify-between text-sm">
-                <span className="text-semantic-muted">Strategy:</span>
+                <span className="text-semantic-text/80">Strategy:</span>
                 <span className="font-medium text-semantic-text text-xs">
                   {selectedBond.strategyID}
                 </span>
@@ -73,13 +77,17 @@ export const HoldingsListingModal = ({
               {selectedBondDetails && (
                 <>
                   <div className="flex justify-between text-sm">
-                    <span className="text-semantic-muted">Expected Total:</span>
+                    <span className="text-semantic-text/80">
+                      Expected Total:
+                    </span>
                     <span className="font-semibold text-semantic-accent">
                       {formatFlow(selectedBondDetails.expectedTotal)}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-semantic-muted">Time to Maturity:</span>
+                    <span className="text-semantic-text/80">
+                      Time to Maturity:
+                    </span>
                     <span className="font-medium text-semantic-text flex items-center gap-2">
                       {selectedBondDetails.isMatured ? (
                         <>
@@ -99,7 +107,7 @@ export const HoldingsListingModal = ({
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-semantic-muted mb-3 uppercase tracking-wide">
+            <label className="block text-xs font-semibold text-semantic-text mb-3 uppercase tracking-wide">
               <div className="flex items-center gap-2">
                 <DollarSign className="w-3 h-3" />
                 Set Your Price
@@ -117,18 +125,17 @@ export const HoldingsListingModal = ({
                 step="0.01"
                 className="pr-16 text-lg"
               />
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 font-semibold text-semantic-muted">
+              <div className="absolute right-3 top-1/2 -translate-y-1/2 font-semibold text-semantic-text">
                 FLOW
               </div>
             </div>
-            <p className="text-xs text-semantic-muted mt-2">
-              Suggested: {formatFlow(selectedBond.principal * 1.2)} (20%
-              markup)
+            <p className="text-xs text-semantic-text/70 mt-2">
+              Suggested: {formatFlow(selectedBond.principal * 1.2)} (20% markup)
             </p>
           </div>
 
           <div className="bg-semantic-accent/10 border border-semantic-accent/30 rounded-lg p-3 text-center">
-            <span className="text-semantic-accent text-xs font-medium">
+            <span className="text-semantic-accent text-xs font-semibold">
               ⛓️ Real Transaction - Will execute on Flow blockchain
             </span>
           </div>
@@ -184,7 +191,7 @@ export const HoldingsListingModal = ({
                 <span>{listingState.statusString}</span>
               </div>
               {listingState.txId && (
-                <div className="text-xs mt-1 text-semantic-muted break-all">
+                <div className="text-xs mt-1 text-semantic-text/60 break-all">
                   TX: {listingState.txId.substring(0, 16)}...
                 </div>
               )}

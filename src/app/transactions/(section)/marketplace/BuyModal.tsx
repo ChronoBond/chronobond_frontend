@@ -56,28 +56,28 @@ export const BuyModal = ({
               <ShoppingCart className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Buy Bond</h3>
-              <p className="text-xs text-white/60">Bond #{listing.bondID}</p>
+              <h3 className="text-lg font-bold text-semantic-text">Buy Bond</h3>
+              <p className="text-xs text-semantic-text/70">Bond #{listing.bondID}</p>
             </div>
           </div>
         </div>
 
         {/* Price Display */}
-        <div className="mb-6 p-4 rounded-lg bg-white/5 border border-white/10">
-          <p className="text-xs font-semibold text-white/70 mb-2 uppercase tracking-wide">
+        <div className="mb-6 p-4 rounded-lg bg-semantic-overlay border border-semantic-border">
+          <p className="text-xs font-semibold text-semantic-text/80 mb-2 uppercase tracking-wide">
             Listing Price
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-semantic-accent">
               {listing.price.toFixed(2)}
             </span>
-            <span className="text-lg font-semibold text-white/80">FLOW</span>
+            <span className="text-lg font-semibold text-semantic-text">FLOW</span>
           </div>
         </div>
 
         {/* Token Selection */}
         <div className="mb-6">
-          <label className="block text-xs font-semibold text-white/70 mb-3 uppercase tracking-wide">
+          <label className="block text-xs font-semibold text-semantic-text mb-3 uppercase tracking-wide">
             <div className="flex items-center gap-2">
               <Wallet className="w-3 h-3" />
               Pay With
@@ -95,13 +95,13 @@ export const BuyModal = ({
           <div className={`mb-6 p-3 rounded-lg border ${
             insufficientFlow
               ? "bg-red-500/10 border-red-500/30"
-              : "bg-blue-500/10 border-blue-500/30"
+              : "bg-semantic-accent/10 border-semantic-accent/30"
           }`}>
             <div className="flex items-center gap-2">
               {insufficientFlow && (
                 <AlertCircle className="w-4 h-4 text-red-400 flex-shrink-0" />
               )}
-              <p className={`text-xs ${insufficientFlow ? "text-red-400" : "text-blue-400"}`}>
+              <p className={`text-xs font-medium ${insufficientFlow ? "text-red-400" : "text-semantic-accent"}`}>
                 {typeof flowBalance === "number" 
                   ? `Balance: ${flowBalance.toFixed(6)} FLOW`
                   : "Loading balance..."}

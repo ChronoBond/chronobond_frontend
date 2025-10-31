@@ -51,31 +51,31 @@ export const RedeemModal = ({
               <Clock className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-white">Redeem Bond</h3>
-              <p className="text-xs text-white/60">Bond #{bond.bondID}</p>
+              <h3 className="text-lg font-bold text-semantic-text">Redeem Bond</h3>
+              <p className="text-xs text-semantic-text/70">Bond #{bond.bondID}</p>
             </div>
           </div>
         </div>
 
         {/* Bond Amount Display */}
-        <div className="mb-6 p-4 rounded-lg bg-white/5 border border-white/10">
-          <p className="text-xs font-semibold text-white/70 mb-2 uppercase tracking-wide">
+        <div className="mb-6 p-4 rounded-lg bg-semantic-overlay border border-semantic-border">
+          <p className="text-xs font-semibold text-semantic-text/80 mb-2 uppercase tracking-wide">
             Redemption Amount
           </p>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-semantic-accent">
               {bond.expectedTotal.toFixed(2)}
             </span>
-            <span className="text-lg font-semibold text-white/80">FLOW</span>
+            <span className="text-lg font-semibold text-semantic-text">FLOW</span>
           </div>
-          <p className="text-xs text-white/60 mt-2">
+          <p className="text-xs text-semantic-text/70 mt-2">
             Principal + Yield
           </p>
         </div>
 
         {/* Token Selection */}
         <div className="mb-6">
-          <label className="block text-xs font-semibold text-white/70 mb-3 uppercase tracking-wide">
+          <label className="block text-xs font-semibold text-semantic-text mb-3 uppercase tracking-wide">
             <div className="flex items-center gap-2">
               <Zap className="w-3 h-3" />
               Receive As
