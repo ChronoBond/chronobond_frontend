@@ -659,7 +659,7 @@ html {
 
   /* Text Styles */
   .text-hero-title {
-    @apply text-hero-lg sm:text-hero-xl lg:text-hero-2xl font-bold mb-8 text-semantic-text tracking-tight;
+    @apply text-hero-lg sm:text-hero-lg lg:text-hero-lg font-bold mb-8 text-semantic-text tracking-tight;
   }
 
   .text-hero-subtitle {

@@ -17,7 +17,7 @@ export default function Home() {
 
         {/* Global Background with Gradients */}
         <BackgroundGrid className="absolute inset-0">
-          <div className="absolute inset-0 bg-gradient-to-br from-blue-900/20 via-transparent to-purple-900/20" />
+          <p></p>
         </BackgroundGrid>
 
         {/* Layered Visual Effects - Full Page */}

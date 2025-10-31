@@ -103,7 +103,7 @@ const ChronoSplitMain = () => {
             <Split className="w-12 h-12 text-white" />
           </div>
 
-          <h1 className="text-hero-title text-center max-w-5xl">
+          <h1 className="text-hero-title text-center max-w-3xl">
             <TextType
               text={[
                 "ChronoSplit is Coming Soon",
@@ -119,7 +119,7 @@ const ChronoSplitMain = () => {
           </h1>
 
           <div className="max-w-3xl mx-auto mb-8">
-            <p className="text-hero-subtitle text-center text-lg sm:text-xl lg:text-2xl leading-relaxed">
+            <p className="text-hero-subtitle text-center text-section-md sm:text-xl  leading-relaxed">
               Revolutionary DeFi innovation that splits your ChronoBond NFTs
               into{" "}
               <span className="font-semibold text-semantic-accent">

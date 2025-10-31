@@ -136,7 +136,7 @@ export const HoldingsListingModal = ({
 
           <div className="bg-semantic-accent/10 border border-semantic-accent/30 rounded-lg p-3 text-center">
             <span className="text-semantic-accent text-xs font-semibold">
-              ⛓️ Real Transaction - Will execute on Flow blockchain
+              Real Transaction - Will execute on Flow blockchain
             </span>
           </div>
 

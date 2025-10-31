@@ -19,6 +19,7 @@ import MintMain from "@/app/transactions/(section)/mint/MintMain";
 import HoldingsMain from "@/app/transactions/(section)/holdings/HoldingsMain";
 import MarketplaceMain from "@/app/transactions/(section)/marketplace/MarketplaceMain";
 import RedeemMain from "@/app/transactions/(section)/redeem/RedeemMain";
+import { BackgroundGrid } from "@/components/ui/background-grid";
 
 type TransactionTabType = "mint" | "holdings" | "marketplace" | "redeem";
 
@@ -114,6 +115,9 @@ export default function TransactionsPage() {
   return (
     <div className="min-h-screen bg-[#001531] text-[var(--color-text)]">
       <FloatingNavbar />
+      <BackgroundGrid className="absolute inset-0">
+        <p></p>
+      </BackgroundGrid>
 
       <div className="relative pt-16 sm:pt-20 min-h-screen">
         {/* Subtle grid lines background (no gradient clipping) */}

@@ -232,10 +232,13 @@ const PageMain: React.FC = () => {
 
           {/* Hero Subtitle */}
           <div className="max-w-3xl mx-auto mb-8">
-            <p className="text-hero-subtitle text-center text-lg sm:text-xl lg:text-2xl leading-relaxed">
+            <p className="text-hero-subtitle text-center text-section-md sm:text-xl  leading-relaxed">
               Revolutionary time-locked DeFi bonds on Flow blockchain. Mint,
               trade, and redeem bonds with{" "}
-              <span className="font-semibold text-semantic-accent">guaranteed yields</span>.
+              <span className="font-semibold text-semantic-accent">
+                guaranteed yields
+              </span>
+              .
             </p>
           </div>
 
@@ -299,12 +302,19 @@ const PageMain: React.FC = () => {
               Why Choose ChronoBond?
             </h2>
             <p className="text-body-lg text-semantic-muted max-w-2xl mx-auto">
-              Built for the future of DeFi with Security, Transparency, and Innovation at its core.
+              Built for the future of DeFi with Security, Transparency, and
+              Innovation at its core.
             </p>
           </div>
-          <div ref={statsRef} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div
+            ref={statsRef}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
+          >
             {valuePropositions.map((proposition, index) => (
-              <GlassCard key={index} className="group hover:scale-105 transition-transform duration-300 p-6 lg:p-8">
+              <GlassCard
+                key={index}
+                className="group hover:scale-105 transition-transform duration-300 p-6 lg:p-8"
+              >
                 <GlassCardContent className="p-0 text-center">
                   <div className="card-feature-icon mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
                     <proposition.icon className="w-8 h-8 text-white" />
@@ -374,7 +384,10 @@ const PageMain: React.FC = () => {
             </p>
           </div>
 
-          <div ref={howItWorksRef} className="space-y-12 lg:space-y-16 max-w-4xl mx-auto">
+          <div
+            ref={howItWorksRef}
+            className="space-y-12 lg:space-y-16 max-w-4xl mx-auto"
+          >
             <div className="relative">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6 lg:gap-8 p-6 lg:p-8 rounded-2xl bg-semantic-surface border-2 border-semantic-border hover:border-semantic-accent transition-all duration-300 shadow-lg hover:shadow-xl">
                 <div className="flex-shrink-0">
@@ -384,13 +397,16 @@ const PageMain: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">1</span>
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">
+                      1
+                    </span>
                     <h3 className="text-subheading-xl font-bold text-semantic-text">
                       Mint Bonds
                     </h3>
                   </div>
                   <p className="text-body-lg text-semantic-text/90 leading-relaxed">
-                    Create time-locked bonds with your preferred duration and yield parameters using our intuitive interface.
+                    Create time-locked bonds with your preferred duration and
+                    yield parameters using our intuitive interface.
                   </p>
                 </div>
               </div>
@@ -405,13 +421,16 @@ const PageMain: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">2</span>
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">
+                      2
+                    </span>
                     <h3 className="text-subheading-xl font-bold text-semantic-text">
                       Trade on Marketplace
                     </h3>
                   </div>
                   <p className="text-body-lg text-semantic-text/90 leading-relaxed">
-                    Buy and sell bonds on our decentralized marketplace for maximum liquidity and competitive pricing.
+                    Buy and sell bonds on our decentralized marketplace for
+                    maximum liquidity and competitive pricing.
                   </p>
                 </div>
               </div>
@@ -426,13 +445,16 @@ const PageMain: React.FC = () => {
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">
-                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">3</span>
+                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-semantic-accent text-white font-bold text-sm shadow-md">
+                      3
+                    </span>
                     <h3 className="text-subheading-xl font-bold text-semantic-text">
                       Redeem & Earn
                     </h3>
                   </div>
                   <p className="text-body-lg text-semantic-text/90 leading-relaxed">
-                    Redeem matured bonds and earn guaranteed yields with full transparency and smart contract security.
+                    Redeem matured bonds and earn guaranteed yields with full
+                    transparency and smart contract security.
                   </p>
                 </div>
               </div>
