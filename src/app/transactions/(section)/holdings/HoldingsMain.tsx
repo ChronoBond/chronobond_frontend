@@ -9,6 +9,7 @@ import { LoadingState } from "@/components/ui/loading-state";
 const HoldingsPortfolioSummary = lazy(() => import("./HoldingsPortfolioSummary").then(module => ({ default: module.HoldingsPortfolioSummary })));
 const HoldingsBondCard = lazy(() => import("./HoldingsBondCard").then(module => ({ default: module.HoldingsBondCard })));
 const HoldingsListingModal = lazy(() => import("./HoldingsListingModal").then(module => ({ default: module.HoldingsListingModal })));
+const HoldingsRedeemModal = lazy(() => import("./HoldingsRedeemModal").then(module => ({ default: module.HoldingsRedeemModal })));
 const HoldingsEmptyState = lazy(() => import("./HoldingsEmptyState").then(module => ({ default: module.HoldingsEmptyState })));
 const HoldingsWalletPrompt = lazy(() => import("./HoldingsWalletPrompt").then(module => ({ default: module.HoldingsWalletPrompt })));
 const HoldingsPortfolioHeader = lazy(() => import("./HoldingsPortfolioHeader").then(module => ({ default: module.HoldingsPortfolioHeader })));
@@ -23,15 +24,21 @@ const HoldingsMain = () => {
     listingPrice,
     showListingForm,
     listingState,
+    showRedeemModal,
+    redeemingBond,
+    isRedeeming,
     loadUserBonds,
     handleListBond,
     handleRedeemBond,
+    handleConfirmRedeemBond,
     handleConfirmListing,
     setShowListingForm,
     setSelectedBond,
     setSelectedBondDetails,
     setListingPrice,
     setListingState,
+    setShowRedeemModal,
+    setRedeemingBond,
     formatFlow,
     formatDate,
     isMatured,
@@ -60,6 +67,11 @@ const HoldingsMain = () => {
       statusString: '',
       txId: null
     });
+  };
+
+  const handleCloseRedeemModal = () => {
+    setShowRedeemModal(false);
+    setRedeemingBond(null);
   };
 
   return (
@@ -113,6 +125,19 @@ const HoldingsMain = () => {
           onClose={handleCloseModal}
           onPriceChange={setListingPrice}
           onConfirmListing={handleConfirmListing}
+          formatFlow={formatFlow}
+        />
+      </Suspense>
+
+      {/* Redeem Modal */}
+      <Suspense fallback={<LoadingState message="Loading redeem modal..." />}>
+        <HoldingsRedeemModal
+          isOpen={showRedeemModal}
+          bond={redeemingBond}
+          isRedeeming={isRedeeming}
+          expectedYield={redeemingBond ? calculateCurrentYield(redeemingBond) : 0}
+          onClose={handleCloseRedeemModal}
+          onConfirm={handleConfirmRedeemBond}
           formatFlow={formatFlow}
         />
       </Suspense>

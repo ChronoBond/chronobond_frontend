@@ -3,17 +3,17 @@ import "./globals.css";
 import { getMetadata, debugMetadata } from "@/lib/metadata";
 import { FlowConfigProvider } from "@/components/flow-config-provider";
 import { Toaster } from "@/components/ui/toaster";
+import { RootLayoutClient } from "@/components/root-layout-client";
 
 const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter"
+  variable: "--font-inter",
 });
 
-// Generate fresh metadata for each request - KISS principle
-export const metadata = getMetadata('home');
+export const metadata = getMetadata("home");
 
 // Debug metadata in development
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
   debugMetadata();
 }
 
@@ -24,14 +24,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark">
-      <body suppressHydrationWarning className={`${inter.variable} font-inter antialiased bg-background text-foreground`}>
+      <body
+        suppressHydrationWarning
+        className={`${inter.variable} font-inter antialiased bg-background text-foreground`}
+      >
         <FlowConfigProvider>
-          <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
-            <main className="relative">
-              {children}
-            </main>
-            <Toaster />
-          </div>
+          <RootLayoutClient>
+            <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
+              <main className="relative">{children}</main>
+              <Toaster />
+            </div>
+          </RootLayoutClient>
         </FlowConfigProvider>
       </body>
     </html>

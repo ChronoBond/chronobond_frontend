@@ -47,35 +47,44 @@ export const MintForm = ({
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-semibold mb-2">Pay with</label>
-            <Select
-              value={paymentToken}
-              onValueChange={(value) =>
-                onPaymentTokenChange?.(value as "FLOW" | "USDC")
-              }
-            >
-              <option value="FLOW">FLOW (default)</option>
-              <option value="USDC">USDC</option>
-            </Select>
-          </div>
+        <div>
+          <label className="block text-sm font-semibold mb-2">Pay with</label>
+          <Select
+            value={paymentToken}
+            onValueChange={(value) =>
+              onPaymentTokenChange?.(value as "FLOW" | "USDC")
+            }
+          >
+            <option value="FLOW">FLOW (default)</option>
+            <option value="USDC">MockUSDC</option>
+          </Select>
+        </div>
 
-          {paymentToken === "USDC" && (
-            <div className="flex items-end">
-              <div className="text-sm text-white/80">
-                {usdcQuote ? (
-                  <span>
-                    You will pay: {usdcQuote} for a {formData.amount || "0"}{" "}
-                    FLOW Bond
-                  </span>
-                ) : (
-                  <span>Fetching quote...</span>
-                )}
+        {paymentToken === "USDC" && (
+          <div className="bg-brand-accent/10 border border-brand-accent/30 rounded-lg p-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <div className="text-xs text-white/70 mb-1">Swap Quote</div>
+                <div className="text-lg font-bold text-white">
+                  {usdcQuote ? (
+                    <span>{usdcQuote}</span>
+                  ) : (
+                    <span className="text-white/50">Calculating...</span>
+                  )}
+                </div>
+                <div className="text-xs text-white/60 mt-2">
+                  Rate: 1 USDC = 10 FLOW
+                </div>
+              </div>
+              <div className="text-right">
+                <div className="text-xs text-white/70 mb-1">You receive</div>
+                <div className="text-lg font-bold text-brand-primary">
+                  {formData.amount ? `${formData.amount} FLOW` : "0 FLOW"}
+                </div>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         <div>
           <label className="block text-sm font-semibold mb-2">
@@ -146,7 +155,7 @@ export const MintForm = ({
           {txStatus.state === "idle" && (
             <>
               <Coins className="w-5 h-5 mr-2" />
-              {paymentToken === "USDC" ? "Mint with USDC" : "Mint Bond"}
+              {paymentToken === "USDC" ? "Mint with MockUSDC" : "Mint Bond"}
             </>
           )}
           {txStatus.state === "success" && (

@@ -100,7 +100,7 @@ const MarketplaceMain = () => {
       <div className="relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border p-6">
         <div className="relative z-10">
           <div className="flex items-center gap-4 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-brand-900 flex items-center justify-center shadow-md">
               <Store className="w-6 h-6 text-white" />
             </div>
             <div>

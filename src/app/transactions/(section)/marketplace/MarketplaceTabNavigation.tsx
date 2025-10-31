@@ -3,7 +3,10 @@
 import { ShoppingCart, Tag, Users } from "lucide-react";
 import { type MarketplaceTabNavigationProps } from "@/types/marketplace.types";
 
-export const MarketplaceTabNavigation = ({ activeTab, onTabChange }: MarketplaceTabNavigationProps) => {
+export const MarketplaceTabNavigation = ({
+  activeTab,
+  onTabChange,
+}: MarketplaceTabNavigationProps) => {
   return (
     <div className="space-y-4">
       {/* Desktop: Full Tab Cards */}
@@ -14,21 +17,21 @@ export const MarketplaceTabNavigation = ({ activeTab, onTabChange }: Marketplace
             label: "Buy Bonds",
             desc: "Browse available bonds",
             icon: <ShoppingCart className="w-4 h-4" />,
-            color: "brand-primary"
+            color: "brand-primary",
           },
           {
             key: "sell",
             label: "Sell Bonds",
             desc: "List your bonds for sale",
             icon: <Tag className="w-4 h-4" />,
-            color: "brand-accent"
+            color: "brand-accent",
           },
           {
             key: "manage",
             label: "Manage Listings",
             desc: "Manage your active listings",
             icon: <Users className="w-4 h-4" />,
-            color: "brand-warning"
+            color: "brand-warning",
           },
         ].map((tab) => (
           <button
@@ -36,12 +39,12 @@ export const MarketplaceTabNavigation = ({ activeTab, onTabChange }: Marketplace
             onClick={() => onTabChange(tab.key as "buy" | "sell" | "manage")}
             className={`relative flex items-center gap-3 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
               activeTab === tab.key
-                ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
-                : "text-white/70 hover:text-white hover:bg-white/5"
+                ? "!bg-brand-900 text-white shadow-lg border border-brand-primary/50"
+                : "text-white/70 hover:text-white border border-white/20 hover:border-white/40"
             }`}
           >
             {activeTab === tab.key && (
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-brand-primary/10 to-brand-accent/10 animate-pulse" />
+              <div className="absolute inset-0 rounded-xl " />
             )}
             <span className="relative z-10">{tab.icon}</span>
             <div className="relative z-10 text-left">
@@ -60,19 +63,19 @@ export const MarketplaceTabNavigation = ({ activeTab, onTabChange }: Marketplace
               key: "buy",
               label: "Buy",
               icon: <ShoppingCart className="w-4 h-4" />,
-              color: "brand-primary"
+              color: "brand-primary",
             },
             {
               key: "sell",
               label: "Sell",
               icon: <Tag className="w-4 h-4" />,
-              color: "brand-accent"
+              color: "brand-accent",
             },
             {
               key: "manage",
               label: "Manage",
               icon: <Users className="w-4 h-4" />,
-              color: "brand-warning"
+              color: "brand-warning",
             },
           ].map((tab) => (
             <button
@@ -80,8 +83,8 @@ export const MarketplaceTabNavigation = ({ activeTab, onTabChange }: Marketplace
               onClick={() => onTabChange(tab.key as "buy" | "sell" | "manage")}
               className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
                 activeTab === tab.key
-                  ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
-                  : "bg-background/20 text-white/70 hover:text-white hover:bg-white/5 border border-white/10"
+                  ? "bg-brand-900 text-white shadow-lg border border-brand-primary/50"
+                  : "text-white/70 hover:text-white border border-white/20 hover:border-white/40"
               }`}
             >
               <span>{tab.icon}</span>

@@ -3,6 +3,7 @@
 import { useEffect, useReducer, useCallback } from "react";
 import * as fcl from "@onflow/fcl";
 import { useFlowCurrentUser } from "@onflow/kit";
+import { useToast } from "@/hooks/use-toast";
 import {
   bondRedemptionService,
   type BondMaturityInfo,
@@ -12,6 +13,7 @@ import { type RedeemHooksReturn, type ActiveTab } from "@/types/redeem.types";
 
 export const useRedeem = (): RedeemHooksReturn => {
   const { user } = useFlowCurrentUser();
+  const { toast } = useToast();
 
   type State = {
     activeTab: ActiveTab;
@@ -244,14 +246,27 @@ export const useRedeem = (): RedeemHooksReturn => {
           : await bondRedemptionService.redeemBond(bond.bondID.toString());
 
       if (result.success) {
+        const message = `✅ Successfully redeemed Bond #${bond.bondID} for ${
+          state.receiveToken === "USDC"
+            ? state.receiveQuote || "USDC"
+            : bondRedemptionService.formatCurrency(bond.expectedTotal)
+        }!`;
+        
         dispatch({
           type: "setSuccess",
-          payload: `✅ Successfully redeemed Bond #${bond.bondID} for ${
+          payload: message,
+        });
+
+        // Show success toast
+        toast({
+          title: "✅ Bond Redeemed",
+          description: `Bond #${bond.bondID} redeemed for ${
             state.receiveToken === "USDC"
               ? state.receiveQuote || "USDC"
               : bondRedemptionService.formatCurrency(bond.expectedTotal)
-          }!`,
+          }`,
         });
+
         await loadBondData();
         dispatch({ type: "setRedeemModalOpen", payload: false });
         dispatch({ type: "setSelectedBond", payload: null });
@@ -302,11 +317,21 @@ export const useRedeem = (): RedeemHooksReturn => {
       const failed = results.length - successful;
 
       if (successful > 0) {
+        const successMessage = `✅ Successfully redeemed ${successful} bonds for ${bondRedemptionService.formatCurrency(
+          state.totalRedeemableValue
+        )}!`;
+        
         dispatch({
           type: "setSuccess",
-          payload: `✅ Successfully redeemed ${successful} bonds for ${bondRedemptionService.formatCurrency(
+          payload: successMessage,
+        });
+
+        // Show success toast
+        toast({
+          title: "✅ Bonds Redeemed",
+          description: `Successfully redeemed ${successful}/${state.redeemableBonds.length} bonds for ${bondRedemptionService.formatCurrency(
             state.totalRedeemableValue
-          )}!`,
+          )}`,
         });
       }
 

@@ -236,6 +236,116 @@ export class BondRedemptionService {
     }
   }
 
+  // ✅ REINVEST MATURE BOND - Redeem + Mint new bond in atomic transaction
+  async reinvestBond(
+    bondID: string,
+    newDuration: number,
+    newYieldRate: number,
+    strategyID: string = "FlowStaking",
+    userAddr?: string
+  ): Promise<RedemptionResult> {
+    const transaction = `
+      import FungibleToken from 0xFungibleToken
+      import NonFungibleToken from 0xNonFungibleToken
+      import ChronoBond from 0xChronoBond
+      import FlowStakingStrategy from 0xFlowStakingStrategy
+
+      transaction(bondID: UInt64, newDuration: UInt64, newYieldRate: UFix64, strategyID: String) {
+        let collection: auth(NonFungibleToken.Withdraw) &ChronoBond.Collection
+        let receiver: &{NonFungibleToken.CollectionPublic}
+        let vault: @{FungibleToken.Vault}
+
+        prepare(signer: auth(Storage, Capabilities) &Account) {
+          self.collection = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &ChronoBond.Collection>(
+            from: ChronoBond.CollectionStoragePath
+          ) ?? panic("Could not borrow collection from storage")
+
+          self.receiver = signer.capabilities.get<&{NonFungibleToken.CollectionPublic}>(
+            ChronoBond.CollectionPublicPath
+          ).borrow() ?? panic("Could not borrow receiver capability")
+
+          self.vault <- FlowStakingStrategy.createMockVault(amount: 0.0)
+        }
+
+        execute {
+          let bond <- self.collection.withdraw(withdrawID: bondID) as! @ChronoBond.NFT
+
+          let principal = bond.principal
+          
+          destroy bond
+
+          let currentTime = getCurrentBlock().timestamp
+          let maturityTime = currentTime + UFix64(newDuration)
+
+          ChronoBond.mintNFT(
+            recipient: self.receiver,
+            principal: principal,
+            maturityDate: maturityTime,
+            yieldRate: newYieldRate,
+            strategyID: strategyID
+          )
+
+          destroy self.vault
+        }
+      }
+    `;
+
+    try {
+      // Validate bond is mature first
+      let currentUserAddr = userAddr;
+      if (!currentUserAddr) {
+        currentUserAddr = (fcl.currentUser as any)?.addr;
+      }
+      
+      if (!currentUserAddr) {
+        throw new Error("User not connected");
+      }
+
+      const bondMaturity = await this.checkBondMaturity(currentUserAddr, bondID);
+
+      if (!bondMaturity) {
+        throw new Error("Could not retrieve bond information");
+      }
+
+      // Note: Reinvest can happen even before maturity, so we don't check isMatured here
+      // Optionally, you can log a warning if reinvesting before maturity
+      if (!bondMaturity.isMatured) {
+        console.log(`⚠️ Reinvesting bond before maturity. Time remaining: ${this.formatTimeRemaining(bondMaturity.timeUntilMaturity)}`);
+      }
+
+      const transactionId = await fcl.mutate({
+        cadence: transaction,
+        args: (arg: any, t: any) => [
+          arg(bondID, t.UInt64),
+          arg(newDuration.toString(), t.UInt64),
+          arg(newYieldRate.toFixed(8), t.UFix64),
+          arg(strategyID, t.String),
+        ],
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
+        limit: 9999,
+      });
+
+      const result = await fcl.tx(transactionId).onceSealed();
+      if (result.status === 4) {
+        return { 
+          success: true, 
+          transactionId,
+          totalRedeemed: bondMaturity.expectedTotal
+        };
+      }
+      throw new Error(result.errorMessage || "Transaction failed");
+    } catch (error: any) {
+      toast({
+        title: "Reinvestment Failed",
+        description: error.message || "Failed to reinvest bond",
+        variant: "destructive",
+      });
+      return { success: false, error: error.message };
+    }
+  }
+
   // ✅ 3. GET REDEEMABLE BONDS - Filter matured bonds
   async getRedeemableBonds(userAddress: string): Promise<BondMaturityInfo[]> {
     try {

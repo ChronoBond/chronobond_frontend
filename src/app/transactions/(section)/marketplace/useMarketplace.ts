@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import * as fcl from "@onflow/fcl";
 import { useFlowCurrentUser } from "@onflow/kit";
+import { useToast } from "@/hooks/use-toast";
 import {
   marketplaceService,
   type MarketplaceListing,
@@ -17,6 +18,7 @@ import {
 
 export const useMarketplace = (): MarketplaceHooksReturn => {
   const { user } = useFlowCurrentUser();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState<ActiveTab>("buy");
 
   // Real blockchain data states
@@ -304,6 +306,13 @@ export const useMarketplace = (): MarketplaceHooksReturn => {
           statusString: `✅ Successfully purchased bond #${listing.bondID}!`,
           txId: result.transactionId || null,
         });
+
+        // Show success toast
+        toast({
+          title: "✅ Bond Purchased",
+          description: `Successfully purchased bond #${listing.bondID} for ${listing.price} FLOW`,
+        });
+
         setBuyModalOpen(false);
         setSelectedListing(null);
         await Promise.all([
@@ -369,6 +378,13 @@ export const useMarketplace = (): MarketplaceHooksReturn => {
           statusString: `✅ Bond #${listing.bondID} withdrawn from sale!`,
           txId: result.transactionId || null,
         });
+
+        // Show success toast
+        toast({
+          title: "📋 Listing Withdrawn",
+          description: `Bond #${listing.bondID} withdrawn from sale successfully`,
+        });
+
         await loadData(); // Refresh real data
 
         // Auto-clear success after 3 seconds

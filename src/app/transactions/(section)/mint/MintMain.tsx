@@ -4,14 +4,32 @@ import { Suspense, lazy, useRef, useEffect } from "react";
 import { gsap } from "gsap";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { useMint } from "./useMint";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Coins } from "lucide-react";
 
 // Lazy load heavy parts to keep initial render fast
-const MintWalletPrompt = lazy(() => import("./MintWalletPrompt").then(module => ({ default: module.MintWalletPrompt })));
-const MintForm = lazy(() => import("./MintForm").then(module => ({ default: module.MintForm })));
-const MintSummary = lazy(() => import("./MintSummary").then(module => ({ default: module.MintSummary })));
-const MintTransactionStatus = lazy(() => import("./MintTransactionStatus").then(module => ({ default: module.MintTransactionStatus })));
+const MintWalletPrompt = lazy(() =>
+  import("./MintWalletPrompt").then((module) => ({
+    default: module.MintWalletPrompt,
+  }))
+);
+const MintForm = lazy(() =>
+  import("./MintForm").then((module) => ({ default: module.MintForm }))
+);
+const MintSummary = lazy(() =>
+  import("./MintSummary").then((module) => ({ default: module.MintSummary }))
+);
+const MintTransactionStatus = lazy(() =>
+  import("./MintTransactionStatus").then((module) => ({
+    default: module.MintTransactionStatus,
+  }))
+);
 
 const MintMain = () => {
   const { user } = useFlowCurrentUser();
@@ -19,7 +37,7 @@ const MintMain = () => {
   const headerRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
   const summaryRef = useRef<HTMLDivElement>(null);
-  
+
   const {
     formData,
     txStatus,
@@ -32,36 +50,40 @@ const MintMain = () => {
     durationOptions,
     paymentToken,
     usdcQuote,
-    setPaymentToken
+    setPaymentToken,
   } = useMint();
 
   useEffect(() => {
     if (containerRef.current) {
       const tl = gsap.timeline();
-      
-      tl.fromTo(containerRef.current,
+
+      tl.fromTo(
+        containerRef.current,
         { opacity: 0, y: 20 },
         { opacity: 1, y: 0, duration: 0.5 }
       );
-      
+
       if (headerRef.current) {
-        tl.fromTo(headerRef.current,
+        tl.fromTo(
+          headerRef.current,
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.5 },
           "-=0.3"
         );
       }
-      
+
       if (formRef.current) {
-        tl.fromTo(formRef.current,
+        tl.fromTo(
+          formRef.current,
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.5 },
           "-=0.2"
         );
       }
-      
+
       if (summaryRef.current) {
-        tl.fromTo(summaryRef.current,
+        tl.fromTo(
+          summaryRef.current,
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.5 },
           "-=0.1"
@@ -72,16 +94,17 @@ const MintMain = () => {
 
   // Reveal animation when component mounts
   useEffect(() => {
-    const elements = containerRef.current?.querySelectorAll('.reveal-item');
+    const elements = containerRef.current?.querySelectorAll(".reveal-item");
     if (elements && elements.length > 0) {
-      gsap.fromTo(elements, 
+      gsap.fromTo(
+        elements,
         { opacity: 0, y: 30 },
-        { 
-          opacity: 1, 
-          y: 0, 
-          duration: 0.6, 
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
           stagger: 0.1,
-          ease: "power2.out"
+          ease: "power2.out",
         }
       );
     }
@@ -98,9 +121,12 @@ const MintMain = () => {
   return (
     <div ref={containerRef} className="app-container max-w-6xl mx-auto">
       <Card className="reveal-item relative overflow-hidden rounded-2xl bg-semantic-surface backdrop-blur-xl border border-semantic-border">
-        <CardHeader className="text-center">
-          <div ref={headerRef} className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-brand-500 flex items-center justify-center shadow-lg">
+        <CardHeader className="text-start">
+          <div
+            ref={headerRef}
+            className="flex items-center justify-start gap-3 mb-4"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-brand-900 flex items-center justify-center shadow-md">
               <Coins className="w-6 h-6 text-white" />
             </div>
             <div>

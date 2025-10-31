@@ -13,17 +13,18 @@ export const RedeemableBonds = ({
   totalRedeemableValue, 
   onRefresh, 
   onRedeemBond, 
-  onRedeemAllBonds 
-}: RedeemableBondsProps) => {
+  onRedeemAllBonds,
+  onReinvestBond
+}: RedeemableBondsProps & { onReinvestBond?: (bond: any) => void }) => {
   return (
     <div className="tab-content space-y-6">
       {/* Section header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl font-bold text-semantic-text mb-2">
             Ready for Redemption
           </h2>
-          <p className="text-white/70">
+          <p className="text-semantic-text-secondary">
             Redeem your matured bonds to receive principal + yield
           </p>
         </div>
@@ -31,14 +32,13 @@ export const RedeemableBonds = ({
           <Button
             onClick={onRefresh}
             disabled={loading}
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="gap-2 bg-background/20 border-white/20 text-white hover:bg-white/10 w-full"
+            className="gap-2 text-semantic-text-secondary hover:bg-semantic-border/50 w-full"
           >
             <RefreshCw
               className={`w-4 h-4 ${loading ? "animate-spin" : ""}`}
             />
-            Refresh
           </Button>
           {redeemableBonds.length > 0 && (
             <Button
@@ -81,6 +81,7 @@ export const RedeemableBonds = ({
               key={bond.bondID}
               bond={bond}
               onRedeem={onRedeemBond}
+              onReinvest={onReinvestBond}
               isRedeeming={redeeming[bond.bondID] || false}
             />
           ))}
@@ -89,14 +90,14 @@ export const RedeemableBonds = ({
 
       {/* Mobile quick actions */}
       {redeemableBonds.length > 0 && (
-        <div className="sm:hidden fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-xl border-t border-white/10">
+        <div className="sm:hidden fixed bottom-0 left-0 right-0 p-4 bg-background/95 backdrop-blur-xl border-t border-semantic-border">
           <div className="flex gap-3">
             <Button
               onClick={onRefresh}
               disabled={loading}
               variant="outline"
               size="sm"
-              className="flex-1 bg-background/20 border-white/20 text-white"
+              className="flex-1 border-white/20 text-semantic-text hover:bg-white/10 hover:border-white/40"
             >
               <RefreshCw className="w-4 h-4 mr-2" />
               Refresh
@@ -104,7 +105,7 @@ export const RedeemableBonds = ({
             <Button
               onClick={onRedeemAllBonds}
               disabled={loading}
-              className="flex-1 bg-brand-accent text-white hover:bg-brand-accent/90"
+              className="flex-1 bg-brand-accent text-white hover:bg-brand-accent/90 shadow-lg"
               size="sm"
             >
               💰 Redeem All

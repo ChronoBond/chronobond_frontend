@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useFlowCurrentUser } from "@onflow/kit";
 import { chronoBondService } from "@/lib/chronobond-service";
 import { swapService } from "@/lib/swap-service";
+import { useToast } from "@/hooks/use-toast";
 import { type MintHooksReturn, type TransactionStatus, type DurationOption } from "@/types/mint.types";
 import { type YieldStrategy } from "@/types/chronobond";
 
@@ -38,6 +39,7 @@ const DURATION_OPTIONS: DurationOption[] = [
 
 export const useMint = (): MintHooksReturn => {
   const { user } = useFlowCurrentUser();
+  const { toast } = useToast();
   
   const [formData, setFormData] = useState({
     strategyID: "FlowStaking",
@@ -159,7 +161,8 @@ export const useMint = (): MintHooksReturn => {
               formData.strategyID,
               formData.amount || "0",
               lockupSeconds,
-              "USDC"
+              "USDC",
+              (parseFloat(formData.amount || "0") * 0.95).toString() // 5% slippage protection
             )
           : await chronoBondService.mintBond(
         formData.strategyID,
@@ -176,6 +179,13 @@ export const useMint = (): MintHooksReturn => {
         state: "success",
         statusString: "Bond minted successfully!",
         txId: mintResult.transactionId || null,
+      });
+
+      // Show success toast
+      const strategyName = YIELD_STRATEGIES.find(s => s.name === formData.strategyID)?.name || formData.strategyID;
+      toast({
+        title: "🎉 Bond Minted",
+        description: `Successfully minted ${formData.amount} FLOW with ${strategyName} strategy (${formData.lockupPeriod} days)`,
       });
 
       // Reset form after success

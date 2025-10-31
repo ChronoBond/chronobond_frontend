@@ -14,7 +14,7 @@ export const RedeemTabNavigation = ({
     <div className="reveal-item">
       <div className="relative">
         {/* Desktop navigation */}
-        <div className="hidden sm:flex items-center gap-2 p-2 bg-background/20 backdrop-blur-xl rounded-2xl border border-white/10">
+        <div className="hidden sm:flex items-center gap-2 p-2 backdrop-blur-xl rounded-2xl border border-semantic-border">
           {[
             {
               key: "redeemable",
@@ -50,8 +50,8 @@ export const RedeemTabNavigation = ({
               }
               className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
                 activeTab === tab.key
-                  ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
-                  : "text-white/70 hover:text-white hover:bg-white/5"
+                  ? "bg-brand-900 text-white shadow-lg border border-brand-primary/50"
+                  : "text-white/70 hover:text-white border border-white/20 hover:border-white/40"
               }`}
             >
               <tab.Icon className="w-4 h-4" />
@@ -109,8 +109,8 @@ export const RedeemTabNavigation = ({
                 }
                 className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
                   activeTab === tab.key
-                    ? "bg-gradient-to-r from-brand-primary/20 to-brand-accent/20 text-white shadow-lg border border-brand-primary/30"
-                    : "bg-background/20 text-white/70 hover:text-white hover:bg-white/5 border border-white/10"
+                    ? "bg-brand-900 text-white shadow-lg border border-brand-primary/50"
+                    : "text-white/70 hover:text-white border border-white/20 hover:border-white/40"
                 }`}
               >
                 <tab.Icon className="w-4 h-4" />

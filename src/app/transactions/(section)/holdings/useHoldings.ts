@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useFlowCurrentUser } from "@onflow/kit";
+import { useToast } from "@/hooks/use-toast";
 import { chronoBondService, type BondData, type BondDetails } from "@/lib/chronobond-service";
 import { bondRedemptionService } from "@/lib/bond-redemption-service";
 import { marketplaceService } from "@/lib/marketplace-service";
@@ -9,12 +10,18 @@ import { type HoldingsHooksReturn, type ListingStatus } from "@/types/holding.ty
 
 export const useHoldings = (): HoldingsHooksReturn => {
   const { user } = useFlowCurrentUser();
+  const { toast } = useToast();
   const [selectedBond, setSelectedBond] = useState<BondData | null>(null);
   const [selectedBondDetails, setSelectedBondDetails] = useState<BondDetails | null>(null);
   const [listingPrice, setListingPrice] = useState("");
   const [showListingForm, setShowListingForm] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [bonds, setBonds] = useState<BondData[]>([]);
+
+  // Redeem modal state
+  const [showRedeemModal, setShowRedeemModal] = useState(false);
+  const [redeemingBond, setRedeemingBond] = useState<BondData | null>(null);
+  const [isRedeeming, setIsRedeeming] = useState(false);
 
   // Real listing state
   const [listingState, setListingState] = useState<ListingStatus>({
@@ -90,6 +97,12 @@ export const useHoldings = (): HoldingsHooksReturn => {
           txId: result.transactionId || null
         });
 
+        // Show success toast
+        toast({
+          title: "📋 Bond Listed",
+          description: `Bond listed for sale at ${listingPrice} FLOW`,
+        });
+
         // Remove bond from holdings (it's now listed for sale)
         setBonds(prev => prev.filter(b => b.id !== selectedBond.id));
 
@@ -130,28 +143,37 @@ export const useHoldings = (): HoldingsHooksReturn => {
   };
 
   const handleRedeemBond = async (bond: BondData) => {
-    const confirmMessage = `Redeem Bond #${bond.id}?\n\n` +
-      `Principal: ${formatFlow(bond.principal)}\n` +
-      `Expected Yield: ${formatFlow(calculateCurrentYield(bond))}\n` +
-      `Total: ${formatFlow(bond.principal + calculateCurrentYield(bond))}`;
+    setRedeemingBond(bond);
+    setShowRedeemModal(true);
+  };
 
-    if (!confirm(confirmMessage)) return;
+  const handleConfirmRedeemBond = async () => {
+    if (!redeemingBond || !user?.loggedIn) return;
 
+    setIsRedeeming(true);
     try {
-      /* console.log(`💰 Redeeming bond ${bond.id}...`); */
+      /* console.log(`💰 Redeeming bond ${redeemingBond.id}...`); */
       
-      const result = await bondRedemptionService.redeemBond(bond.id.toString());
+      const result = await bondRedemptionService.redeemBond(redeemingBond.id.toString());
 
       if (result.success) {
-        alert(`✅ Successfully redeemed Bond #${bond.id}!`);
         /* console.log("✅ Bond redeemed successfully"); */
+        
+        // Show success toast
+        toast({
+          title: "✅ Bond Redeemed",
+          description: `Bond redeemed successfully for ${formatFlow(redeemingBond.principal)} FLOW`,
+        });
+
         await loadUserBonds(); // Refresh the holdings
       } else {
         throw new Error(result.error || "Redemption failed");
       }
     } catch (error: unknown) {
       /* console.error("❌ Error redeeming bond:", error); */
-      alert(error instanceof Error ? `❌ Failed to redeem bond: ${error.message}` : '❌ Failed to redeem bond');
+      throw error instanceof Error ? error : new Error('Failed to redeem bond');
+    } finally {
+      setIsRedeeming(false);
     }
   };
 
@@ -179,15 +201,21 @@ export const useHoldings = (): HoldingsHooksReturn => {
     listingPrice,
     showListingForm,
     listingState,
+    showRedeemModal,
+    redeemingBond,
+    isRedeeming,
     loadUserBonds,
     handleListBond,
     handleRedeemBond,
+    handleConfirmRedeemBond,
     handleConfirmListing,
     setShowListingForm,
     setSelectedBond,
     setSelectedBondDetails,
     setListingPrice,
     setListingState,
+    setShowRedeemModal,
+    setRedeemingBond,
     formatFlow,
     formatDate,
     isMatured,

@@ -125,29 +125,27 @@ export class ChronoBondService {
 
   /**
    * Mint a new bond paying with an alternate token via on-chain swap
-   * Backend team provides cadence for atomic Source -> Swapper -> Sink
+   * Supports MockUSDC on testnet, atomic Source -> Swapper -> Sink transaction
    */
   async mintWithSwap(
     strategyID: string,
     toFlowAmount: string,
     lockupPeriod: string,
-    payWithToken: string // e.g., "USDC"
+    payWithToken: string = "USDC", // e.g., "USDC"
+    minFlowToMint?: string // slippage protection
   ): Promise<TransactionResult> {
     try {
-      const TRANSACTION_CODE = `
-        // cadence to be provided by backend team
-        transaction(strategyID: String, toFlowAmount: UFix64, lockupSeconds: UInt64, payWith: String) {
-          prepare(signer: auth(Storage, Capabilities) &Account) {}
-          execute {}
-        }
-      `;
+      // Default to 95% of desired amount for slippage protection (5% max slippage)
+      const slippageAmount = minFlowToMint || (parseFloat(toFlowAmount) * 0.95).toString();
+      
       const transactionId = await fcl.mutate({
-        cadence: TRANSACTION_CODE,
+        cadence: TRANSACTIONS.MINT_WITH_USDC,
         args: (arg: any, t: any) => [
-          arg(strategyID, t.String),
-          arg(formatForUFix64(toFlowAmount), t.UFix64),
-          arg(lockupPeriod, t.UInt64),
-          arg(payWithToken, t.String),
+          arg(formatForUFix64(toFlowAmount), t.UFix64), // flowAmount (desired FLOW output)
+          arg(formatForUFix64(slippageAmount), t.UFix64), // minFlowToMint (slippage protection)
+          arg(lockupPeriod, t.UInt64), // duration in seconds
+          arg(formatForUFix64("0.08"), t.UFix64), // yieldRate (8% default)
+          arg(strategyID, t.String), // strategyID
         ],
         proposer: fcl.currentUser,
         authorizations: [fcl.currentUser],
@@ -159,7 +157,7 @@ export class ChronoBondService {
       return { success: true, transactionId };
     } catch (error: any) {
       toast({
-        title: "Mint (Swap) Failed",
+        title: "Mint with USDC Failed",
         description: error.message || "Failed to mint bond with swap",
         variant: "destructive",
       });

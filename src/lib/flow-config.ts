@@ -110,6 +110,50 @@ export const TRANSACTIONS = {
       }
     }
   `,
+
+  MINT_WITH_USDC: `
+    import FungibleToken from 0xFungibleToken
+    import NonFungibleToken from 0xNonFungibleToken
+    import FlowToken from 0xFlowToken
+    import ChronoBond from 0xChronoBond
+    import FlowStakingStrategy from 0xFlowStakingStrategy
+
+    transaction(
+        usdcAmount: UFix64,
+        minFlowToMint: UFix64,
+        duration: UInt64,
+        yieldRate: UFix64,
+        strategyID: String
+    ) {
+        let receiver: &{NonFungibleToken.CollectionPublic}
+        let flowAmount: UFix64
+        
+        prepare(signer: auth(Storage, Capabilities) &Account) {
+            self.receiver = signer.capabilities.get<&{NonFungibleToken.CollectionPublic}>(
+                ChronoBond.CollectionPublicPath
+            ).borrow() ?? panic("Could not borrow receiver capability")
+            
+            // Mock swap: 1 USDC = 10 FLOW (testnet demo rate)
+            self.flowAmount = usdcAmount * 10.0
+            
+            // Check slippage
+            assert(self.flowAmount >= minFlowToMint, message: "Slippage exceeded")
+        }
+        
+        execute {
+            let currentTime = getCurrentBlock().timestamp
+            let maturityTime = currentTime + UFix64(duration)
+            
+            ChronoBond.mintNFT(
+                recipient: self.receiver,
+                principal: self.flowAmount,
+                maturityDate: maturityTime,
+                yieldRate: yieldRate,
+                strategyID: strategyID
+            )
+        }
+    }
+  `,
   
   LIST_BOND: `
     import FungibleToken from 0xFungibleToken
@@ -173,6 +217,52 @@ export const TRANSACTIONS = {
 
       execute {
         self.saleCollection.purchase(tokenID: bondID, buyerCollection: self.collection, buyerPayment: <-self.paymentVault)
+      }
+    }
+  `,
+
+  REINVEST_BOND_SIMPLE: `
+    import FungibleToken from 0xFungibleToken
+    import NonFungibleToken from 0xNonFungibleToken
+    import ChronoBond from 0xChronoBond
+    import FlowStakingStrategy from 0xFlowStakingStrategy
+
+    transaction(bondID: UInt64, newDuration: UInt64, newYieldRate: UFix64, strategyID: String) {
+      let collection: auth(NonFungibleToken.Withdraw) &ChronoBond.Collection
+      let receiver: &{NonFungibleToken.CollectionPublic}
+      let vault: @{FungibleToken.Vault}
+
+      prepare(signer: auth(Storage, Capabilities) &Account) {
+        self.collection = signer.storage.borrow<auth(NonFungibleToken.Withdraw) &ChronoBond.Collection>(
+          from: ChronoBond.CollectionStoragePath
+        ) ?? panic("Could not borrow collection from storage")
+
+        self.receiver = signer.capabilities.get<&{NonFungibleToken.CollectionPublic}>(
+          ChronoBond.CollectionPublicPath
+        ).borrow() ?? panic("Could not borrow receiver capability")
+
+        self.vault <- FlowStakingStrategy.createMockVault(amount: 0.0)
+      }
+
+      execute {
+        let bond <- self.collection.withdraw(withdrawID: bondID) as! @ChronoBond.NFT
+
+        let principal = bond.principal
+        
+        destroy bond
+
+        let currentTime = getCurrentBlock().timestamp
+        let maturityTime = currentTime + UFix64(newDuration)
+
+        ChronoBond.mintNFT(
+          recipient: self.receiver,
+          principal: principal,
+          maturityDate: maturityTime,
+          yieldRate: newYieldRate,
+          strategyID: strategyID
+        )
+
+        destroy self.vault
       }
     }
   `
