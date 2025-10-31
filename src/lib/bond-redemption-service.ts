@@ -642,6 +642,10 @@ export class BondRedemptionService {
       import ReinvestmentRegistry from 0x45722594009505d7
       
       transaction(bondID: UInt64) {
+        prepare(signer: auth(Storage) &Account) {
+          // Authorization required for transaction
+        }
+        
         execute {
           let registryRef = ReinvestmentRegistry.getGlobalRegistry()
             ?? panic("Could not get registry")
