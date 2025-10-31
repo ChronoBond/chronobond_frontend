@@ -58,11 +58,14 @@ export class MarketplaceService {
     `;
 
     try {
+      // Format price to UFix64 format (must have at least one decimal place)
+      const formattedPrice = this.formatPriceToUFix64(price);
+      
       const transactionId = await fcl.mutate({
         cadence: transaction,
         args: (arg: any, t: any) => [
           arg(bondID, t.UInt64),
-          arg(price, t.UFix64)
+          arg(formattedPrice, t.UFix64)
         ],
         proposer: fcl.currentUser,
         authorizations: [fcl.currentUser],
@@ -86,6 +89,30 @@ export class MarketplaceService {
         status: 0,
         errorMessage: error.message || "Failed to list bond for sale"
       };
+    }
+  }
+
+  // Format price to UFix64 (Cadence Fixed-Point Number format)
+  private formatPriceToUFix64(price: string): string {
+    try {
+      const num = parseFloat(price);
+      
+      if (isNaN(num) || num < 0) {
+        throw new Error("Invalid price: must be a positive number");
+      }
+
+      // Convert to string with proper decimal places
+      // UFix64 requires at least 1 decimal place
+      const fixed = num.toFixed(8).replace(/\.?0+$/, '');
+      
+      // Ensure at least one decimal place
+      if (!fixed.includes('.')) {
+        return `${fixed}.0`;
+      }
+      
+      return fixed;
+    } catch (error) {
+      throw new Error(`Price format error: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
