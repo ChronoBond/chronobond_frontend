@@ -1,7 +1,18 @@
 import { type BondMaturityInfo } from "@/lib/bond-redemption-service";
 
+// Reinvestment configuration from smart contract
+export interface ReinvestmentConfig {
+  bondID: number;
+  owner: string;
+  scheduledAt: number; // Unix timestamp
+  expectedMaturityDate: number; // Unix timestamp
+  newDuration: number; // In seconds
+  newYieldRate: number; // As decimal (0.10 = 10%)
+  newStrategyID: string;
+}
+
 // Tab states
-export type ActiveTab = "redeemable" | "pending" | "notifications";
+export type ActiveTab = "redeemable" | "pending" | "notifications" | "scheduled";
 
 // Main redeem state
 export interface RedeemState {
@@ -22,6 +33,7 @@ export interface RedeemHeaderProps {
   pendingBonds: BondMaturityInfo[];
   nearingMaturity: BondMaturityInfo[];
   totalRedeemableValue: number;
+  scheduledBondsCount?: number;
 }
 
 export interface RedeemTabNavigationProps {
@@ -30,6 +42,7 @@ export interface RedeemTabNavigationProps {
   redeemableBonds: BondMaturityInfo[];
   pendingBonds: BondMaturityInfo[];
   nearingMaturity: BondMaturityInfo[];
+  scheduledBondsCount?: number;
 }
 
 export interface RedeemMessagesProps {
@@ -87,6 +100,11 @@ export interface RedeemHooksReturn {
   error: string | null;
   success: string | null;
   redeeming: { [key: number]: boolean };
+  // Reinvestment state
+  scheduledBonds?: { [bondID: number]: ReinvestmentConfig };
+  loadingReinvestStatus?: boolean;
+  schedulingReinvestment?: { [bondID: number]: boolean };
+  cancelingReinvestment?: { [bondID: number]: boolean };
   // Modal state (optional)
   redeemModalOpen?: boolean;
   selectedBond?: BondMaturityInfo | null;
@@ -100,6 +118,10 @@ export interface RedeemHooksReturn {
   handleRedeemBond: (bond: BondMaturityInfo) => Promise<void>;
   handleRedeemAllBonds: () => Promise<void>;
   clearMessages: () => void;
+  // Reinvestment actions
+  loadReinvestmentStatus?: () => Promise<void>;
+  scheduleReinvestment?: (bondID: number, duration: number, yieldRate: number, strategyID: string) => Promise<void>;
+  cancelReinvestment?: (bondID: number) => Promise<void>;
   // Modal actions (optional)
   setRedeemModalOpen?: (open: boolean) => void;
   setReceiveToken?: (token: "FLOW" | "USDC") => void;

@@ -9,7 +9,11 @@ import {
   type BondMaturityInfo,
 } from "@/lib/bond-redemption-service";
 import { swapService } from "@/lib/swap-service";
-import { type RedeemHooksReturn, type ActiveTab } from "@/types/redeem.types";
+import {
+  type RedeemHooksReturn,
+  type ActiveTab,
+  type ReinvestmentConfig,
+} from "@/types/redeem.types";
 
 export const useRedeem = (): RedeemHooksReturn => {
   const { user } = useFlowCurrentUser();
@@ -27,6 +31,12 @@ export const useRedeem = (): RedeemHooksReturn => {
     error: string | null;
     success: string | null;
     redeeming: { [key: number]: boolean };
+    // Reinvestment states
+    scheduledBonds: { [bondID: number]: ReinvestmentConfig };
+    loadingReinvestStatus: boolean;
+    // Per-transaction loading states
+    schedulingReinvestment: { [bondID: number]: boolean };
+    cancelingReinvestment: { [bondID: number]: boolean };
     // Modal state
     redeemModalOpen: boolean;
     selectedBond: BondMaturityInfo | null;
@@ -45,6 +55,10 @@ export const useRedeem = (): RedeemHooksReturn => {
     error: null,
     success: null,
     redeeming: {},
+    scheduledBonds: {},
+    loadingReinvestStatus: false,
+    schedulingReinvestment: {},
+    cancelingReinvestment: {},
     redeemModalOpen: false,
     selectedBond: null,
     receiveToken: "FLOW",
@@ -75,6 +89,19 @@ export const useRedeem = (): RedeemHooksReturn => {
     | { type: "setReceiveToken"; payload: "FLOW" | "USDC" }
     | { type: "setReceiveQuote"; payload: string | null }
     | { type: "setQuoteLoading"; payload: boolean }
+    | {
+        type: "setScheduledBonds";
+        payload: { [bondID: number]: ReinvestmentConfig };
+      }
+    | { type: "setLoadingReinvestStatus"; payload: boolean }
+    | {
+        type: "setSchedulingReinvestment";
+        payload: { bondID: number; value: boolean };
+      }
+    | {
+        type: "setCancelingReinvestment";
+        payload: { bondID: number; value: boolean };
+      }
     | { type: "clearMessages" };
 
   const reducer = (state: State, action: Action): State => {
@@ -107,6 +134,26 @@ export const useRedeem = (): RedeemHooksReturn => {
         return { ...state, receiveQuote: action.payload };
       case "setQuoteLoading":
         return { ...state, quoteLoading: action.payload };
+      case "setScheduledBonds":
+        return { ...state, scheduledBonds: action.payload };
+      case "setLoadingReinvestStatus":
+        return { ...state, loadingReinvestStatus: action.payload };
+      case "setSchedulingReinvestment":
+        return {
+          ...state,
+          schedulingReinvestment: {
+            ...state.schedulingReinvestment,
+            [action.payload.bondID]: action.payload.value,
+          },
+        };
+      case "setCancelingReinvestment":
+        return {
+          ...state,
+          cancelingReinvestment: {
+            ...state.cancelingReinvestment,
+            [action.payload.bondID]: action.payload.value,
+          },
+        };
       case "clearMessages":
         return { ...state, error: null, success: null };
       default:
@@ -251,7 +298,7 @@ export const useRedeem = (): RedeemHooksReturn => {
             ? state.receiveQuote || "USDC"
             : bondRedemptionService.formatCurrency(bond.expectedTotal)
         }!`;
-        
+
         dispatch({
           type: "setSuccess",
           payload: message,
@@ -292,7 +339,7 @@ export const useRedeem = (): RedeemHooksReturn => {
     }
   };
 
-  // Redeem all matured bonds
+  // Redeem all matured bonds (sequentially to avoid multiple frames error)
   const handleRedeemAllBonds = async () => {
     if (state.redeemableBonds.length === 0) return;
 
@@ -300,7 +347,7 @@ export const useRedeem = (): RedeemHooksReturn => {
       `Redeem all ${state.redeemableBonds.length} matured bonds?\n\n` +
       `Total value: ${bondRedemptionService.formatCurrency(
         state.totalRedeemableValue
-      )}`;
+      )}\n\nNote: Processing bonds one at a time may take a few minutes.`;
 
     if (!confirm(confirmMessage)) return;
 
@@ -308,11 +355,33 @@ export const useRedeem = (): RedeemHooksReturn => {
     dispatch({ type: "setError", payload: null });
 
     try {
-      const redemptionPromises = state.redeemableBonds.map((bond) =>
-        bondRedemptionService.redeemBond(bond.bondID.toString())
-      );
+      const results = [];
 
-      const results = await Promise.all(redemptionPromises);
+      // Process redemptions sequentially to avoid multiple frames error from FCL
+      for (const bond of state.redeemableBonds) {
+        try {
+          const result = await bondRedemptionService.redeemBond(
+            bond.bondID.toString()
+          );
+          results.push(result);
+
+          // Show progress for each successful redemption
+          if (result.success) {
+            toast({
+              title: "✅ Bond Redeemed",
+              description: `Bond #${bond.bondID} redeemed (${
+                results.filter((r) => r.success).length
+              }/${state.redeemableBonds.length})`,
+            });
+          }
+        } catch (err: unknown) {
+          results.push({
+            success: false,
+            error: err instanceof Error ? err.message : "Unknown error",
+          });
+        }
+      }
+
       const successful = results.filter((r) => r.success).length;
       const failed = results.length - successful;
 
@@ -320,7 +389,7 @@ export const useRedeem = (): RedeemHooksReturn => {
         const successMessage = `✅ Successfully redeemed ${successful} bonds for ${bondRedemptionService.formatCurrency(
           state.totalRedeemableValue
         )}!`;
-        
+
         dispatch({
           type: "setSuccess",
           payload: successMessage,
@@ -329,7 +398,9 @@ export const useRedeem = (): RedeemHooksReturn => {
         // Show success toast
         toast({
           title: "✅ Bonds Redeemed",
-          description: `Successfully redeemed ${successful}/${state.redeemableBonds.length} bonds for ${bondRedemptionService.formatCurrency(
+          description: `Successfully redeemed ${successful}/${
+            state.redeemableBonds.length
+          } bonds for ${bondRedemptionService.formatCurrency(
             state.totalRedeemableValue
           )}`,
         });
@@ -360,6 +431,143 @@ export const useRedeem = (): RedeemHooksReturn => {
     dispatch({ type: "clearMessages" });
   };
 
+  // Load reinvestment status
+  const loadReinvestmentStatus = useCallback(async () => {
+    if (!user?.addr) return;
+
+    try {
+      dispatch({ type: "setLoadingReinvestStatus", payload: true });
+      const scheduledBonds =
+        await bondRedemptionService.checkReinvestmentStatus(user.addr);
+      dispatch({
+        type: "setScheduledBonds",
+        payload: scheduledBonds,
+      });
+    } catch (error) {
+      console.error("Error loading reinvestment status:", error);
+      // Don't show error to user, just silently fail
+    } finally {
+      dispatch({ type: "setLoadingReinvestStatus", payload: false });
+    }
+  }, [user?.addr]);
+
+  // Schedule reinvestment for a bond
+  const scheduleReinvestment = useCallback(
+    async (
+      bondID: number,
+      duration: number,
+      yieldRate: number,
+      strategyID: string = "FlowStaking"
+    ) => {
+      if (!user?.addr) {
+        dispatch({
+          type: "setError",
+          payload: "Please connect your wallet first",
+        });
+        return;
+      }
+
+      try {
+        dispatch({ type: "setError", payload: null });
+        dispatch({
+          type: "setSchedulingReinvestment",
+          payload: { bondID, value: true },
+        });
+
+        const result = await bondRedemptionService.scheduleReinvestment(
+          bondID.toString(),
+          duration,
+          yieldRate,
+          strategyID,
+          user.addr
+        );
+
+        if (result.success) {
+          toast({
+            title: "✅ Auto-Reinvest Scheduled",
+            description: `Bond #${bondID} will automatically reinvest on maturity`,
+          });
+
+          // Refresh reinvestment status
+          await loadReinvestmentStatus();
+        } else {
+          throw new Error(result.error || "Failed to schedule reinvestment");
+        }
+      } catch (error: unknown) {
+        dispatch({
+          type: "setError",
+          payload:
+            error instanceof Error
+              ? `❌ Failed to schedule: ${error.message}`
+              : "❌ Failed to schedule reinvestment",
+        });
+      } finally {
+        dispatch({
+          type: "setSchedulingReinvestment",
+          payload: { bondID, value: false },
+        });
+      }
+    },
+    [user?.addr, loadReinvestmentStatus]
+  );
+
+  // Cancel reinvestment for a bond
+  const cancelReinvestment = useCallback(
+    async (bondID: number) => {
+      if (!user?.addr) {
+        dispatch({
+          type: "setError",
+          payload: "Please connect your wallet first",
+        });
+        return;
+      }
+
+      try {
+        dispatch({ type: "setError", payload: null });
+        dispatch({
+          type: "setCancelingReinvestment",
+          payload: { bondID, value: true },
+        });
+
+        const result = await bondRedemptionService.cancelReinvestment(
+          bondID.toString()
+        );
+
+        if (result.success) {
+          toast({
+            title: "✅ Auto-Reinvest Cancelled",
+            description: `Bond #${bondID} will no longer auto-reinvest`,
+          });
+
+          // Refresh reinvestment status
+          await loadReinvestmentStatus();
+        } else {
+          throw new Error(result.error || "Failed to cancel reinvestment");
+        }
+      } catch (error: unknown) {
+        dispatch({
+          type: "setError",
+          payload:
+            error instanceof Error
+              ? `❌ Failed to cancel: ${error.message}`
+              : "❌ Failed to cancel reinvestment",
+        });
+      } finally {
+        dispatch({
+          type: "setCancelingReinvestment",
+          payload: { bondID, value: false },
+        });
+      }
+    },
+    [user?.addr, loadReinvestmentStatus]
+  );
+
+  // Load reinvestment status on mount/when user changes
+  useEffect(() => {
+    if (!user?.loggedIn) return;
+    loadReinvestmentStatus();
+  }, [user?.loggedIn, loadReinvestmentStatus]);
+
   return {
     // State
     activeTab: state.activeTab,
@@ -371,6 +579,11 @@ export const useRedeem = (): RedeemHooksReturn => {
     error: state.error,
     success: state.success,
     redeeming: state.redeeming,
+    // Reinvestment state
+    scheduledBonds: state.scheduledBonds,
+    loadingReinvestStatus: state.loadingReinvestStatus,
+    schedulingReinvestment: state.schedulingReinvestment,
+    cancelingReinvestment: state.cancelingReinvestment,
     // Modal state
     redeemModalOpen: state.redeemModalOpen,
     selectedBond: state.selectedBond,
@@ -385,6 +598,10 @@ export const useRedeem = (): RedeemHooksReturn => {
     handleRedeemBond,
     handleRedeemAllBonds,
     clearMessages,
+    // Reinvestment actions
+    loadReinvestmentStatus,
+    scheduleReinvestment,
+    cancelReinvestment,
     setRedeemModalOpen: (open: boolean) =>
       dispatch({ type: "setRedeemModalOpen", payload: open }),
     setReceiveToken: (t: "FLOW" | "USDC") =>

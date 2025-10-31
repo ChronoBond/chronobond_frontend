@@ -40,6 +40,11 @@ const Notifications = lazy(() =>
     default: module.Notifications,
   }))
 );
+const ScheduledBonds = lazy(() =>
+  import("./ScheduledBonds").then((module) => ({
+    default: module.ScheduledBonds,
+  }))
+);
 const RedeemModal = lazy(() =>
   import("./RedeemModal").then((module) => ({ default: module.RedeemModal }))
 );
@@ -55,6 +60,7 @@ const RedeemMain = () => {
   const [selectedBondForReinvest, setSelectedBondForReinvest] =
     useState<BondDetails | null>(null);
   const [isReinvesting, setIsReinvesting] = useState(false);
+  const [reinvestedBondIDs, setReinvestedBondIDs] = useState<Set<number>>(new Set());
 
   const {
     activeTab,
@@ -66,6 +72,10 @@ const RedeemMain = () => {
     error,
     success,
     redeeming,
+    scheduledBonds,
+    loadingReinvestStatus,
+    schedulingReinvestment,
+    cancelingReinvestment,
     redeemModalOpen,
     selectedBond,
     receiveToken,
@@ -76,6 +86,9 @@ const RedeemMain = () => {
     handleRedeemBond,
     handleRedeemAllBonds,
     clearMessages,
+    loadReinvestmentStatus,
+    scheduleReinvestment,
+    cancelReinvestment,
     setRedeemModalOpen,
     setReceiveToken,
     confirmRedeem,
@@ -121,6 +134,9 @@ const RedeemMain = () => {
           variant: "default",
         });
 
+        // Mark bond as reinvested in UI
+        setReinvestedBondIDs((prev) => new Set([...prev, selectedBondForReinvest.bondID]));
+
         // Refresh bond data
         await loadBondData();
         setReinvestModalOpen(false);
@@ -161,6 +177,7 @@ const RedeemMain = () => {
           pendingBonds={pendingBonds}
           nearingMaturity={nearingMaturity}
           totalRedeemableValue={totalRedeemableValue}
+          scheduledBondsCount={Object.keys(scheduledBonds || {}).length}
         />
       </Suspense>
 
@@ -181,6 +198,7 @@ const RedeemMain = () => {
           redeemableBonds={redeemableBonds}
           pendingBonds={pendingBonds}
           nearingMaturity={nearingMaturity}
+          scheduledBondsCount={Object.keys(scheduledBonds || {}).length}
         />
       </Suspense>
 
@@ -243,6 +261,13 @@ const RedeemMain = () => {
             redeeming={redeeming}
             onRefresh={loadBondData}
             onReinvestBond={handleReinvestClick}
+            reinvestedBondIDs={reinvestedBondIDs}
+            scheduledBonds={scheduledBonds}
+            loadingReinvestStatus={loadingReinvestStatus}
+            onScheduleReinvest={scheduleReinvestment}
+            onCancelReinvest={cancelReinvestment}
+            schedulingReinvestment={schedulingReinvestment}
+            cancelingReinvestment={cancelingReinvestment}
           />
         </Suspense>
       )}
@@ -255,6 +280,21 @@ const RedeemMain = () => {
             nearingMaturity={nearingMaturity}
             loading={loading}
             onRefresh={loadBondData}
+          />
+        </Suspense>
+      )}
+
+      {activeTab === "scheduled" && (
+        <Suspense
+          fallback={<LoadingState message="Loading auto-reinvesting bonds..." />}
+        >
+          <ScheduledBonds
+            scheduledBonds={scheduledBonds}
+            pendingBonds={pendingBonds}
+            loading={loading}
+            cancelingReinvestment={cancelingReinvestment}
+            onRefresh={loadBondData}
+            onCancelReinvest={cancelReinvestment}
           />
         </Suspense>
       )}

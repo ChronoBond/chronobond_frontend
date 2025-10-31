@@ -1,6 +1,6 @@
 "use client";
 
-import { DollarSign, CheckCircle, Clock, Bell } from "lucide-react";
+import { DollarSign, CheckCircle, Clock, Bell, RefreshCw } from "lucide-react";
 import { bondRedemptionService } from "@/lib/bond-redemption-service";
 import { type RedeemHeaderProps } from "@/types/redeem.types";
 
@@ -9,6 +9,7 @@ export const RedeemHeader = ({
   pendingBonds,
   nearingMaturity,
   totalRedeemableValue,
+  scheduledBondsCount = 0,
 }: RedeemHeaderProps) => {
   return (
     <div className="reveal-item">
@@ -50,6 +51,14 @@ export const RedeemHeader = ({
                 Nearing
               </span>
             </div>
+            {scheduledBondsCount > 0 && (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/40">
+                <span className="text-green-400 font-medium text-sm flex items-center gap-1">
+                  <RefreshCw className="w-3.5 h-3.5" /> {scheduledBondsCount}{" "}
+                  Auto-Reinvesting
+                </span>
+              </div>
+            )}
           </div>
         </div>
       </div>

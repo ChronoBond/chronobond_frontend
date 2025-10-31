@@ -498,6 +498,209 @@ export class BondRedemptionService {
   formatDate(timestamp: number): string {
     return new Date(timestamp * 1000).toLocaleDateString();
   }
+
+  // ✅ 7. CHECK REINVESTMENT STATUS - Query scheduled reinvestments
+  async checkReinvestmentStatus(userAddress: string): Promise<{ [bondID: number]: any }> {
+    const script = `
+      import ReinvestmentRegistry from 0x45722594009505d7
+      
+      access(all) fun main(userAddress: Address): {UInt64: ReinvestmentRegistry.ReinvestmentConfig} {
+        let registry = ReinvestmentRegistry.getGlobalRegistry()
+          ?? panic("Could not get registry")
+        
+        let scheduledBondIDs = registry.getScheduledBondsByOwner(owner: userAddress)
+        let result: {UInt64: ReinvestmentRegistry.ReinvestmentConfig} = {}
+        
+        for bondID in scheduledBondIDs {
+          if let config = registry.getConfig(bondID: bondID) {
+            result[bondID] = config
+          }
+        }
+        
+        return result
+      }
+    `;
+
+    try {
+      const result = await fcl.query({
+        cadence: script,
+        args: (arg: any, t: any) => [arg(userAddress, t.Address)]
+      });
+
+      // Convert result keys from string to number
+      const reinvestmentStatus: { [bondID: number]: any } = {};
+      if (result && typeof result === 'object') {
+        Object.entries(result).forEach(([key, value]) => {
+          const bondID = parseInt(key);
+          reinvestmentStatus[bondID] = value;
+        });
+      }
+
+      return reinvestmentStatus;
+    } catch (error: any) {
+      console.error("Error checking reinvestment status:", error);
+      return {}; // Return empty object on error, don't break the app
+    }
+  }
+
+  // ✅ 8. SCHEDULE REINVESTMENT - Enable auto-reinvest for a bond
+  async scheduleReinvestment(
+    bondID: string,
+    newDuration: number,
+    newYieldRate: number,
+    newStrategyID: string = "FlowStaking",
+    userAddr?: string
+  ): Promise<RedemptionResult> {
+    const transaction = `
+      import NonFungibleToken from 0x631e88ae7f1d7c20
+      import ChronoBond from 0x45722594009505d7
+      import ReinvestmentRegistry from 0x45722594009505d7
+      
+      transaction(bondID: UInt64, newDuration: UFix64, newYieldRate: UFix64, newStrategyID: String) {
+        let signerAddress: Address
+        let bondMaturityDate: UFix64
+        
+        prepare(signer: auth(Storage) &Account) {
+          self.signerAddress = signer.address
+          
+          let collection = signer.storage.borrow<&ChronoBond.Collection>(
+            from: ChronoBond.CollectionStoragePath
+          ) ?? panic("Could not borrow collection")
+          
+          let bondRef = collection.borrowNFT(bondID) ?? panic("Bond not found")
+          let chronoBondRef = bondRef as! &ChronoBond.NFT
+          self.bondMaturityDate = chronoBondRef.maturityDate
+          
+          let currentTime = getCurrentBlock().timestamp
+          assert(
+            currentTime < self.bondMaturityDate,
+            message: "Cannot schedule reinvestment for already mature bond"
+          )
+        }
+        
+        execute {
+          let registryRef = ReinvestmentRegistry.getGlobalRegistry()
+            ?? panic("Could not get registry")
+          
+          registryRef.scheduleBond(
+            bondID: bondID,
+            owner: self.signerAddress,
+            expectedMaturityDate: self.bondMaturityDate,
+            newDuration: newDuration,
+            newYieldRate: newYieldRate,
+            newStrategyID: newStrategyID
+          )
+        }
+      }
+    `;
+
+    try {
+      let currentUserAddr = userAddr;
+      if (!currentUserAddr) {
+        currentUserAddr = (fcl.currentUser as any)?.addr;
+      }
+      
+      if (!currentUserAddr) {
+        throw new Error("User not connected");
+      }
+
+      const transactionId = await fcl.mutate({
+        cadence: transaction,
+        args: (arg: any, t: any) => [
+          arg(bondID, t.UInt64),
+          arg(newDuration.toFixed(1), t.UFix64),
+          arg(newYieldRate.toFixed(8), t.UFix64),
+          arg(newStrategyID, t.String),
+        ],
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
+        limit: 9999,
+      });
+
+      const result = await fcl.tx(transactionId).onceSealed();
+      if (result.status === 4) {
+        return { 
+          success: true, 
+          transactionId
+        };
+      }
+      throw new Error(result.errorMessage || "Transaction failed");
+    } catch (error: any) {
+      toast({
+        title: "Schedule Failed",
+        description: error.message || "Failed to schedule auto-reinvest",
+        variant: "destructive",
+      });
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ✅ 9. CANCEL REINVESTMENT - Disable auto-reinvest for a bond
+  async cancelReinvestment(bondID: string): Promise<RedemptionResult> {
+    const transaction = `
+      import ReinvestmentRegistry from 0x45722594009505d7
+      
+      transaction(bondID: UInt64) {
+        execute {
+          let registryRef = ReinvestmentRegistry.getGlobalRegistry()
+            ?? panic("Could not get registry")
+          
+          registryRef.cancelSchedule(bondID: bondID)
+        }
+      }
+    `;
+
+    try {
+      const transactionId = await fcl.mutate({
+        cadence: transaction,
+        args: (arg: any, t: any) => [arg(bondID, t.UInt64)],
+        proposer: fcl.currentUser,
+        authorizations: [fcl.currentUser],
+        payer: fcl.currentUser,
+        limit: 9999,
+      });
+
+      const result = await fcl.tx(transactionId).onceSealed();
+      if (result.status === 4) {
+        return { 
+          success: true, 
+          transactionId
+        };
+      }
+      throw new Error(result.errorMessage || "Transaction failed");
+    } catch (error: any) {
+      toast({
+        title: "Cancellation Failed",
+        description: error.message || "Failed to cancel auto-reinvest",
+        variant: "destructive",
+      });
+      return { success: false, error: error.message };
+    }
+  }
+
+  // ✅ 10. CALCULATE COMPOUND RETURNS - Project compound growth
+  calculateCompoundReturns(principal: number, yieldRate: number, periods: number): Array<{
+    period: number;
+    value: number;
+    gain: number;
+    percentGain: string;
+  }> {
+    const returns = [];
+    let value = principal;
+    
+    for (let i = 1; i <= periods; i++) {
+      value = value * (1 + yieldRate);
+      returns.push({
+        period: i,
+        value: parseFloat(value.toFixed(2)),
+        gain: parseFloat((value - principal).toFixed(2)),
+        percentGain: (((value - principal) / principal) * 100).toFixed(2)
+      });
+    }
+    
+    return returns;
+  }
 }
 
 export const bondRedemptionService = new BondRedemptionService(); 

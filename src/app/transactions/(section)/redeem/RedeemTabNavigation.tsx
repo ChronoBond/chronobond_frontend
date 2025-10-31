@@ -1,7 +1,7 @@
 "use client";
 
 import { type RedeemTabNavigationProps } from "@/types/redeem.types";
-import { DollarSign, Clock, Bell } from "lucide-react";
+import { DollarSign, Clock, Bell, RefreshCw } from "lucide-react";
 
 export const RedeemTabNavigation = ({
   activeTab,
@@ -9,6 +9,7 @@ export const RedeemTabNavigation = ({
   redeemableBonds,
   pendingBonds,
   nearingMaturity,
+  scheduledBondsCount = 0,
 }: RedeemTabNavigationProps) => {
   return (
     <div className="reveal-item">
@@ -40,12 +41,20 @@ export const RedeemTabNavigation = ({
               badgeBg: "bg-brand-warning/20",
               badgeText: "text-brand-warning",
             },
+            ...(scheduledBondsCount > 0 ? [{
+              key: "scheduled",
+              label: "Auto-Reinvesting",
+              Icon: RefreshCw,
+              count: scheduledBondsCount,
+              badgeBg: "bg-green-500/20",
+              badgeText: "text-green-400",
+            }] : []),
           ].map((tab) => (
             <button
               key={tab.key}
               onClick={() =>
                 onTabChange(
-                  tab.key as "redeemable" | "pending" | "notifications"
+                  tab.key as "redeemable" | "pending" | "notifications" | "scheduled"
                 )
               }
               className={`flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${
@@ -99,12 +108,20 @@ export const RedeemTabNavigation = ({
                 badgeBg: "bg-brand-warning/20",
                 badgeText: "text-brand-warning",
               },
+              ...(scheduledBondsCount > 0 ? [{
+                key: "scheduled",
+                label: "Auto",
+                Icon: RefreshCw,
+                count: scheduledBondsCount,
+                badgeBg: "bg-green-500/20",
+                badgeText: "text-green-400",
+              }] : []),
             ].map((tab) => (
               <button
                 key={tab.key}
                 onClick={() =>
                   onTabChange(
-                    tab.key as "redeemable" | "pending" | "notifications"
+                    tab.key as "redeemable" | "pending" | "notifications" | "scheduled"
                   )
                 }
                 className={`flex-shrink-0 flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-300 ${

@@ -30,11 +30,11 @@ export const BondRedemptionCard = ({
           <div className="w-10 h-10 rounded-xl bg-brand-900 flex items-center justify-center shadow-lg">
             <LinkIcon className="w-5 h-5 text-white" />
           </div>
-          <div>
+          <div className="flex flex-col gap-2">
             <h3 className="text-xl font-bold text-white">
               Bond #{bond.bondID}
             </h3>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 flex-wrap">
               <Badge className="text-xs px-2 py-1 bg-brand-accent/20 text-brand-accent border-brand-accent/40">
                 <CheckCircle className="w-3 h-3 mr-1" />
                 Ready to Redeem
